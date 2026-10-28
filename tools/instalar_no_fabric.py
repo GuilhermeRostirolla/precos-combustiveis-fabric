@@ -192,19 +192,9 @@ if not _agendas:
 print("\ninstalação concluída")
 
 if EXECUTAR:
+    # A capacidade de avaliação aceita poucas sessões Spark ao mesmo tempo (erro 430). O pipeline abre a própria
+    # sessão para os notebooks, então esta sessão dispara a execução e se encerra em vez de ficar esperando.
     _resposta = _cliente.post(f"v1/workspaces/{_ws}/items/{_id_pipeline}/jobs/instances?jobType=Pipeline")
     _execucao = _resposta.headers["Location"].rstrip("/").split("/")[-1]
-    print(f"pipeline em execução ({_execucao})")
-    while True:
-        time.sleep(30)
-        _estado = _cliente.get(f"v1/workspaces/{_ws}/items/{_id_pipeline}/jobs/instances/{_execucao}").json()
-        if _estado["status"] not in ("NotStarted", "InProgress"):
-            break
-    print("status:", _estado["status"], _estado.get("failureReason") or "")
-    _atividades = _cliente.post(f"v1/workspaces/{_ws}/datapipelines/pipelineruns/{_execucao}/queryactivityruns",
-                                json={"lastUpdatedAfter": "2026-01-01T00:00:00Z",
-                                      "lastUpdatedBefore": "2099-01-01T00:00:00Z"})
-    if _atividades.ok:
-        for _a in sorted(_atividades.json().get("value", []), key=lambda a: a.get("activityRunStart") or ""):
-            _erro = (_a.get("error") or {}).get("message", "")
-            print(f"  {_a['activityName']:<22} {_a['status']:<10} {int(_a.get('durationInMs') or 0) // 1000:>5}s {_erro[:300]}")
+    print(f"pipeline disparado ({_execucao}); acompanhe no Monitoramento. Encerrando esta sessão.")
+    notebookutils.session.stop()  # noqa: F821
