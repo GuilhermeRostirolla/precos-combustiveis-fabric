@@ -248,20 +248,21 @@ CORES_DIRECAO = {"alta": COR["alta"], "baixa": COR["baixa"]}
 
 def paginas() -> list[Pagina]:
     resumo = Pagina("P1Repasse", "Da refinaria à bomba no RS",
-                    "Quanto e em quanto tempo um reajuste na refinaria chega ao preço do posto, "
-                    "em % do repasse esperado")
+                    "Quanto e em quanto tempo um reajuste na refinaria chega ao preço do posto "
+                    "(repasse ponderado pelo tamanho de cada reajuste, desde jan/2023)")
     y, w, h = 92, 293, 104
     for i, (produto, rotulo, direcao, medida) in enumerate([
-        (GAS, "Gasolina · alta na refinaria", "alta", "Repasse em 4 Semanas (alta)"),
-        (GAS, "Gasolina · baixa na refinaria", "baixa", "Repasse em 4 Semanas (baixa)"),
-        (DIESEL, "Diesel S10 · alta na refinaria", "alta", "Repasse em 4 Semanas (alta)"),
-        (DIESEL, "Diesel S10 · baixa na refinaria", "baixa", "Repasse em 4 Semanas (baixa)"),
+        (GAS, "Gasolina · alta na refinaria", "alta", "Repasse em 2 Semanas (alta)"),
+        (GAS, "Gasolina · baixa na refinaria", "baixa", "Repasse em 2 Semanas (baixa)"),
+        (DIESEL, "Diesel S10 · alta na refinaria", "alta", "Repasse em 2 Semanas (alta)"),
+        (DIESEL, "Diesel S10 · baixa na refinaria", "baixa", "Repasse em 2 Semanas (baixa)"),
     ]):
-        resumo.kpi(medida, rotulo, "repassado à bomba em 4 semanas (mediana)", 24 + i * (w + 10), y, w, h,
+        resumo.kpi(medida, rotulo, "do reajuste chegou à bomba em 2 semanas", 24 + i * (w + 10), y, w, h,
                    filtros=[produto], cor_valor=CORES_DIRECAO[direcao])
     for i, (produto, titulo) in enumerate([(GAS, "Gasolina comum"), (DIESEL, "Diesel S10")]):
-        resumo.linhas(titulo, "Repasse mediano semana a semana depois do reajuste (0 = semana do reajuste)",
-                      24 + i * 621, 208, 611, 492, "repasse_resumo.h", [("Repasse Mediano RS", "Repasse")],
+        resumo.linhas(titulo, "Quanto do reajuste já chegou à bomba, semana a semana (0 = semana do reajuste; "
+                      "100% = acompanhou a refinaria)",
+                      24 + i * 621, 208, 611, 492, "repasse_resumo.h", [("Repasse RS", "Repasse")],
                       CORES_DIRECAO, legenda="repasse_resumo.direcao", filtros=[produto, ESTADO])
 
     serie = Pagina("P2BombaRefinaria", "Bomba x refinaria",

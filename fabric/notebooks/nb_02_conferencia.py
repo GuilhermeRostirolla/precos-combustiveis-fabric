@@ -58,7 +58,8 @@ b = b.sort_values("arquivo_origem", ascending=False).drop_duplicates(["cnpj", "p
 b["semana"] = b["data"] - pd.to_timedelta(b["data"].dt.weekday, unit="D")
 media_py = b.groupby(["produto", "semana"])["valor"].mean().rename("py").reset_index()
 
-media_wh = sql("SELECT produto, semana, CAST(preco_medio AS float) AS wh FROM gold.fato_preco_uf_semana WHERE uf = 'RS'")
+media_wh = sql("SELECT g.produto, g.semana, CAST(g.preco_medio AS float) AS wh FROM gold.fato_preco_uf_semana AS g "
+               "JOIN config.produto AS c ON c.produto = g.produto WHERE g.uf = 'RS'")
 media_wh["semana"] = pd.to_datetime(media_wh["semana"])
 comparacao = media_py.merge(media_wh, on=["produto", "semana"], how="outer", indicator=True)
 so_um_lado = int((comparacao["_merge"] != "both").sum())
@@ -155,10 +156,11 @@ print("conferência OK: Python e warehouse batem")
 
 # %%
 resumo = sql("""
-SELECT produto, direcao, h, eventos, CAST(repasse_mediano AS float) AS mediano
+SELECT produto, direcao, h, eventos, CAST(repasse_ponderado AS float) AS ponderado,
+       CAST(repasse_mediano AS float) AS mediano
 FROM gold.repasse_resumo WHERE escopo = 'RS (estado)' AND h IN (0, 1, 2, 4, 8)
 ORDER BY produto, direcao, h""")
-print(resumo.pivot_table(index=["produto", "direcao"], columns="h", values="mediano").round(2).to_string())
+print(resumo.pivot_table(index=["produto", "direcao"], columns="h", values="ponderado").round(2).to_string())
 velocidade = sql("""
 SELECT produto, direcao, eventos, eventos_sem_80_no_horizonte AS sem_80,
        CAST(semanas_mediana_ate_50 AS float) AS ate_50, CAST(semanas_mediana_ate_80 AS float) AS ate_80

@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Quanto e em quanto tempo um reajuste na refinaria chega ao preço do posto, em % do repasse esperado",
+                    "value": "Quanto e em quanto tempo um reajuste na refinaria chega ao preço do posto (repasse ponderado pelo tamanho de cada reajuste, desde jan/2023)",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",

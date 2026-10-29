@@ -23,11 +23,11 @@
                       "Entity": "repasse_resumo"
                     }
                   },
-                  "Property": "Repasse em 4 Semanas (alta)"
+                  "Property": "Repasse em 2 Semanas (alta)"
                 }
               },
-              "queryRef": "repasse_resumo.Repasse em 4 Semanas (alta)",
-              "nativeQueryRef": "Repasse em 4 Semanas (alta)"
+              "queryRef": "repasse_resumo.Repasse em 2 Semanas (alta)",
+              "nativeQueryRef": "Repasse em 2 Semanas (alta)"
             }
           ]
         }
@@ -260,7 +260,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'repassado à bomba em 4 semanas (mediana)'"
+                  "Value": "'do reajuste chegou à bomba em 2 semanas'"
                 }
               }
             },

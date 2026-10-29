@@ -2,26 +2,75 @@ table repasse_resumo
 	lineageTag: bd054155-45ed-5324-9e51-36b0093a82ed
 	sourceLineageTag: [gold].[repasse_resumo]
 
+	measure 'Repasse RS' = ```
+			// soma das variações na bomba / soma dos repasses esperados, no estado
+			CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), repasse_resumo[escopo] = "RS (estado)" )
+			```
+		formatString: 0%
+		displayFolder: Repasse
+		lineageTag: 564e4b34-a98d-55d8-9345-336d3361bdbc
+
 	measure 'Repasse Mediano RS' = CALCULATE ( MAX ( repasse_resumo[repasse_mediano] ), repasse_resumo[escopo] = "RS (estado)" )
 		formatString: 0%
 		displayFolder: Repasse
 		lineageTag: 23183209-5e19-52a7-a293-33b2ec560fc2
 
-	measure 'Repasse em 1 Semana (alta)' = ```
+	measure 'Reajustes Acompanhados' = CALCULATE ( MAX ( repasse_resumo[eventos] ), repasse_resumo[escopo] = "RS (estado)" )
+		formatString: #,0
+		displayFolder: Repasse
+		lineageTag: 06bb6e60-5277-53f7-8791-2ebb09f6a3a9
+
+	measure 'Repasse na Semana (alta)' = ```
 			CALCULATE (
-			    MAX ( repasse_resumo[repasse_mediano] ),
+			    MAX ( repasse_resumo[repasse_ponderado] ),
 			    repasse_resumo[escopo] = "RS (estado)",
 			    repasse_resumo[direcao] = "alta",
-			    repasse_resumo[h] = 1
+			    repasse_resumo[h] = 0
 			)
 			```
 		formatString: 0%
 		displayFolder: Repasse
-		lineageTag: ca7027e5-65e2-5045-bde1-a212e34f6285
+		lineageTag: 6192134c-e686-531f-8c7a-e1c8348dee07
+
+	measure 'Repasse na Semana (baixa)' = ```
+			CALCULATE (
+			    MAX ( repasse_resumo[repasse_ponderado] ),
+			    repasse_resumo[escopo] = "RS (estado)",
+			    repasse_resumo[direcao] = "baixa",
+			    repasse_resumo[h] = 0
+			)
+			```
+		formatString: 0%
+		displayFolder: Repasse
+		lineageTag: 29ca0b81-5dfe-586d-a464-8b59584d238d
+
+	measure 'Repasse em 2 Semanas (alta)' = ```
+			CALCULATE (
+			    MAX ( repasse_resumo[repasse_ponderado] ),
+			    repasse_resumo[escopo] = "RS (estado)",
+			    repasse_resumo[direcao] = "alta",
+			    repasse_resumo[h] = 2
+			)
+			```
+		formatString: 0%
+		displayFolder: Repasse
+		lineageTag: 437865fb-0fa4-53bf-8f89-3de2a74d9af9
+
+	measure 'Repasse em 2 Semanas (baixa)' = ```
+			CALCULATE (
+			    MAX ( repasse_resumo[repasse_ponderado] ),
+			    repasse_resumo[escopo] = "RS (estado)",
+			    repasse_resumo[direcao] = "baixa",
+			    repasse_resumo[h] = 2
+			)
+			```
+		formatString: 0%
+		displayFolder: Repasse
+		lineageTag: 2b637728-3dd7-5a9b-b0ee-0d60903913c2
 
 	measure 'Repasse em 4 Semanas (alta)' = ```
 			CALCULATE (
-			    MAX ( repasse_resumo[repasse_mediano] ),
+			    MAX ( repasse_resumo[repasse_ponderado] ),
 			    repasse_resumo[escopo] = "RS (estado)",
 			    repasse_resumo[direcao] = "alta",
 			    repasse_resumo[h] = 4
@@ -31,21 +80,9 @@ table repasse_resumo
 		displayFolder: Repasse
 		lineageTag: fc9cd86f-fd87-56fc-84f1-89e345ff1e0c
 
-	measure 'Repasse em 1 Semana (baixa)' = ```
-			CALCULATE (
-			    MAX ( repasse_resumo[repasse_mediano] ),
-			    repasse_resumo[escopo] = "RS (estado)",
-			    repasse_resumo[direcao] = "baixa",
-			    repasse_resumo[h] = 1
-			)
-			```
-		formatString: 0%
-		displayFolder: Repasse
-		lineageTag: ef0f1b8e-f0cd-59d2-a832-4a195175730c
-
 	measure 'Repasse em 4 Semanas (baixa)' = ```
 			CALCULATE (
-			    MAX ( repasse_resumo[repasse_mediano] ),
+			    MAX ( repasse_resumo[repasse_ponderado] ),
 			    repasse_resumo[escopo] = "RS (estado)",
 			    repasse_resumo[direcao] = "baixa",
 			    repasse_resumo[h] = 4
@@ -100,6 +137,16 @@ table repasse_resumo
 		sourceLineageTag: eventos
 		summarizeBy: none
 		sourceColumn: eventos
+
+		annotation SummarizationSetBy = Automatic
+
+	column repasse_ponderado
+		dataType: decimal
+		formatString: 0%
+		lineageTag: ec1ad373-64ea-5e1b-b05e-54151a0fe067
+		sourceLineageTag: repasse_ponderado
+		summarizeBy: none
+		sourceColumn: repasse_ponderado
 
 		annotation SummarizationSetBy = Automatic
 

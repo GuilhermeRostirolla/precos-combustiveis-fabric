@@ -42,10 +42,10 @@
                       "Entity": "repasse_resumo"
                     }
                   },
-                  "Property": "Repasse Mediano RS"
+                  "Property": "Repasse RS"
                 }
               },
-              "queryRef": "repasse_resumo.Repasse Mediano RS",
+              "queryRef": "repasse_resumo.Repasse RS",
               "nativeQueryRef": "Repasse",
               "displayName": "Repasse"
             }
@@ -560,7 +560,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Repasse mediano semana a semana depois do reajuste (0 = semana do reajuste)'"
+                  "Value": "'Quanto do reajuste já chegou à bomba, semana a semana (0 = semana do reajuste; 100% = acompanhou a refinaria)'"
                 }
               }
             },

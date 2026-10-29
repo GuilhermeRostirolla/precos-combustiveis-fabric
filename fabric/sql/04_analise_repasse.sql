@@ -133,11 +133,16 @@ BEGIN
     JOIN #bomba AS bh
       ON bh.produto = e.produto AND bh.escopo = b0.escopo AND bh.semana = DATEADD(day, 7 * hz.h, e.semana_evento);
 
-    -- Resumo: repasse mediano por semana depois do reajuste, separando altas e baixas.
+    -- Resumo por semana depois do reajuste, separando altas e baixas:
+    -- repasse ponderado = soma das variações na bomba / soma dos repasses esperados (cada reajuste pesa pelo
+    -- tamanho; é a medida principal) e, para comparar, a mediana e a média das razões de cada reajuste.
     DROP TABLE IF EXISTS gold.repasse_resumo;
     CREATE TABLE gold.repasse_resumo AS
     SELECT DISTINCT produto, escopo, direcao, h,
            COUNT(*) OVER (PARTITION BY produto, escopo, direcao, h) AS eventos,
+           CAST(SUM(variacao_bomba) OVER (PARTITION BY produto, escopo, direcao, h)
+                / SUM(repasse_esperado) OVER (PARTITION BY produto, escopo, direcao, h) AS decimal(10,4))
+               AS repasse_ponderado,
            CAST(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY repasse)
                 OVER (PARTITION BY produto, escopo, direcao, h) AS decimal(10,4)) AS repasse_mediano,
            CAST(AVG(repasse) OVER (PARTITION BY produto, escopo, direcao, h) AS decimal(10,4)) AS repasse_medio

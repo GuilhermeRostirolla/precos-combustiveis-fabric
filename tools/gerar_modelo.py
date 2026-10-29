@@ -41,7 +41,8 @@ TABELAS = {
                       ("preco_bomba", "dec"), ("variacao_bomba", "dec"), ("repasse_esperado", "dec"),
                       ("repasse", "dec")],
     "repasse_resumo": [("produto", "string"), ("escopo", "string"), ("direcao", "string"), ("h", "int"),
-                       ("eventos", "int"), ("repasse_mediano", "dec"), ("repasse_medio", "dec")],
+                       ("eventos", "int"), ("repasse_ponderado", "dec"), ("repasse_mediano", "dec"),
+                       ("repasse_medio", "dec")],
     "repasse_velocidade": [("produto", "string"), ("escopo", "string"), ("direcao", "string"), ("eventos", "int"),
                            ("eventos_sem_80_no_horizonte", "int"), ("semanas_mediana_ate_50", "dec"),
                            ("semanas_mediana_ate_80", "dec")],
@@ -73,6 +74,7 @@ FORMATO_COLUNA = {
     ("repasse_curva", "variacao_bomba"): '+"R$" #,0.000;-"R$" #,0.000',
     ("repasse_curva", "repasse_esperado"): '+"R$" #,0.0000;-"R$" #,0.0000',
     ("repasse_curva", "h"): "0",
+    ("repasse_resumo", "repasse_ponderado"): "0%",
     ("repasse_resumo", "repasse_mediano"): "0%",
     ("repasse_resumo", "repasse_medio"): "0%",
     ("repasse_resumo", "h"): "0",
@@ -126,7 +128,7 @@ def _velocidade(coluna: str, direcao: str) -> str:
 
 
 def _repasse_em(h: int, direcao: str) -> str:
-    return (f"CALCULATE (\n    MAX ( repasse_resumo[repasse_mediano] ),\n    repasse_resumo[escopo] = {ESTADO},\n"
+    return (f"CALCULATE (\n    MAX ( repasse_resumo[repasse_ponderado] ),\n    repasse_resumo[escopo] = {ESTADO},\n"
             f'    repasse_resumo[direcao] = "{direcao}",\n    repasse_resumo[h] = {h}\n)')
 
 
@@ -177,11 +179,18 @@ MEDIDAS = {
          f"CALCULATE ( AVERAGE ( repasse_curva[repasse] ), repasse_curva[escopo] = {ESTADO} )"),
     ],
     "repasse_resumo": [
+        ("Repasse RS", "Repasse", PCT,
+         "// soma das variações na bomba / soma dos repasses esperados, no estado\n"
+         f"CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), repasse_resumo[escopo] = {ESTADO} )"),
         ("Repasse Mediano RS", "Repasse", PCT,
          f"CALCULATE ( MAX ( repasse_resumo[repasse_mediano] ), repasse_resumo[escopo] = {ESTADO} )"),
-        ("Repasse em 1 Semana (alta)", "Repasse", PCT, _repasse_em(1, "alta")),
+        ("Reajustes Acompanhados", "Repasse", INT,
+         f"CALCULATE ( MAX ( repasse_resumo[eventos] ), repasse_resumo[escopo] = {ESTADO} )"),
+        ("Repasse na Semana (alta)", "Repasse", PCT, _repasse_em(0, "alta")),
+        ("Repasse na Semana (baixa)", "Repasse", PCT, _repasse_em(0, "baixa")),
+        ("Repasse em 2 Semanas (alta)", "Repasse", PCT, _repasse_em(2, "alta")),
+        ("Repasse em 2 Semanas (baixa)", "Repasse", PCT, _repasse_em(2, "baixa")),
         ("Repasse em 4 Semanas (alta)", "Repasse", PCT, _repasse_em(4, "alta")),
-        ("Repasse em 1 Semana (baixa)", "Repasse", PCT, _repasse_em(1, "baixa")),
         ("Repasse em 4 Semanas (baixa)", "Repasse", PCT, _repasse_em(4, "baixa")),
     ],
     "repasse_velocidade": [
