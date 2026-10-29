@@ -248,9 +248,11 @@ class Pagina:
                 {"textRuns": [{"value": " "}]}]}}]},
             "visualContainerObjects": moldura(None, fundo=COR["cartao"], borda=True, respiro=0.0)})
 
-    def segmentacao(self, coluna, rotulo, x, y, w, h, padrao=None, filtros=None):
+    def segmentacao(self, coluna, rotulo, x, y, w, h, padrao=None, filtros=None, obrigatorio=True, decrescente=False):
+        selecao = ({"strictSingleSelect": lit(True)} if obrigatorio
+                   else {"strictSingleSelect": lit(False), "singleSelect": lit(True)})
         objetos = {"data": [{"properties": {"mode": lit("Dropdown")}}],
-                   "selection": [{"properties": {"strictSingleSelect": lit(True)}}],
+                   "selection": [{"properties": selecao}],
                    "header": [{"properties": {"show": lit(True), "text": lit(rotulo), "fontColor": cor(COR["suave"]),
                                               "textSize": lit(8.0), "outline": lit("None")}}],
                    "items": [{"properties": {"fontColor": cor(COR["texto"]), "background": cor(COR["cartao"]),
@@ -264,7 +266,9 @@ class Pagina:
                     "Values": [[{"Literal": {"Value": _literal_filtro(padrao)}}]]}}}]}}}}]
         return self._add(x, y, w, h, {
             "visualType": "slicer",
-            "query": {"queryState": {"Values": {"projections": [projecao(coluna, ativo=True)]}}},
+            "query": {"queryState": {"Values": {"projections": [projecao(coluna, ativo=True)]}},
+                      "sortDefinition": {"sort": [{"field": campo(coluna),
+                                                   "direction": "Descending" if decrescente else "Ascending"}]}},
             "objects": objetos,
             "visualContainerObjects": moldura(None, fundo=COR["cartao"], borda=True, respiro=4.0)}, filtros)
 
@@ -339,10 +343,11 @@ def visao_geral() -> Pagina:
     p = Pagina("P0VisaoGeral", "Preço dos combustíveis", "Quanto custa hoje, quanto mudou e por quê",
                nota="Texto Semana de Referência")
     # filtros
-    produto = p.segmentacao("dim_produto.produto", "Combustível", 24, 84, 200, 44, padrao="GASOLINA",
+    produto = p.segmentacao("dim_produto.produto", "Combustível", 24, 78, 200, 54, padrao="GASOLINA",
                             filtros=[("dim_produto.produto", ["GASOLINA", "DIESEL S10"])])
-    estado = p.segmentacao("dim_uf.estado", "Estado", 234, 84, 160, 44, padrao="Brasil")
-    semana = p.segmentacao("semana_referencia.rotulo", "Semana (vazio = mais recente)", 404, 84, 200, 44)
+    estado = p.segmentacao("dim_uf.estado", "Estado", 234, 78, 160, 54, padrao="Brasil")
+    semana = p.segmentacao("semana_referencia.rotulo", "Semana (vazio = a mais recente)", 404, 78, 220, 54,
+                           obrigatorio=False, decrescente=True)
     # cartões: título e número num visual, a linha de apoio noutro por cima
     x, y, w, h, gap = 24, 140, 236, 88, 10
     for i, (titulo, medida, apoio, medida_cor, c) in enumerate([

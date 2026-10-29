@@ -3,9 +3,9 @@
   "name": "f848509dfb04f41276ea",
   "position": {
     "x": 234,
-    "y": 84,
+    "y": 78,
     "z": 400,
-    "height": 44,
+    "height": 54,
     "width": 160,
     "tabOrder": 400
   },
@@ -32,6 +32,23 @@
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_uf"
+                  }
+                },
+                "Property": "estado"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
       }
     },
     "objects": {

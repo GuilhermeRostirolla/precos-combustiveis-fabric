@@ -3,10 +3,10 @@
   "name": "9e8dd9b6a7b9a02fa12b",
   "position": {
     "x": 404,
-    "y": 84,
+    "y": 78,
     "z": 500,
-    "height": 44,
-    "width": 200,
+    "height": 54,
+    "width": 220,
     "tabOrder": 500
   },
   "visual": {
@@ -32,6 +32,23 @@
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "semana_referencia"
+                  }
+                },
+                "Property": "rotulo"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
       }
     },
     "objects": {
@@ -54,6 +71,13 @@
             "strictSingleSelect": {
               "expr": {
                 "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "singleSelect": {
+              "expr": {
+                "Literal": {
                   "Value": "true"
                 }
               }
@@ -74,7 +98,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Semana (vazio = mais recente)'"
+                  "Value": "'Semana (vazio = a mais recente)'"
                 }
               }
             },

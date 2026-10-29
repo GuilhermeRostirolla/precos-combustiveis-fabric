@@ -3,9 +3,9 @@
   "name": "7095e7222dd0e03a8953",
   "position": {
     "x": 24,
-    "y": 84,
+    "y": 78,
     "z": 300,
-    "height": 44,
+    "height": 54,
     "width": 200,
     "tabOrder": 300
   },
@@ -32,6 +32,23 @@
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_produto"
+                  }
+                },
+                "Property": "produto"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
       }
     },
     "objects": {

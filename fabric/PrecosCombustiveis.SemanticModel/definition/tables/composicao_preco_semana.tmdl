@@ -238,12 +238,12 @@ table composicao_preco_semana
 	measure 'Apoio Preço no Posto' = ```
 			VAR d = [Preço no Posto] - [Preço no Posto Semana Anterior]
 			RETURN
-			    IF ( NOT ISBLANK ( [Preço no Posto Semana Anterior] ), IF ( d > 0.005, "▲ ", IF ( d < -0.005, "▼ ", "= " ) ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ) & " vs semana anterior" )
+			    IF ( NOT ISBLANK ( [Preço no Posto Semana Anterior] ), IF ( d > 0.005, "▲ ", IF ( d < -0.005, "▼ ", "= " ) ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ) & " vs semana anterior", "" )
 			```
 		displayFolder: Visão geral
 		lineageTag: 2ee193ba-9f48-559b-bef0-5f94a352943e
 
-	measure 'Apoio Variação 12 Meses' = "Refinaria no mesmo período: " & FORMAT ( [Variação 12 Meses Refinaria], "+0.0%;-0.0%" )
+	measure 'Apoio Variação 12 Meses' = IF ( ISBLANK ( [Variação 12 Meses Refinaria] ), "", "Refinaria no mesmo período: " & FORMAT ( [Variação 12 Meses Refinaria], "+0.0%;-0.0%" ) )
 		displayFolder: Visão geral
 		lineageTag: d9dd3044-4d27-5503-952c-4ea6604ca054
 
@@ -254,7 +254,7 @@ table composicao_preco_semana
 	measure 'Apoio Refinaria 4 Semanas' = ```
 			VAR d = [Preço no Posto] - [Preço no Posto 4 Semanas Antes]
 			RETURN
-			    "No posto: " & IF ( d > 0.005, "▲ ", IF ( d < -0.005, "▼ ", "= " ) ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ) & " no mesmo período"
+			    IF ( ISBLANK ( [Preço no Posto 4 Semanas Antes] ), "", "No posto: " & IF ( d > 0.005, "▲ ", IF ( d < -0.005, "▼ ", "= " ) ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ) & " no mesmo período" )
 			```
 		displayFolder: Visão geral
 		lineageTag: c6d4583b-1add-525f-bce5-cec332d14e38
@@ -548,7 +548,7 @@ table composicao_preco_semana
 	measure 'Texto Δ Posto' = ```
 			VAR d = [Δ Posto]
 			RETURN
-			    IF ( NOT ISBLANK ( d ), IF ( d > 0.005, "▲ ", IF ( d < -0.005, "▼ ", "= " ) ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ) )
+			    IF ( NOT ISBLANK ( d ), IF ( d > 0.005, "▲ ", IF ( d < -0.005, "▼ ", "= " ) ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ), "sem mês anterior" )
 			```
 		displayFolder: Por que mudou
 		lineageTag: 0c270e23-56f1-563f-a74d-f9bfec0512e7
@@ -564,7 +564,8 @@ table composicao_preco_semana
 	measure 'Texto De Para' = ```
 			IF (
 			    NOT ISBLANK ( [Δ Posto] ),
-			    "Média do mês: de R$ " & FORMAT ( [Posto Mês Anterior], "0.00" ) & " para R$ " & FORMAT ( [Posto Mês Explicado], "0.00" ) & " por litro"
+			    "Média do mês: de R$ " & FORMAT ( [Posto Mês Anterior], "0.00" ) & " para R$ " & FORMAT ( [Posto Mês Explicado], "0.00" ) & " por litro",
+			    ""
 			)
 			```
 		displayFolder: Por que mudou
@@ -586,7 +587,7 @@ table composicao_preco_semana
 			RETURN
 			    SWITCH (
 			        TRUE (),
-			        ISBLANK ( d ), BLANK (),
+			        ISBLANK ( d ), "",
 			        ABS ( d ) < 0.02, "O preço no posto ficou praticamente estável.",
 			        IF ( d > 0, "A alta", "A queda" ) & " veio principalmente " & maior & "."
 			    )
@@ -614,7 +615,7 @@ table composicao_preco_semana
 			RETURN
 			    IF (
 			        ISBLANK ( [Δ Posto] ),
-			        BLANK (),
+			        "",
 			        IF ( eventos <> "", eventos & ". " & partes, partes )
 			    )
 			```

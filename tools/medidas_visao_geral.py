@@ -99,15 +99,16 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Etanol ÷ Gasolina", "Visão geral", "0%", "DIVIDE ( [Preço Etanol], [Preço Gasolina] )"),
         ("Apoio Preço no Posto", "Visão geral", None,
          "VAR d = [Preço no Posto] - [Preço no Posto Semana Anterior]\nRETURN\n"
-         f"    IF ( NOT ISBLANK ( [Preço no Posto Semana Anterior] ), {seta('d')} & \" vs semana anterior\" )"),
+         f"    IF ( NOT ISBLANK ( [Preço no Posto Semana Anterior] ), {seta('d')} & \" vs semana anterior\", \"\" )"),
         ("Apoio Variação 12 Meses", "Visão geral", None,
-         '"Refinaria no mesmo período: " & FORMAT ( [Variação 12 Meses Refinaria], "+0.0%;-0.0%" )'),
+         'IF ( ISBLANK ( [Variação 12 Meses Refinaria] ), "", '
+         '"Refinaria no mesmo período: " & FORMAT ( [Variação 12 Meses Refinaria], "+0.0%;-0.0%" ) )'),
         ("Apoio Impostos", "Visão geral", None,
          'FORMAT ( DIVIDE ( [Impostos no Litro], [Preço no Posto] ), "0%" ) & " do preço · ICMS R$ " '
          '& FORMAT ( [ICMS no Litro], "0.00" )'),
         ("Apoio Refinaria 4 Semanas", "Visão geral", None,
          "VAR d = [Preço no Posto] - [Preço no Posto 4 Semanas Antes]\nRETURN\n"
-         f'    "No posto: " & {seta("d")} & " no mesmo período"'),
+         f'    IF ( ISBLANK ( [Preço no Posto 4 Semanas Antes] ), "", "No posto: " & {seta("d")} & " no mesmo período" )'),
         ("Apoio Etanol", "Visão geral", None,
          'IF ( [Etanol ÷ Gasolina] < 0.7, "Abaixo de 70%: etanol compensa", "Acima de 70%: gasolina compensa" )'),
         ("Cor Variação 12 Meses", "Cores", None,
@@ -131,18 +132,18 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         *delta("Outros", f"AVERAGE ( {C}[outros] )"),
         ("Título Por Que Mudou", "Por que mudou", None,
          'VAR m = [Mês Explicado]\nRETURN\n    "Por que o preço mudou em " & FORMAT ( m, "mmmm" ) & " de " & YEAR ( m ) & "?"'),
-        ("Texto Δ Posto", "Por que mudou", None, f"VAR d = [Δ Posto]\nRETURN\n    IF ( NOT ISBLANK ( d ), {seta('d')} )"),
+        ("Texto Δ Posto", "Por que mudou", None, f"VAR d = [Δ Posto]\nRETURN\n    IF ( NOT ISBLANK ( d ), {seta('d')}, \"sem mês anterior\" )"),
         ("Cor Δ Posto", "Cores", None,
          f'VAR d = [Δ Posto]\nRETURN\n    IF ( d > 0.005, "{CORES["alta"]}", IF ( d < -0.005, "{CORES["baixa"]}", '
          f'"{CORES["neutra"]}" ) )'),
         ("Texto De Para", "Por que mudou", None,
          'IF (\n    NOT ISBLANK ( [Δ Posto] ),\n    "Média do mês: de R$ " & FORMAT ( [Posto Mês Anterior], "0.00" ) '
-         '& " para R$ " & FORMAT ( [Posto Mês Explicado], "0.00" ) & " por litro"\n)'),
+         '& " para R$ " & FORMAT ( [Posto Mês Explicado], "0.00" ) & " por litro",\n    ""\n)'),
         ("Conclusão", "Por que mudou", None,
          "VAR d = [Δ Posto]\nVAR s = IF ( d < 0, -1, 1 )\nVAR r = [Δ Refinaria] * s\nVAR i = [Δ Impostos] * s\n"
          "VAR o = [Δ Outros] * s\nVAR maior =\n    SWITCH (\n        TRUE (),\n        r >= i && r >= o, \"da refinaria\",\n"
          "        i >= o, \"dos impostos\",\n        \"do etanol/biodiesel, do frete e das margens\"\n    )\nRETURN\n"
-         "    SWITCH (\n        TRUE (),\n        ISBLANK ( d ), BLANK (),\n"
+         "    SWITCH (\n        TRUE (),\n        ISBLANK ( d ), \"\",\n"
          "        ABS ( d ) < 0.02, \"O preço no posto ficou praticamente estável.\",\n"
          "        IF ( d > 0, \"A alta\", \"A queda\" ) & \" veio principalmente \" & maior & \".\"\n    )"),
         ("Conclusão Detalhe", "Por que mudou", None,
@@ -153,7 +154,7 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          '        evento[descricao],\n        ". ",\n        evento[data], ASC\n    )\n'
          f"VAR partes =\n    \"Refinaria \" & {com_sinal('[Δ Refinaria]')} & \", impostos \" & {com_sinal('[Δ Impostos]')}\n"
          f"        & \" e etanol/biodiesel, frete e margens \" & {com_sinal('[Δ Outros]')} & \" por litro.\"\n"
-         "RETURN\n    IF (\n        ISBLANK ( [Δ Posto] ),\n        BLANK (),\n"
+         "RETURN\n    IF (\n        ISBLANK ( [Δ Posto] ),\n        \"\",\n"
          '        IF ( eventos <> "", eventos & ". " & partes, partes )\n    )'),
     ]
     componente = [
