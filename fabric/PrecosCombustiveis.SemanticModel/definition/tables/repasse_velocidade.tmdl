@@ -46,10 +46,29 @@ table repasse_velocidade
 		displayFolder: Velocidade
 		lineageTag: 2ddf3d28-49dd-5149-a0b3-7f8e9a810d74
 
-	measure 'Semanas até 80% no Município' = CALCULATE ( MAX ( repasse_velocidade[semanas_mediana_ate_80] ) )
-		formatString: 0.0
+	measure 'Reajustes no Município' = SUM ( repasse_velocidade[eventos] )
+		formatString: #,0
 		displayFolder: Velocidade
-		lineageTag: 6034db96-e659-58d7-9c2f-4758b54bafdb
+		lineageTag: 5dadfe07-8c93-5149-8084-c9e29a3c08d2
+
+	measure '% Chegou a 80%' = ```
+			// reajustes em que a bomba chegou a 80% do esperado em até 8 semanas
+			DIVIDE (
+			    SUM ( repasse_velocidade[eventos] ) - SUM ( repasse_velocidade[eventos_sem_80_no_horizonte] ),
+			    SUM ( repasse_velocidade[eventos] )
+			)
+			```
+		formatString: 0%
+		displayFolder: Velocidade
+		lineageTag: b3e7191b-ec9b-584a-b060-8f87b35325f4
+
+	measure 'Semanas até a Metade' = ```
+			VAR s = MAX ( repasse_velocidade[semanas_mediana_ate_50] )
+			RETURN
+			    IF ( NOT ISBLANK ( s ), IF ( s > 8, "mais de 8", FORMAT ( s, "0.#" ) ) )
+			```
+		displayFolder: Velocidade
+		lineageTag: 42851c48-c983-5d37-b87f-50ffafa966df
 
 	column produto
 		dataType: string

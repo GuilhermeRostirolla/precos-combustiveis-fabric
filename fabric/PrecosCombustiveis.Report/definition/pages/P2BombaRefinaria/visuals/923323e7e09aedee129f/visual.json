@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "923323e7e09aedee129f",
   "position": {
-    "x": 24,
-    "y": 328,
+    "x": 645,
+    "y": 92,
     "z": 400,
-    "height": 226,
-    "width": 760,
+    "height": 318,
+    "width": 611,
     "tabOrder": 400
   },
   "visual": {
@@ -142,7 +142,7 @@
             "axisType": {
               "expr": {
                 "Literal": {
-                  "Value": "'Continuous'"
+                  "Value": "'Scalar'"
                 }
               }
             },

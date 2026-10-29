@@ -125,6 +125,13 @@
                 }
               }
             },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
             "gridlineShow": {
               "expr": {
                 "Literal": {

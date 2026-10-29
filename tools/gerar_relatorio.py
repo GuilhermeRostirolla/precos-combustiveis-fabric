@@ -162,8 +162,9 @@ class Pagina:
             "visualContainerObjects": moldura(rotulo, contexto)}, filtros)
 
     def linhas(self, titulo, subtitulo, x, y, w, h, eixo, medidas, cores, legenda=None, filtros=None,
-               formato_eixo_y=None, eixo_continuo=False):
-        query = {"Category": {"projections": [projecao(eixo, ativo=True)]}, "Y": {"projections": campos(medidas)}}
+               formato_eixo_y=None, eixo_continuo=False, rotulo_eixo=None):
+        query = {"Category": {"projections": [projecao(eixo, rotulo_eixo, ativo=True)]},
+                 "Y": {"projections": campos(medidas)}}
         if legenda:
             query["Series"] = {"projections": [projecao(legenda)]}
         pontos = []
@@ -179,7 +180,7 @@ class Pagina:
             "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
                                              "showAxisTitle": lit(not eixo_continuo),
                                              "titleColor": cor(COR["apagado"]), "titleFontSize": lit(8.5),
-                                             "axisType": lit("Continuous" if eixo_continuo else "Categorical"),
+                                             "axisType": lit("Scalar" if eixo_continuo else "Categorical"),
                                              "gridlineShow": lit(False)}}],
             "valueAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["apagado"]),
                                           "showAxisTitle": lit(False), "gridlineShow": lit(True),
@@ -229,7 +230,7 @@ class Pagina:
         objetos = {
             "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["texto"]),
                                              "showAxisTitle": lit(False), "maxMarginFactor": lit(40)}}],
-            "valueAxis": [{"properties": {"show": lit(False), "gridlineShow": lit(False)}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
             "labels": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "color": cor(COR["texto"])}}],
             "dataPoint": [{"properties": {"defaultColor": cor(cor_barra)}}],
         }
@@ -248,8 +249,7 @@ CORES_DIRECAO = {"alta": COR["alta"], "baixa": COR["baixa"]}
 
 def paginas() -> list[Pagina]:
     resumo = Pagina("P1Repasse", "Da refinaria à bomba no RS",
-                    "Quanto e em quanto tempo um reajuste na refinaria chega ao preço do posto "
-                    "(repasse ponderado pelo tamanho de cada reajuste, desde jan/2023)")
+                    "Quanto de cada reajuste da refinaria chegou ao posto, desde jan/2023")
     y, w, h = 92, 293, 104
     for i, (produto, rotulo, direcao, medida) in enumerate([
         (GAS, "Gasolina · alta na refinaria", "alta", "Repasse em 2 Semanas (alta)"),
@@ -260,38 +260,41 @@ def paginas() -> list[Pagina]:
         resumo.kpi(medida, rotulo, "do reajuste chegou à bomba em 2 semanas", 24 + i * (w + 10), y, w, h,
                    filtros=[produto], cor_valor=CORES_DIRECAO[direcao])
     for i, (produto, titulo) in enumerate([(GAS, "Gasolina comum"), (DIESEL, "Diesel S10")]):
-        resumo.linhas(titulo, "Quanto do reajuste já chegou à bomba, semana a semana (0 = semana do reajuste; "
-                      "100% = acompanhou a refinaria)",
+        resumo.linhas(titulo, "% do reajuste que já chegou à bomba (100% = acompanhou a refinaria). "
+                      "Só semanas com 3 ou mais reajustes.",
                       24 + i * 621, 208, 611, 492, "repasse_resumo.h", [("Repasse RS", "Repasse")],
-                      CORES_DIRECAO, legenda="repasse_resumo.direcao", filtros=[produto, ESTADO])
+                      CORES_DIRECAO, legenda="repasse_resumo.direcao", filtros=[produto, ESTADO],
+                      rotulo_eixo="Semanas depois do reajuste")
 
     serie = Pagina("P2BombaRefinaria", "Bomba x refinaria",
                    "Preço médio no posto (RS) e custo da parcela fóssil do litro na refinaria (região Sul)")
     for i, (produto, titulo) in enumerate([(GAS, "Gasolina comum"), (DIESEL, "Diesel S10")]):
-        serie.linhas(titulo, "R$ por litro, por semana", 24, 92 + i * 236, 760, 226, "dim_semana.semana",
+        serie.linhas(titulo, "R$ por litro, por semana", 24 + i * 621, 92, 611, 318, "dim_semana.semana",
                      [("Preço Bomba RS", "Bomba (RS)"), ("Custo Fóssil na Bomba", "Refinaria (parcela fóssil)")],
                      {"bomba": COR["bomba"], "refinaria": COR["refinaria"]},
                      filtros=[produto, ("dim_semana.ano", [2023, 2024, 2025, 2026, 2027])],
                      formato_eixo_y=True, eixo_continuo=True)
-    serie.tabela("Reajustes na refinaria", "Do mais recente para o mais antigo", 794, 92, 462, 608,
-                 [("repasse_evento.semana_evento", "Semana"), ("dim_produto.produto", "Produto"),
-                  ("repasse_evento.direcao", "Sentido"), ("repasse_evento.variacao_refinaria_pct", "Refinaria"),
-                  ("repasse_evento.repasse_esperado", "Esperado na bomba"),
-                  ("repasse_evento.semanas_acompanhadas", "Semanas acomp.")],
+    serie.tabela("Reajustes na refinaria", "Do mais recente para o mais antigo. Semanas acompanhadas: até o "
+                 "reajuste seguinte, no máximo 8", 24, 420, 1232, 280,
+                 [("repasse_evento.semana_evento", "Semana do reajuste"), ("dim_produto.produto", "Produto"),
+                  ("repasse_evento.direcao", "Sentido"), ("repasse_evento.semanas_reajuste", "Semanas de reajuste"),
+                  ("repasse_evento.preco_antes", "Refinaria antes"), ("repasse_evento.preco_depois", "Refinaria depois"),
+                  ("repasse_evento.variacao_refinaria_pct", "Variação"),
+                  ("repasse_evento.repasse_esperado", "Esperado na bomba (R$/l)"),
+                  ("repasse_evento.semanas_acompanhadas", "Semanas acompanhadas")],
                  ordem="repasse_evento.semana_evento", filtros=[("dim_produto.produto", ["GASOLINA", "DIESEL S10"])])
 
     municipios = Pagina("P3Municipios", "Municípios do RS",
                         "Cidades com pelo menos 5 postos pesquisados na semana")
     for i, (produto, titulo) in enumerate([(GAS, "Gasolina comum"), (DIESEL, "Diesel S10")]):
-        municipios.tabela(f"{titulo}: velocidade do repasse",
-                          "Semanas, na mediana, até a bomba chegar a 50% e 80% do repasse esperado (99 = não chegou)",
+        municipios.tabela(f"{titulo}: quando a refinaria baixa",
+                          "Quedas que chegaram a 80% na bomba em até 8 semanas; cidades com 3 ou mais quedas",
                           24 + i * 621, 92, 611, 300,
-                          [("repasse_velocidade.escopo", "Município"), ("repasse_velocidade.direcao", "Sentido"),
-                           ("repasse_velocidade.eventos", "Reajustes"),
-                           ("repasse_velocidade.semanas_mediana_ate_50", "Até 50%"),
-                           ("repasse_velocidade.semanas_mediana_ate_80", "Até 80%")],
-                          ordem="repasse_velocidade.semanas_mediana_ate_80", crescente=True,
-                          filtros=[produto, ("repasse_velocidade.escopo", "RS (estado)", True)])
+                          [("repasse_velocidade.escopo", "Município"), ("Reajustes no Município", "Quedas"),
+                           ("% Chegou a 80%", "Chegaram a 80%"), ("Semanas até a Metade", "Semanas até a metade")],
+                          ordem="% Chegou a 80%", crescente=True,
+                          filtros=[produto, ("repasse_velocidade.direcao", "baixa"),
+                                   ("repasse_velocidade.eventos", list(range(3, 40)))])
         municipios.barras(f"{titulo}: preço na semana mais recente", "Média dos postos pesquisados, R$ por litro",
                           24 + i * 621, 402, 611, 298, "fato_preco_municipio_semana.municipio",
                           "Preço Município Última Semana", COR["gasolina"] if i == 0 else COR["diesel"],
@@ -337,6 +340,7 @@ def gerar(destino: Path = DESTINO) -> list[Pagina]:
              "items": [{"name": TEMA, "path": TEMA, "type": "CustomTheme"}]},
             {"name": "SharedResources", "type": "SharedResources",
              "items": [{"name": TEMA_BASE, "path": f"BaseThemes/{TEMA_BASE}.json", "type": "BaseTheme"}]}],
+        "objects": {"outspacePane": [{"properties": {"visible": lit(False), "expanded": lit(False)}}]},
         "settings": {"useStylableVisualContainerHeader": True, "exportDataMode": "AllowSummarized",
                      "defaultDrillFilterOtherVisuals": True, "allowChangeFilterTypes": True,
                      "useEnhancedTooltips": True, "useDefaultAggregateDisplayName": True}})

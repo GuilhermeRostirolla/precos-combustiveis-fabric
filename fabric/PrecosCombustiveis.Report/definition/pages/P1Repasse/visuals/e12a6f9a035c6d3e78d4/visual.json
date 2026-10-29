@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "repasse_resumo.h",
-              "nativeQueryRef": "h",
+              "nativeQueryRef": "Semanas depois do reajuste",
+              "displayName": "Semanas depois do reajuste",
               "active": true
             }
           ]
@@ -560,7 +561,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Quanto do reajuste já chegou à bomba, semana a semana (0 = semana do reajuste; 100% = acompanhou a refinaria)'"
+                  "Value": "'% do reajuste que já chegou à bomba (100% = acompanhou a refinaria). Só semanas com 3 ou mais reajustes.'"
                 }
               }
             },

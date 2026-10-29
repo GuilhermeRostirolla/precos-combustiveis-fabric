@@ -5,8 +5,8 @@
     "x": 24,
     "y": 92,
     "z": 300,
-    "height": 226,
-    "width": 760,
+    "height": 318,
+    "width": 611,
     "tabOrder": 300
   },
   "visual": {
@@ -142,7 +142,7 @@
             "axisType": {
               "expr": {
                 "Literal": {
-                  "Value": "'Continuous'"
+                  "Value": "'Scalar'"
                 }
               }
             },

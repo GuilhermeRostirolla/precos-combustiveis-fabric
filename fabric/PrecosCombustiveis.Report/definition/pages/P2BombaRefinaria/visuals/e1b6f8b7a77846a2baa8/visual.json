@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "e1b6f8b7a77846a2baa8",
   "position": {
-    "x": 794,
-    "y": 92,
+    "x": 24,
+    "y": 420,
     "z": 500,
-    "height": 608,
-    "width": 462,
+    "height": 280,
+    "width": 1232,
     "tabOrder": 500
   },
   "visual": {
@@ -27,8 +27,8 @@
                 }
               },
               "queryRef": "repasse_evento.semana_evento",
-              "nativeQueryRef": "Semana",
-              "displayName": "Semana"
+              "nativeQueryRef": "Semana do reajuste",
+              "displayName": "Semana do reajuste"
             },
             {
               "field": {
@@ -68,12 +68,57 @@
                       "Entity": "repasse_evento"
                     }
                   },
+                  "Property": "semanas_reajuste"
+                }
+              },
+              "queryRef": "repasse_evento.semanas_reajuste",
+              "nativeQueryRef": "Semanas de reajuste",
+              "displayName": "Semanas de reajuste"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "repasse_evento"
+                    }
+                  },
+                  "Property": "preco_antes"
+                }
+              },
+              "queryRef": "repasse_evento.preco_antes",
+              "nativeQueryRef": "Refinaria antes",
+              "displayName": "Refinaria antes"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "repasse_evento"
+                    }
+                  },
+                  "Property": "preco_depois"
+                }
+              },
+              "queryRef": "repasse_evento.preco_depois",
+              "nativeQueryRef": "Refinaria depois",
+              "displayName": "Refinaria depois"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "repasse_evento"
+                    }
+                  },
                   "Property": "variacao_refinaria_pct"
                 }
               },
               "queryRef": "repasse_evento.variacao_refinaria_pct",
-              "nativeQueryRef": "Refinaria",
-              "displayName": "Refinaria"
+              "nativeQueryRef": "Variação",
+              "displayName": "Variação"
             },
             {
               "field": {
@@ -87,8 +132,8 @@
                 }
               },
               "queryRef": "repasse_evento.repasse_esperado",
-              "nativeQueryRef": "Esperado na bomba",
-              "displayName": "Esperado na bomba"
+              "nativeQueryRef": "Esperado na bomba (R$/l)",
+              "displayName": "Esperado na bomba (R$/l)"
             },
             {
               "field": {
@@ -102,8 +147,8 @@
                 }
               },
               "queryRef": "repasse_evento.semanas_acompanhadas",
-              "nativeQueryRef": "Semanas acomp.",
-              "displayName": "Semanas acomp."
+              "nativeQueryRef": "Semanas acompanhadas",
+              "displayName": "Semanas acompanhadas"
             }
           ]
         }
@@ -484,7 +529,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Do mais recente para o mais antigo'"
+                  "Value": "'Do mais recente para o mais antigo. Semanas acompanhadas: até o reajuste seguinte, no máximo 8'"
                 }
               }
             },

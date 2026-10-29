@@ -3,8 +3,12 @@ table repasse_resumo
 	sourceLineageTag: [gold].[repasse_resumo]
 
 	measure 'Repasse RS' = ```
-			// soma das variações na bomba / soma dos repasses esperados, no estado
-			CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), repasse_resumo[escopo] = "RS (estado)" )
+			// soma das variações na bomba / soma dos repasses esperados, no estado;
+			// semana com menos de 3 reajustes acompanhados fica em branco (um reajuste só distorce a curva)
+			IF (
+			    [Reajustes Acompanhados] >= 3,
+			    CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), repasse_resumo[escopo] = "RS (estado)" )
+			)
 			```
 		formatString: 0%
 		displayFolder: Repasse

@@ -180,8 +180,10 @@ MEDIDAS = {
     ],
     "repasse_resumo": [
         ("Repasse RS", "Repasse", PCT,
-         "// soma das variações na bomba / soma dos repasses esperados, no estado\n"
-         f"CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), repasse_resumo[escopo] = {ESTADO} )"),
+         "// soma das variações na bomba / soma dos repasses esperados, no estado;\n"
+         "// semana com menos de 3 reajustes acompanhados fica em branco (um reajuste só distorce a curva)\n"
+         f"IF (\n    [Reajustes Acompanhados] >= 3,\n"
+         f"    CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), repasse_resumo[escopo] = {ESTADO} )\n)"),
         ("Repasse Mediano RS", "Repasse", PCT,
          f"CALCULATE ( MAX ( repasse_resumo[repasse_mediano] ), repasse_resumo[escopo] = {ESTADO} )"),
         ("Reajustes Acompanhados", "Repasse", INT,
@@ -198,8 +200,14 @@ MEDIDAS = {
         ("Semanas até 80% (baixa)", "Velocidade", SEMANAS, _velocidade("semanas_mediana_ate_80", "baixa")),
         ("Semanas até 50% (alta)", "Velocidade", SEMANAS, _velocidade("semanas_mediana_ate_50", "alta")),
         ("Semanas até 50% (baixa)", "Velocidade", SEMANAS, _velocidade("semanas_mediana_ate_50", "baixa")),
-        ("Semanas até 80% no Município", "Velocidade", SEMANAS,
-         "CALCULATE ( MAX ( repasse_velocidade[semanas_mediana_ate_80] ) )"),
+        ("Reajustes no Município", "Velocidade", INT, "SUM ( repasse_velocidade[eventos] )"),
+        ("% Chegou a 80%", "Velocidade", PCT,
+         "// reajustes em que a bomba chegou a 80% do esperado em até 8 semanas\n"
+         "DIVIDE (\n    SUM ( repasse_velocidade[eventos] ) - SUM ( repasse_velocidade[eventos_sem_80_no_horizonte] ),\n"
+         "    SUM ( repasse_velocidade[eventos] )\n)"),
+        ("Semanas até a Metade", "Velocidade", None,
+         "VAR s = MAX ( repasse_velocidade[semanas_mediana_ate_50] )\nRETURN\n"
+         '    IF ( NOT ISBLANK ( s ), IF ( s > 8, "mais de 8", FORMAT ( s, "0.#" ) ) )'),
     ],
 }
 
