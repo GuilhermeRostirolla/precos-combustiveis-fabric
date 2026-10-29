@@ -1,0 +1,30 @@
+table semana_referencia
+	lineageTag: 2bfb688f-ca6c-5e3e-b740-12abcc8e75bf
+	sourceLineageTag: [gold].[semana_referencia]
+
+	column semana
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 7aac1202-4e8c-578b-aee6-315746ff7869
+		sourceLineageTag: semana
+		summarizeBy: none
+		sourceColumn: semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column rotulo
+		dataType: string
+		lineageTag: 18e7f4d7-d3ca-5572-9f75-cbbcde2b813f
+		sourceLineageTag: rotulo
+		summarizeBy: none
+		sourceColumn: rotulo
+		sortByColumn: semana
+
+		annotation SummarizationSetBy = Automatic
+
+	partition semana_referencia = entity
+		mode: directLake
+		source
+			entityName: semana_referencia
+			schemaName: gold
+			expressionSource: DatabaseQuery

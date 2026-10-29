@@ -1,0 +1,54 @@
+table componente
+	lineageTag: bf49bf38-cc4a-5ef8-a0b3-83168b6e86f5
+	sourceLineageTag: [gold].[componente]
+
+	measure 'Variação do Componente' = ```
+			SWITCH (
+			    SELECTEDVALUE ( componente[componente] ),
+			    "Refinaria", [Δ Refinaria],
+			    "Impostos", [Δ Impostos],
+			    [Δ Outros]
+			)
+			```
+		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		displayFolder: Por que mudou
+		lineageTag: 99d66a63-23df-584d-87a1-d0b03cfdff5c
+
+	measure 'Cor do Componente' = ```
+			SWITCH (
+			    SELECTEDVALUE ( componente[componente] ),
+			    "Refinaria", "#3BA3D9",
+			    "Impostos", "#8A7CF0",
+			    "#E8833A"
+			)
+			```
+		displayFolder: Cores
+		lineageTag: edf5d765-c486-5afb-b5bd-98b8f6c7405e
+
+	column componente
+		dataType: string
+		lineageTag: dad13dd1-4acf-5013-886a-4481cf6bda88
+		sourceLineageTag: componente
+		summarizeBy: none
+		sourceColumn: componente
+		sortByColumn: ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	column ordem
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: e083b9ff-f48c-536b-84bd-a03298bb3c7e
+		sourceLineageTag: ordem
+		summarizeBy: none
+		sourceColumn: ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	partition componente = entity
+		mode: directLake
+		source
+			entityName: componente
+			schemaName: gold
+			expressionSource: DatabaseQuery

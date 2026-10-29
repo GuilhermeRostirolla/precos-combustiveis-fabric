@@ -45,3 +45,19 @@ relationship 541e3bc1-a9e1-5450-bd7c-934a2c14c6d8
 relationship 99239d89-c645-5f12-904f-a9706d02bafb
 	fromColumn: refinaria_suavizada.produto
 	toColumn: dim_produto.produto
+
+relationship 662266d4-9320-5a6a-be5f-bfec1bd1fb1e
+	fromColumn: fato_preco_uf_semana.uf
+	toColumn: dim_uf.uf
+
+relationship 9d0dd5c2-1073-52fd-8bea-ceb36f70b2b3
+	fromColumn: composicao_preco_semana.semana
+	toColumn: dim_semana.semana
+
+relationship 96a4ca27-ed77-566f-8fac-dd1f4cd878e3
+	fromColumn: composicao_preco_semana.produto
+	toColumn: dim_produto.produto
+
+relationship df5660a9-3187-5185-b49f-5e274e827414
+	fromColumn: composicao_preco_semana.uf
+	toColumn: dim_uf.uf

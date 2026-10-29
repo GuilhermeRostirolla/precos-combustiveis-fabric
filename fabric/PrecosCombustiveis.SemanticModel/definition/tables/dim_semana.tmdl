@@ -63,6 +63,26 @@ table dim_semana
 
 		annotation SummarizationSetBy = Automatic
 
+	column mes_inicio
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: d0be20b9-a2f3-5974-85cc-00aa904a7a2b
+		sourceLineageTag: mes_inicio
+		summarizeBy: none
+		sourceColumn: mes_inicio
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes_rotulo
+		dataType: string
+		lineageTag: 0fadc958-56a9-5d23-885e-b8dade5a01ba
+		sourceLineageTag: mes_rotulo
+		summarizeBy: none
+		sourceColumn: mes_rotulo
+		sortByColumn: mes_inicio
+
+		annotation SummarizationSetBy = Automatic
+
 	partition dim_semana = entity
 		mode: directLake
 		source

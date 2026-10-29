@@ -1,0 +1,50 @@
+table dim_uf
+	lineageTag: 8714b1b6-47ab-5456-96bd-639c465a559e
+	sourceLineageTag: [gold].[dim_uf]
+
+	column uf
+		dataType: string
+		isKey
+		lineageTag: 1607899c-cef0-503d-9f4a-8b94cd6e39e2
+		sourceLineageTag: uf
+		summarizeBy: none
+		sourceColumn: uf
+
+		annotation SummarizationSetBy = Automatic
+
+	column estado
+		dataType: string
+		lineageTag: 468746ad-f615-5ad0-ba67-a7b93200ac83
+		sourceLineageTag: estado
+		summarizeBy: none
+		sourceColumn: estado
+		sortByColumn: ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	column regiao
+		dataType: string
+		lineageTag: 57bee9fd-744b-5302-bdf7-9d835bda3dc2
+		sourceLineageTag: regiao
+		summarizeBy: none
+		sourceColumn: regiao
+
+		annotation SummarizationSetBy = Automatic
+
+	column ordem
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: 1c52bdf3-ac3b-5fa4-91b6-b458b1a7f740
+		sourceLineageTag: ordem
+		summarizeBy: none
+		sourceColumn: ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_uf = entity
+		mode: directLake
+		source
+			entityName: dim_uf
+			schemaName: gold
+			expressionSource: DatabaseQuery

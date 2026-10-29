@@ -66,7 +66,10 @@ BEGIN
            YEAR(semana) AS ano,
            MONTH(semana) AS mes,
            CONCAT(YEAR(semana), '-', RIGHT(CONCAT('0', MONTH(semana)), 2)) AS ano_mes,
-           CONCAT(RIGHT(CONCAT('0', DAY(semana)), 2), '/', RIGHT(CONCAT('0', MONTH(semana)), 2), '/', YEAR(semana)) AS rotulo
+           CONCAT(RIGHT(CONCAT('0', DAY(semana)), 2), '/', RIGHT(CONCAT('0', MONTH(semana)), 2), '/', YEAR(semana)) AS rotulo,
+           DATEFROMPARTS(YEAR(semana), MONTH(semana), 1) AS mes_inicio,
+           CONCAT(CHOOSE(MONTH(semana), 'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'),
+                  '/', RIGHT(CAST(YEAR(semana) AS varchar(4)), 2)) AS mes_rotulo
     FROM (
         SELECT DATEADD(day, 7 * n, @inicio) AS semana
         FROM (SELECT a.d + 10 * b.d + 100 * c.d AS n
@@ -141,6 +144,25 @@ BEGIN
         JOIN #produtor_suavizado AS s ON s.produto = p.produto AND s.regiao = r.regiao AND s.semana = p.semana
         JOIN config.tributo AS t ON t.produto = p.produto AND p.semana BETWEEN t.vigente_de AND t.vigente_ate
     ) AS x;
+
+    -- Semanas que podem ser escolhidas no relatório (sem relação com as tabelas: a página usa a escolhida
+    -- e olha para trás a partir dela).
+    DROP TABLE IF EXISTS gold.semana_referencia;
+    CREATE TABLE gold.semana_referencia AS
+    SELECT DISTINCT c.semana, d.rotulo
+    FROM gold.composicao_preco_semana AS c
+    JOIN gold.dim_semana AS d ON d.semana = c.semana;
+
+    DROP TABLE IF EXISTS gold.dim_uf;
+    CREATE TABLE gold.dim_uf AS
+    SELECT uf, CASE WHEN uf = 'BR' THEN 'Brasil' ELSE uf END AS estado, regiao,
+           CASE WHEN uf = 'BR' THEN 0 ELSE ROW_NUMBER() OVER (ORDER BY uf) END AS ordem
+    FROM config.uf_regiao;
+
+    DROP TABLE IF EXISTS gold.componente;
+    CREATE TABLE gold.componente AS
+    SELECT componente, ordem
+    FROM (VALUES ('Refinaria', 1), ('Impostos', 2), ('Etanol/biodiesel, frete e margens', 3)) AS c(componente, ordem);
 
     DROP TABLE IF EXISTS gold.evento;
     CREATE TABLE gold.evento AS

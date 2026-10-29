@@ -112,12 +112,13 @@ def moldura(titulo: str | None, subtitulo: str | None = None, fundo: str | None 
 
 class Pagina:
 
-    def __init__(self, nome: str, titulo: str, subtitulo: str):
+    def __init__(self, nome: str, titulo: str, subtitulo: str, nota: str = "Texto Dados Até"):
         self.nome, self.titulo = nome, titulo
         self.visuais: list[dict] = []
+        self.interacoes: list[dict] = []
         self.texto(titulo, 24, 14, 760, 36, 20, COR["texto"], negrito=True)
         self.texto(subtitulo, 24, 48, 900, 24, 10.5, COR["suave"])
-        self.valor("Texto Dados Até", 900, 22, 356, 28, 9.0, COR["apagado"])
+        self.valor(nota, 840, 22, 416, 28, 9.0, COR["apagado"])
 
     def _add(self, x, y, w, h, visual: dict, filtros: list[dict] | None = None) -> None:
         z = len(self.visuais) * 100
@@ -133,6 +134,7 @@ class Pagina:
                 filtro(*f[:2], nome=hashlib.sha1(f"{nome}/{i}".encode()).hexdigest()[:20],
                        negar=len(f) > 2 and f[2]) for i, f in enumerate(filtros)]}
         self.visuais.append(conteiner)
+        return nome
 
     def texto(self, conteudo, x, y, w, h, tamanho, cor_texto, negrito=False):
         estilo = {"fontFamily": "Segoe UI Semibold" if negrito else "Segoe UI", "fontSize": f"{tamanho}pt",
@@ -239,12 +241,145 @@ class Pagina:
                                    "field": campo(medida), "direction": "Descending"}]}},
                                "objects": objetos, "visualContainerObjects": moldura(titulo, subtitulo)}, filtros)
 
+    def fundo(self, x, y, w, h):
+        """Moldura vazia, usada para agrupar visuais num mesmo cartão."""
+        return self._add(x, y, w, h, {
+            "visualType": "textbox", "objects": {"general": [{"properties": {"paragraphs": [
+                {"textRuns": [{"value": " "}]}]}}]},
+            "visualContainerObjects": moldura(None, fundo=COR["cartao"], borda=True, respiro=0.0)})
+
+    def segmentacao(self, coluna, rotulo, x, y, w, h, padrao=None, filtros=None):
+        objetos = {"data": [{"properties": {"mode": lit("Dropdown")}}],
+                   "selection": [{"properties": {"strictSingleSelect": lit(True)}}],
+                   "header": [{"properties": {"show": lit(True), "text": lit(rotulo), "fontColor": cor(COR["suave"]),
+                                              "textSize": lit(8.0), "outline": lit("None")}}],
+                   "items": [{"properties": {"fontColor": cor(COR["texto"]), "background": cor(COR["cartao"]),
+                                             "textSize": lit(10.0), "outline": lit("None")}}]}
+        if padrao is not None:
+            tabela, col = coluna.split(".", 1)
+            objetos["general"] = [{"properties": {"filter": {"filter": {
+                "Version": 2, "From": [{"Name": "t", "Entity": tabela, "Type": 0}],
+                "Where": [{"Condition": {"In": {
+                    "Expressions": [{"Column": {"Expression": {"SourceRef": {"Source": "t"}}, "Property": col}}],
+                    "Values": [[{"Literal": {"Value": _literal_filtro(padrao)}}]]}}}]}}}}]
+        return self._add(x, y, w, h, {
+            "visualType": "slicer",
+            "query": {"queryState": {"Values": {"projections": [projecao(coluna, ativo=True)]}}},
+            "objects": objetos,
+            "visualContainerObjects": moldura(None, fundo=COR["cartao"], borda=True, respiro=4.0)}, filtros)
+
+    def cartao(self, medida, x, y, w, h, tamanho, cor_valor=COR["texto"], medida_cor=None, titulo=None,
+               fundo=None, borda=False, quebra=False, negrito=True):
+        rotulos = {"fontSize": lit(float(tamanho)), "fontFamily": lit("Segoe UI Semibold" if negrito else "Segoe UI"),
+                   "color": cor(cor_valor)}
+        if medida_cor:
+            rotulos["color"] = {"solid": {"color": {"expr": campo(medida_cor)}}}
+        objetos = {"labels": [{"properties": rotulos}], "categoryLabels": [{"properties": {"show": lit(False)}}]}
+        if quebra:
+            objetos["wordWrap"] = [{"properties": {"show": lit(True)}}]
+        return self._add(x, y, w, h, {
+            "visualType": "card",
+            "query": {"queryState": {"Values": {"projections": campos([medida])}}},
+            "objects": objetos,
+            "visualContainerObjects": moldura(titulo, fundo=fundo, borda=borda, respiro=6.0 if titulo else 0.0)})
+
+    def colunas_empilhadas(self, titulo, subtitulo, x, y, w, h, eixo, medidas, cores, total=None):
+        pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
+                  for m, c in zip([m[0] for m in medidas], cores, strict=True)]
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["suave"]),
+                                             "showAxisTitle": lit(False), "gridlineShow": lit(False),
+                                             "axisType": lit("Categorical")}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False),
+                                          "gridlineShow": lit(False)}}],
+            "legend": [{"properties": {"show": lit(True), "position": lit("TopLeft"), "showTitle": lit(False),
+                                       "fontSize": lit(9.0), "labelColor": cor(COR["suave"])}}],
+            "labels": [{"properties": {"show": lit(False)}}],
+            "totals": [{"properties": {"show": lit(True), "color": cor(COR["texto"]), "fontSize": lit(9.0)}}],
+            "dataPoint": pontos,
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "columnChart",
+            "query": {"queryState": {"Category": {"projections": [projecao(eixo, ativo=True)]},
+                                     "Y": {"projections": campos(medidas)}},
+                      "sortDefinition": {"sort": [{"field": campo(eixo), "direction": "Ascending"}]}},
+            "objects": objetos, "visualContainerObjects": moldura(titulo, subtitulo)})
+
+    def barras_coloridas(self, x, y, w, h, categoria, medida, medida_cor):
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["texto"]),
+                                             "showAxisTitle": lit(False), "maxMarginFactor": lit(45)}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
+            "labels": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "color": cor(COR["texto"])}}],
+            "dataPoint": [{"properties": {"fill": {"solid": {"color": {"expr": campo(medida_cor)}}}},
+                           "selector": {"data": [{"dataViewWildcard": {"matchingOption": 1}}]}}],
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "clusteredBarChart",
+            "query": {"queryState": {"Category": {"projections": [projecao(categoria, ativo=True)]},
+                                     "Y": {"projections": campos([medida])}},
+                      "sortDefinition": {"sort": [{"field": campo(categoria), "direction": "Ascending"}]}},
+            "objects": objetos, "visualContainerObjects": moldura(None, fundo=None, borda=False, respiro=0.0)})
+
+    def sem_interacao(self, origem, destino):
+        self.interacoes.append({"source": origem, "target": destino, "type": "NoFilter"})
+
 
 # --- páginas ------------------------------------------------------------------------------------------------------
 
 GAS, DIESEL = ("dim_produto.produto", "GASOLINA"), ("dim_produto.produto", "DIESEL S10")
 ESTADO = ("repasse_resumo.escopo", "RS (estado)")
 CORES_DIRECAO = {"alta": COR["alta"], "baixa": COR["baixa"]}
+
+
+CORES_COMPOSICAO = ["#3BA3D9", "#8A7CF0", "#E8833A"]
+
+
+def visao_geral() -> Pagina:
+    p = Pagina("P0VisaoGeral", "Preço dos combustíveis", "Quanto custa hoje, quanto mudou e por quê",
+               nota="Texto Semana de Referência")
+    # filtros
+    produto = p.segmentacao("dim_produto.produto", "Combustível", 24, 84, 200, 44, padrao="GASOLINA",
+                            filtros=[("dim_produto.produto", ["GASOLINA", "DIESEL S10"])])
+    estado = p.segmentacao("dim_uf.estado", "Estado", 234, 84, 160, 44, padrao="Brasil")
+    semana = p.segmentacao("semana_referencia.rotulo", "Semana (vazio = mais recente)", 404, 84, 200, 44)
+    # cartões: título e número num visual, a linha de apoio noutro por cima
+    x, y, w, h, gap = 24, 140, 236, 88, 10
+    for i, (titulo, medida, apoio, medida_cor, c) in enumerate([
+        ("Preço médio no posto", "Preço no Posto", "Apoio Preço no Posto", None, COR["texto"]),
+        ("Variação em 12 meses", "Variação 12 Meses Posto", "Apoio Variação 12 Meses", "Cor Variação 12 Meses", None),
+        ("Impostos no litro", "Impostos no Litro", "Apoio Impostos", None, COR["texto"]),
+        ("Refinaria nas últimas 4 semanas", "Variação Refinaria 4 Semanas", "Apoio Refinaria 4 Semanas",
+         "Cor Refinaria 4 Semanas", None),
+        ("Etanol ÷ gasolina", "Etanol ÷ Gasolina", "Apoio Etanol", "Cor Etanol", None),
+    ]):
+        xi = x + i * (w + gap)
+        p.fundo(xi, y, w, h)
+        p.texto(titulo, xi + 12, y + 8, w - 24, 20, 9.0, COR["suave"])
+        p.cartao(medida, xi + 6, y + 26, w - 12, 36, 20.0, cor_valor=c or COR["texto"], medida_cor=medida_cor)
+        p.cartao(apoio, xi + 6, y + 62, w - 12, 20, 8.5, cor_valor=COR["suave"], negrito=False)
+    # do que é feito o preço, mês a mês
+    grafico = p.colunas_empilhadas(
+        "Do que é feito o preço, mês a mês",
+        "R$ por litro no posto. Clique num mês para ver por que o preço mudou.",
+        24, 240, 832, 456, "dim_semana.mes_rotulo",
+        [("Refinaria no Mês", "Refinaria"), ("Impostos no Mês", "Impostos"),
+         ("Outros no Mês", "Etanol/biodiesel, frete e margens")], CORES_COMPOSICAO)
+    # por que mudou
+    px, pw = 866, 390
+    p.fundo(px, 240, pw, 456)
+    p.cartao("Título Por Que Mudou", px + 8, 250, pw - 16, 30, 12.0)
+    p.texto("Preço no posto, média do mês contra o mês anterior", px + 16, 284, pw - 32, 20, 9.0, COR["suave"])
+    p.cartao("Texto Δ Posto", px + 8, 304, pw - 16, 46, 26.0, medida_cor="Cor Δ Posto")
+    p.cartao("Texto De Para", px + 8, 350, pw - 16, 22, 9.0, cor_valor=COR["suave"], negrito=False)
+    p.barras_coloridas(px + 8, 380, pw - 16, 150, "componente.componente", "Variação do Componente",
+                       "Cor do Componente")
+    p.cartao("Conclusão", px + 8, 540, pw - 16, 30, 12.0, quebra=True)
+    p.cartao("Conclusão Detalhe", px + 8, 572, pw - 16, 116, 9.5, cor_valor=COR["suave"], quebra=True,
+             negrito=False)
+    # cartões e filtros ignoram o mês clicado no gráfico (as medidas já olham para a semana de referência)
+    del produto, estado, semana, grafico
+    return p
 
 
 def paginas() -> list[Pagina]:
@@ -300,7 +435,7 @@ def paginas() -> list[Pagina]:
                           "Preço Município Última Semana", COR["gasolina"] if i == 0 else COR["diesel"],
                           filtros=[produto, ("fato_preco_municipio_semana.uf", "RS"),
                                    ("fato_preco_municipio_semana.amostra_suficiente", True)])
-    return [resumo, serie, municipios]
+    return [visao_geral(), resumo, serie, municipios]
 
 
 def tema() -> dict:
@@ -355,7 +490,8 @@ def gerar(destino: Path = DESTINO) -> list[Pagina]:
             "$schema": f"{SCHEMA}/page/2.1.0/schema.json", "name": p.nome, "displayName": p.titulo,
             "displayOption": "FitToPage", "height": ALTURA, "width": LARGURA,
             "objects": {"background": [{"properties": {"color": cor(COR["pagina"]), "transparency": lit(0.0)}}],
-                        "outspace": [{"properties": {"color": cor(COR["pagina"])}}]}})
+                        "outspace": [{"properties": {"color": cor(COR["pagina"])}}]},
+            **({"visualInteractions": p.interacoes} if p.interacoes else {})})
         for v in p.visuais:
             escrever(pasta / "visuals" / v["name"] / "visual.json", v)
     base = destino / "StaticResources" / "SharedResources" / "BaseThemes"

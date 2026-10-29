@@ -1,0 +1,57 @@
+table evento
+	lineageTag: a7c66f17-5a48-5ceb-be0d-12c04efbbcbc
+	sourceLineageTag: [gold].[evento]
+
+	column data
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 0fa04434-beca-53b7-83cd-d204adc932c5
+		sourceLineageTag: data
+		summarizeBy: none
+		sourceColumn: data
+
+		annotation SummarizationSetBy = Automatic
+
+	column semana
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: b13a945c-48d1-51d6-a19f-ff9203ee1a32
+		sourceLineageTag: semana
+		summarizeBy: none
+		sourceColumn: semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column produto
+		dataType: string
+		lineageTag: fe3adcd5-d9c1-5f4e-a2e4-4b870676744d
+		sourceLineageTag: produto
+		summarizeBy: none
+		sourceColumn: produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column tipo
+		dataType: string
+		lineageTag: e83c564e-087e-530d-8963-5be8a69bbe0f
+		sourceLineageTag: tipo
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column descricao
+		dataType: string
+		lineageTag: 9f5e7ade-f933-53cd-859d-d78ec52ba8ec
+		sourceLineageTag: descricao
+		summarizeBy: none
+		sourceColumn: descricao
+
+		annotation SummarizationSetBy = Automatic
+
+	partition evento = entity
+		mode: directLake
+		source
+			entityName: evento
+			schemaName: gold
+			expressionSource: DatabaseQuery

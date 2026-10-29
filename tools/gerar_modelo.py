@@ -18,7 +18,15 @@ ENDPOINT, WAREHOUSE_ID = "COLE_AQUI_O_ENDPOINT_DO_WAREHOUSE", "COLE_AQUI_O_ID_DO
 # decimal com até 4 casas vira "decimal" (decimal fixo); com mais casas, "double".
 TABELAS = {
     "dim_semana": [("semana", "date"), ("semana_fim", "date"), ("ano", "int"), ("mes", "int"),
-                   ("ano_mes", "string"), ("rotulo", "string")],
+                   ("ano_mes", "string"), ("rotulo", "string"), ("mes_inicio", "date"), ("mes_rotulo", "string")],
+    "dim_uf": [("uf", "string"), ("estado", "string"), ("regiao", "string"), ("ordem", "int")],
+    "semana_referencia": [("semana", "date"), ("rotulo", "string")],
+    "componente": [("componente", "string"), ("ordem", "int")],
+    "evento": [("data", "date"), ("semana", "date"), ("produto", "string"), ("tipo", "string"),
+               ("descricao", "string")],
+    "composicao_preco_semana": [("semana", "date"), ("uf", "string"), ("produto", "string"), ("preco_posto", "dec"),
+                                ("fracao_fossil", "dec"), ("refinaria", "dec"), ("tributos_federais", "dec"),
+                                ("icms", "dec"), ("outros", "dec")],
     "dim_produto": [("produto", "string"), ("tem_preco_refinaria", "bool")],
     "fato_preco_uf_semana": [("semana", "date"), ("uf", "string"), ("produto", "string"), ("preco_medio", "dec"),
                              ("coletas", "int"), ("postos", "int"), ("municipios", "int")],
@@ -81,6 +89,14 @@ FORMATO_COLUNA = {
     ("repasse_velocidade", "semanas_mediana_ate_50"): "0.0",
     ("repasse_velocidade", "semanas_mediana_ate_80"): "0.0",
     ("dim_semana", "ano"): "0",
+    ("dim_uf", "ordem"): "0",
+    ("componente", "ordem"): "0",
+    ("composicao_preco_semana", "preco_posto"): '"R$" #,0.000',
+    ("composicao_preco_semana", "refinaria"): '"R$" #,0.000',
+    ("composicao_preco_semana", "tributos_federais"): '"R$" #,0.000',
+    ("composicao_preco_semana", "icms"): '"R$" #,0.000',
+    ("composicao_preco_semana", "outros"): '"R$" #,0.000',
+    ("composicao_preco_semana", "fracao_fossil"): "0%",
     ("dim_semana", "mes"): "0",
 }
 OCULTAS = {
@@ -93,8 +109,13 @@ OCULTAS = {
     "repasse_curva": {"produto"},
     "refinaria_suavizada": {"produto", "semana"},
     "dim_semana": {"ano_mes"},
+    "composicao_preco_semana": {"semana", "produto", "uf"},
+    "dim_uf": {"ordem"},
+    "componente": {"ordem"},
 }
-ORDENAR_POR = {("dim_semana", "rotulo"): "semana"}
+ORDENAR_POR = {("dim_semana", "rotulo"): "semana", ("dim_semana", "mes_rotulo"): "mes_inicio",
+               ("dim_uf", "estado"): "ordem", ("semana_referencia", "rotulo"): "semana",
+               ("componente", "componente"): "ordem"}
 
 RELACIONAMENTOS = [
     ("fato_preco_uf_semana.semana", "dim_semana.semana"),
@@ -109,6 +130,10 @@ RELACIONAMENTOS = [
     ("repasse_curva.produto", "dim_produto.produto"),
     ("refinaria_suavizada.semana", "dim_semana.semana"),
     ("refinaria_suavizada.produto", "dim_produto.produto"),
+    ("fato_preco_uf_semana.uf", "dim_uf.uf"),
+    ("composicao_preco_semana.semana", "dim_semana.semana"),
+    ("composicao_preco_semana.produto", "dim_produto.produto"),
+    ("composicao_preco_semana.uf", "dim_uf.uf"),
 ]
 
 REAIS, REAIS4, PCT, SEMANAS, INT = '"R$" #,0.000', '"R$" #,0.0000', "0%", "0.0", "#,0"
@@ -212,6 +237,10 @@ MEDIDAS = {
     ],
 }
 
+from medidas_visao_geral import medidas_visao_geral  # noqa: E402
+
+MEDIDAS.update(medidas_visao_geral())
+
 
 def tag(*partes: str) -> str:
     return str(uuid.uuid5(uuid.NAMESPACE_URL, "precos-combustiveis/" + "/".join(partes)))
@@ -241,7 +270,7 @@ def tabela(nome: str, colunas: list[tuple[str, str]]) -> str:
         saida += [f"\t\tdisplayFolder: {pasta}", f"\t\tlineageTag: {tag(nome, 'medida', medida)}", ""]
     for coluna, tipo in colunas:
         saida += [f"\tcolumn {coluna}", f"\t\tdataType: {TIPOS[tipo]}"]
-        if (nome, coluna) in {("dim_semana", "semana"), ("dim_produto", "produto")}:
+        if (nome, coluna) in {("dim_semana", "semana"), ("dim_produto", "produto"), ("dim_uf", "uf")}:
             saida.append("\t\tisKey")
         formato = FORMATO_COLUNA.get((nome, coluna), FORMATOS.get(tipo))
         if formato:

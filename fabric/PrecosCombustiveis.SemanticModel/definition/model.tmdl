@@ -5,6 +5,11 @@ model Model
 	sourceQueryCulture: pt-BR
 
 ref table dim_semana
+ref table dim_uf
+ref table semana_referencia
+ref table componente
+ref table evento
+ref table composicao_preco_semana
 ref table dim_produto
 ref table fato_preco_uf_semana
 ref table fato_preco_municipio_semana
