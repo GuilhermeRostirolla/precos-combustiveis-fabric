@@ -9,7 +9,8 @@
 --    várias semanas).
 -- 3. Variação na refinaria = nível na semana seguinte ao fim do reajuste menos o nível na semana anterior ao início.
 -- 4. Repasse esperado na bomba = variação na refinaria x fração fóssil do litro (gasolina A na gasolina C,
---    diesel A no diesel B). O ICMS dos combustíveis é um valor fixo por litro desde 2023, então não amplia o repasse.
+--    diesel A no diesel B). O ICMS virou um valor fixo por litro em 2023 (diesel em maio, gasolina em junho), então
+--    a partir daí não amplia o repasse.
 -- 5. Repasse observado em h semanas = (preço médio na bomba em t+h) - (preço médio na semana anterior ao reajuste),
 --    dividido pelo repasse esperado. 100% = a bomba acompanhou exatamente a refinaria.
 -- 6. Cada reajuste é acompanhado por até `horizonte_semanas`, mas só até a semana anterior ao reajuste seguinte,
