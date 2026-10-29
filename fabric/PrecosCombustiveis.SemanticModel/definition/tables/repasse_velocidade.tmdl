@@ -65,7 +65,10 @@ table repasse_velocidade
 	measure 'Semanas até a Metade' = ```
 			VAR s = MAX ( repasse_velocidade[semanas_mediana_ate_50] )
 			RETURN
-			    IF ( NOT ISBLANK ( s ), IF ( s > 8, "mais de 8", FORMAT ( s, "0.#" ) ) )
+			    IF (
+			        NOT ISBLANK ( s ),
+			        SWITCH ( TRUE (), s > 8, "mais de 8", s = INT ( s ), FORMAT ( s, "0" ), FORMAT ( s, "0.0" ) )
+			    )
 			```
 		displayFolder: Velocidade
 		lineageTag: 42851c48-c983-5d37-b87f-50ffafa966df

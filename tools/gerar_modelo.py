@@ -207,7 +207,8 @@ MEDIDAS = {
          "    SUM ( repasse_velocidade[eventos] )\n)"),
         ("Semanas até a Metade", "Velocidade", None,
          "VAR s = MAX ( repasse_velocidade[semanas_mediana_ate_50] )\nRETURN\n"
-         '    IF ( NOT ISBLANK ( s ), IF ( s > 8, "mais de 8", FORMAT ( s, "0.#" ) ) )'),
+         '    IF (\n        NOT ISBLANK ( s ),\n        SWITCH ( TRUE (), s > 8, "mais de 8", s = INT ( s ), FORMAT ( s, "0" ), '
+         'FORMAT ( s, "0.0" ) )\n    )'),
     ],
 }
 
