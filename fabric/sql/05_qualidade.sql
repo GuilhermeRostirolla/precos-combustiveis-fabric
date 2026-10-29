@@ -50,9 +50,13 @@ BEGIN
             SELECT semana, produto, regiao FROM gold.fato_preco_produtor_semana
             GROUP BY semana, produto, regiao HAVING COUNT(*) > 1) AS d
         UNION ALL
-        SELECT 'produtor_sem_mistura_configurada', 'erro',
-            (SELECT COUNT(*) FROM silver.preco_produtor AS p JOIN config.produto AS c ON c.produto_produtor = p.produto_produtor)
-            - (SELECT COUNT(*) FROM gold.fato_preco_produtor_semana)
+        -- A planilha de refinaria começa em 2013; só as semanas do período analisado precisam de mistura configurada.
+        SELECT 'produtor_sem_mistura_configurada', 'erro', COUNT(*)
+        FROM silver.preco_produtor AS p
+        JOIN config.produto AS c ON c.produto_produtor = p.produto_produtor
+        WHERE p.semana >= DATEADD(day, -7, (SELECT MIN(semana) FROM silver.preco_revenda))
+          AND NOT EXISTS (SELECT 1 FROM config.mistura AS m
+                          WHERE m.produto = c.produto AND p.semana BETWEEN m.vigente_de AND m.vigente_ate)
         UNION ALL
         SELECT 'refinaria_semana_faltando', 'aviso', COUNT(*) FROM (
             SELECT produto, semana, LAG(semana) OVER (PARTITION BY produto ORDER BY semana) AS anterior

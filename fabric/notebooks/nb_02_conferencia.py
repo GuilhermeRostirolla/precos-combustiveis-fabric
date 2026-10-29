@@ -147,3 +147,31 @@ SELECT produto, direcao, eventos, eventos_sem_80_no_horizonte AS sem_80,
        CAST(semanas_mediana_ate_50 AS float) AS ate_50, CAST(semanas_mediana_ate_80 AS float) AS ate_80
 FROM gold.repasse_velocidade WHERE escopo = 'RS (estado)' ORDER BY produto, direcao""")
 print(velocidade.to_string(index=False))
+
+# %%
+# Saída do notebook: o pipeline guarda este resumo no histórico da execução.
+import json
+
+cobertura = sql("""
+SELECT (SELECT CAST(MIN(semana) AS varchar(10)) FROM gold.fato_preco_uf_semana WHERE uf = 'RS') AS primeira_semana_rs,
+       (SELECT CAST(MAX(semana) AS varchar(10)) FROM gold.fato_preco_uf_semana WHERE uf = 'RS') AS ultima_semana_rs,
+       (SELECT CAST(MAX(semana) AS varchar(10)) FROM gold.fato_preco_produtor_semana) AS ultima_semana_refinaria,
+       (SELECT COUNT(DISTINCT cnpj) FROM silver.preco_revenda WHERE uf = 'RS') AS postos_rs,
+       (SELECT COUNT(*) FROM silver.preco_revenda WHERE uf = 'RS') AS coletas_rs,
+       (SELECT COUNT(*) FROM silver.preco_revenda) AS coletas_brasil,
+       (SELECT COUNT(*) FROM silver.preco_revenda_quarentena) AS quarentena,
+       (SELECT COUNT(DISTINCT municipio) FROM gold.fato_preco_municipio_semana
+        WHERE uf = 'RS' AND amostra_suficiente = 1) AS municipios_rs_com_amostra""")
+eventos_lista = sql("""
+SELECT produto, CAST(semana_evento AS varchar(10)) AS semana, direcao, CAST(variacao_refinaria AS float) AS refinaria,
+       CAST(variacao_refinaria_pct AS float) AS refinaria_pct, CAST(repasse_esperado AS float) AS esperado, isolado
+FROM gold.repasse_evento ORDER BY produto, semana_evento""")
+municipios = sql("""
+SELECT produto, escopo, direcao, eventos, CAST(semanas_mediana_ate_50 AS float) AS ate_50,
+       CAST(semanas_mediana_ate_80 AS float) AS ate_80
+FROM gold.repasse_velocidade WHERE escopo <> 'RS (estado)'""")
+notebookutils.notebook.exit(json.dumps({  # noqa: F821
+    "conferencia": "ok", "cobertura": cobertura.to_dict(orient="records")[0],
+    "resumo": resumo.to_dict(orient="records"), "velocidade": velocidade.to_dict(orient="records"),
+    "eventos": eventos_lista.to_dict(orient="records"), "municipios": municipios.to_dict(orient="records"),
+}, default=str, ensure_ascii=False))

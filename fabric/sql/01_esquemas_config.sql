@@ -27,7 +27,9 @@ INSERT INTO config.produto VALUES
 GO
 
 -- Fração fóssil do litro vendido no posto, conforme o mandato de mistura vigente.
--- Gasolina: E27 desde 2015 e E30 desde 01/08/2025. Diesel: B10, B12 (04/2023), B14 (03/2024) e B15 (08/2025).
+-- Gasolina: E27 desde 16/03/2015 e E30 desde 01/08/2025.
+-- Diesel: B10 em 2022, B12 (04/2023), B14 (03/2024) e B15 (08/2025). Antes de 2022 o mandato do biodiesel
+-- mudou várias vezes (B10 a B13 entre 2020 e 2021); como a análise começa em 2023, a tabela parte de 2022.
 DROP TABLE IF EXISTS config.mistura;
 GO
 CREATE TABLE config.mistura (
@@ -41,7 +43,7 @@ GO
 INSERT INTO config.mistura VALUES
     ('GASOLINA',   '2015-03-16', '2025-07-31', 0.7300, 'E27'),
     ('GASOLINA',   '2025-08-01', '2099-12-31', 0.7000, 'E30'),
-    ('DIESEL S10', '2018-03-01', '2023-03-31', 0.9000, 'B10'),
+    ('DIESEL S10', '2022-01-01', '2023-03-31', 0.9000, 'B10'),
     ('DIESEL S10', '2023-04-01', '2024-02-29', 0.8800, 'B12'),
     ('DIESEL S10', '2024-03-01', '2025-07-31', 0.8600, 'B14'),
     ('DIESEL S10', '2025-08-01', '2099-12-31', 0.8500, 'B15');
