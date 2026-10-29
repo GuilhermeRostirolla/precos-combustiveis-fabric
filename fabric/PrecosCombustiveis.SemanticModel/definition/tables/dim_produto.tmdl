@@ -1,0 +1,29 @@
+table dim_produto
+	lineageTag: 87a289d4-b0b4-5b5c-8b10-55584ead1774
+	sourceLineageTag: [gold].[dim_produto]
+
+	column produto
+		dataType: string
+		isKey
+		lineageTag: 2e6e6b1f-ae7e-51b9-838d-b1edb694a8a6
+		sourceLineageTag: produto
+		summarizeBy: none
+		sourceColumn: produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column tem_preco_refinaria
+		dataType: boolean
+		lineageTag: 02d5650a-5324-5d01-b293-8150de4fb549
+		sourceLineageTag: tem_preco_refinaria
+		summarizeBy: none
+		sourceColumn: tem_preco_refinaria
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_produto = entity
+		mode: directLake
+		source
+			entityName: dim_produto
+			schemaName: gold
+			expressionSource: DatabaseQuery

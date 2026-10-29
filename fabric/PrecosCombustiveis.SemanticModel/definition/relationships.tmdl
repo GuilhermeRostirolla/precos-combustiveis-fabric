@@ -1,0 +1,35 @@
+relationship 690b3d0d-5bb5-5d93-b5e7-78904e3f1083
+	fromColumn: fato_preco_uf_semana.semana
+	toColumn: dim_semana.semana
+
+relationship a5bf5a80-b3b3-5a91-b217-9b1da6b6c5db
+	fromColumn: fato_preco_uf_semana.produto
+	toColumn: dim_produto.produto
+
+relationship a8cd3031-eac7-58ac-ab3f-be93fc50d0e2
+	fromColumn: fato_preco_municipio_semana.semana
+	toColumn: dim_semana.semana
+
+relationship 2fa9bcc5-9deb-5c25-a38d-5cef76e9894d
+	fromColumn: fato_preco_municipio_semana.produto
+	toColumn: dim_produto.produto
+
+relationship b96a27d3-ead0-5412-b00e-9cbd61136007
+	fromColumn: fato_preco_produtor_semana.semana
+	toColumn: dim_semana.semana
+
+relationship 1ef906c5-7c1d-5b37-9b84-9c8be12bd5e1
+	fromColumn: fato_preco_produtor_semana.produto
+	toColumn: dim_produto.produto
+
+relationship b91d59a5-f966-51e5-ade1-c0ced647a7a9
+	fromColumn: repasse_resumo.produto
+	toColumn: dim_produto.produto
+
+relationship fa84fe63-5b54-5961-99a5-4b2912a7ab14
+	fromColumn: repasse_velocidade.produto
+	toColumn: dim_produto.produto
+
+relationship 92877f86-16aa-528c-96c3-b62d80f50477
+	fromColumn: repasse_evento.produto
+	toColumn: dim_produto.produto

@@ -1,0 +1,131 @@
+table repasse_resumo
+	lineageTag: bd054155-45ed-5324-9e51-36b0093a82ed
+	sourceLineageTag: [gold].[repasse_resumo]
+
+	measure 'Repasse Mediano RS' = CALCULATE ( MAX ( repasse_resumo[repasse_mediano] ), repasse_resumo[escopo] = "RS (estado)" )
+		formatString: 0%
+		displayFolder: Repasse
+		lineageTag: 23183209-5e19-52a7-a293-33b2ec560fc2
+
+	measure 'Repasse em 1 Semana (alta)' = ```
+			CALCULATE (
+			    MAX ( repasse_resumo[repasse_mediano] ),
+			    repasse_resumo[escopo] = "RS (estado)",
+			    repasse_resumo[direcao] = "alta",
+			    repasse_resumo[h] = 1
+			)
+			```
+		formatString: 0%
+		displayFolder: Repasse
+		lineageTag: ca7027e5-65e2-5045-bde1-a212e34f6285
+
+	measure 'Repasse em 4 Semanas (alta)' = ```
+			CALCULATE (
+			    MAX ( repasse_resumo[repasse_mediano] ),
+			    repasse_resumo[escopo] = "RS (estado)",
+			    repasse_resumo[direcao] = "alta",
+			    repasse_resumo[h] = 4
+			)
+			```
+		formatString: 0%
+		displayFolder: Repasse
+		lineageTag: fc9cd86f-fd87-56fc-84f1-89e345ff1e0c
+
+	measure 'Repasse em 1 Semana (baixa)' = ```
+			CALCULATE (
+			    MAX ( repasse_resumo[repasse_mediano] ),
+			    repasse_resumo[escopo] = "RS (estado)",
+			    repasse_resumo[direcao] = "baixa",
+			    repasse_resumo[h] = 1
+			)
+			```
+		formatString: 0%
+		displayFolder: Repasse
+		lineageTag: ef0f1b8e-f0cd-59d2-a832-4a195175730c
+
+	measure 'Repasse em 4 Semanas (baixa)' = ```
+			CALCULATE (
+			    MAX ( repasse_resumo[repasse_mediano] ),
+			    repasse_resumo[escopo] = "RS (estado)",
+			    repasse_resumo[direcao] = "baixa",
+			    repasse_resumo[h] = 4
+			)
+			```
+		formatString: 0%
+		displayFolder: Repasse
+		lineageTag: d3f9b22f-59a4-5f9c-9f8e-5628fb85ebc5
+
+	column produto
+		dataType: string
+		isHidden
+		lineageTag: 6ae78d89-aab5-53c4-80d9-fb6f0d6dd3a2
+		sourceLineageTag: produto
+		summarizeBy: none
+		sourceColumn: produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column escopo
+		dataType: string
+		lineageTag: 0b6e44b0-5dd4-59ba-8859-b8c33f910c35
+		sourceLineageTag: escopo
+		summarizeBy: none
+		sourceColumn: escopo
+
+		annotation SummarizationSetBy = Automatic
+
+	column direcao
+		dataType: string
+		lineageTag: 2cb607fd-a86e-5e2c-bc9d-3c2f7f3b6111
+		sourceLineageTag: direcao
+		summarizeBy: none
+		sourceColumn: direcao
+
+		annotation SummarizationSetBy = Automatic
+
+	column h
+		dataType: int64
+		formatString: 0
+		lineageTag: a352ab88-79a5-5256-a0fb-990bf5e82f84
+		sourceLineageTag: h
+		summarizeBy: none
+		sourceColumn: h
+
+		annotation SummarizationSetBy = Automatic
+
+	column eventos
+		dataType: int64
+		formatString: #,0
+		lineageTag: b2bcf0bd-1e0e-5250-bc29-346d3052e687
+		sourceLineageTag: eventos
+		summarizeBy: none
+		sourceColumn: eventos
+
+		annotation SummarizationSetBy = Automatic
+
+	column repasse_mediano
+		dataType: decimal
+		formatString: 0%
+		lineageTag: bf95d255-234f-5a3f-854f-20ea3e3f3425
+		sourceLineageTag: repasse_mediano
+		summarizeBy: none
+		sourceColumn: repasse_mediano
+
+		annotation SummarizationSetBy = Automatic
+
+	column repasse_medio
+		dataType: decimal
+		formatString: 0%
+		lineageTag: add22a0e-e55b-53da-93ff-74f3de774fe5
+		sourceLineageTag: repasse_medio
+		summarizeBy: none
+		sourceColumn: repasse_medio
+
+		annotation SummarizationSetBy = Automatic
+
+	partition repasse_resumo = entity
+		mode: directLake
+		source
+			entityName: repasse_resumo
+			schemaName: gold
+			expressionSource: DatabaseQuery

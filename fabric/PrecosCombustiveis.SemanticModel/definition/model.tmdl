@@ -1,0 +1,15 @@
+model Model
+	culture: pt-BR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: pt-BR
+
+ref table dim_semana
+ref table dim_produto
+ref table fato_preco_uf_semana
+ref table fato_preco_municipio_semana
+ref table fato_preco_produtor_semana
+ref table repasse_evento
+ref table repasse_resumo
+ref table repasse_velocidade
+

@@ -1,0 +1,114 @@
+table fato_preco_produtor_semana
+	lineageTag: 1c16dca5-d859-565f-a23e-46409efa9649
+	sourceLineageTag: [gold].[fato_preco_produtor_semana]
+
+	measure 'Preço Refinaria Sul' = CALCULATE ( AVERAGE ( fato_preco_produtor_semana[preco_produtor] ), fato_preco_produtor_semana[regiao] = "Sul" )
+		formatString: """R$"" #,0.0000"
+		displayFolder: Refinaria
+		lineageTag: 42dd402b-66cd-5da7-a3e4-69a931834720
+
+	measure 'Custo Fóssil na Bomba' = ```
+			// preço na refinaria x parcela fóssil do litro vendido no posto
+			CALCULATE ( AVERAGE ( fato_preco_produtor_semana[custo_fossil_por_litro] ), fato_preco_produtor_semana[regiao] = "Sul" )
+			```
+		formatString: """R$"" #,0.0000"
+		displayFolder: Refinaria
+		lineageTag: 0738ad42-1aa3-5758-ad5b-fe14ba069563
+
+	measure 'Bomba menos Refinaria' = ```
+			// tudo o que não é o derivado fóssil: etanol ou biodiesel, impostos, frete e margens
+			IF (
+			    NOT ISBLANK ( [Preço Bomba RS] ) && NOT ISBLANK ( [Custo Fóssil na Bomba] ),
+			    [Preço Bomba RS] - [Custo Fóssil na Bomba]
+			)
+			```
+		formatString: """R$"" #,0.000"
+		displayFolder: Refinaria
+		lineageTag: d73e45b6-4daa-5893-9392-2bde6f8290ad
+
+	column semana
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		isHidden
+		lineageTag: 5b6ce809-5301-5544-810e-45ed6cd46d7f
+		sourceLineageTag: semana
+		summarizeBy: none
+		sourceColumn: semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column semana_fim
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		isHidden
+		lineageTag: a47f2ebc-7e30-5658-92fa-42203ca7a166
+		sourceLineageTag: semana_fim
+		summarizeBy: none
+		sourceColumn: semana_fim
+
+		annotation SummarizationSetBy = Automatic
+
+	column produto
+		dataType: string
+		isHidden
+		lineageTag: 38f8da2b-ffb3-51a1-b49b-65d30ddf213c
+		sourceLineageTag: produto
+		summarizeBy: none
+		sourceColumn: produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column regiao
+		dataType: string
+		lineageTag: d8bec1e4-a46c-5e68-8489-e0ac6c017d74
+		sourceLineageTag: regiao
+		summarizeBy: none
+		sourceColumn: regiao
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_produtor
+		dataType: decimal
+		formatString: """R$"" #,0.0000"
+		lineageTag: 9ff10903-4c78-5552-be2c-3560483bd64a
+		sourceLineageTag: preco_produtor
+		summarizeBy: none
+		sourceColumn: preco_produtor
+
+		annotation SummarizationSetBy = Automatic
+
+	column fracao_fossil
+		dataType: decimal
+		formatString: 0%
+		lineageTag: a2f00ca6-ed39-5514-95ff-de5b4ae4e0d6
+		sourceLineageTag: fracao_fossil
+		summarizeBy: none
+		sourceColumn: fracao_fossil
+
+		annotation SummarizationSetBy = Automatic
+
+	column mandato
+		dataType: string
+		lineageTag: cbbf5787-ad9a-531c-a4db-6cfd88547912
+		sourceLineageTag: mandato
+		summarizeBy: none
+		sourceColumn: mandato
+
+		annotation SummarizationSetBy = Automatic
+
+	column custo_fossil_por_litro
+		dataType: decimal
+		formatString: """R$"" #,0.0000"
+		lineageTag: 4a87f966-fbc7-5583-aca1-aec613107b70
+		sourceLineageTag: custo_fossil_por_litro
+		summarizeBy: none
+		sourceColumn: custo_fossil_por_litro
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fato_preco_produtor_semana = entity
+		mode: directLake
+		source
+			entityName: fato_preco_produtor_semana
+			schemaName: gold
+			expressionSource: DatabaseQuery

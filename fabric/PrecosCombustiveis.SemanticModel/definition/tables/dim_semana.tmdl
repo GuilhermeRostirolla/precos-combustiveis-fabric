@@ -1,0 +1,71 @@
+table dim_semana
+	lineageTag: 47438622-e447-551b-b31d-76720b65d198
+	sourceLineageTag: [gold].[dim_semana]
+
+	column semana
+		dataType: dateTime
+		isKey
+		formatString: dd/MM/yyyy
+		lineageTag: b85afb95-2c7d-5be1-8fd4-d779f743905c
+		sourceLineageTag: semana
+		summarizeBy: none
+		sourceColumn: semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column semana_fim
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 805f9470-9563-5b39-afcd-5bd3c2d0d889
+		sourceLineageTag: semana_fim
+		summarizeBy: none
+		sourceColumn: semana_fim
+
+		annotation SummarizationSetBy = Automatic
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: ae8e1967-f1a7-5419-9bbf-08d95a613ff3
+		sourceLineageTag: ano
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes
+		dataType: int64
+		formatString: 0
+		lineageTag: 013c2b2d-6252-5190-82fb-838eecacfb2d
+		sourceLineageTag: mes
+		summarizeBy: none
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column ano_mes
+		dataType: string
+		isHidden
+		lineageTag: cd5b76ee-bd16-5eaf-9ee8-9f25c5abda3d
+		sourceLineageTag: ano_mes
+		summarizeBy: none
+		sourceColumn: ano_mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column rotulo
+		dataType: string
+		lineageTag: 7402d6f6-c8d3-57b2-b470-740175c2e5cd
+		sourceLineageTag: rotulo
+		summarizeBy: none
+		sourceColumn: rotulo
+		sortByColumn: semana
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_semana = entity
+		mode: directLake
+		source
+			entityName: dim_semana
+			schemaName: gold
+			expressionSource: DatabaseQuery

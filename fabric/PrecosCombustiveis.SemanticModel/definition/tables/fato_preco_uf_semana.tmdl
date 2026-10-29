@@ -1,0 +1,118 @@
+table fato_preco_uf_semana
+	lineageTag: f899bf34-d222-5a11-8d1c-679b46b086f4
+	sourceLineageTag: [gold].[fato_preco_uf_semana]
+
+	measure 'Preço Bomba RS' = CALCULATE ( AVERAGE ( fato_preco_uf_semana[preco_medio] ), fato_preco_uf_semana[uf] = "RS" )
+		formatString: """R$"" #,0.000"
+		displayFolder: Preços
+		lineageTag: 6fc0eadf-1f4e-571e-bc4b-b1deb889a270
+
+	measure 'Preço Bomba Brasil' = ```
+			VAR postos = SUMX ( fato_preco_uf_semana, fato_preco_uf_semana[coletas] )
+			RETURN
+			    DIVIDE ( SUMX ( fato_preco_uf_semana, fato_preco_uf_semana[preco_medio] * fato_preco_uf_semana[coletas] ), postos )
+			```
+		formatString: """R$"" #,0.000"
+		displayFolder: Preços
+		lineageTag: b5d12dfe-233f-517f-8653-b0985abea875
+
+	measure 'Postos Pesquisados RS' = CALCULATE ( SUM ( fato_preco_uf_semana[postos] ), fato_preco_uf_semana[uf] = "RS" )
+		formatString: #,0
+		displayFolder: Preços
+		lineageTag: cafc9e43-9c6c-5d65-a17c-e9f8ae7e6840
+
+	measure 'Preço Bomba RS Última Semana' = ```
+			VAR ultima =
+			    CALCULATE ( MAX ( fato_preco_uf_semana[semana] ), fato_preco_uf_semana[uf] = "RS", REMOVEFILTERS ( dim_semana ) )
+			RETURN
+			    CALCULATE ( [Preço Bomba RS], fato_preco_uf_semana[semana] = ultima, REMOVEFILTERS ( dim_semana ) )
+			```
+		formatString: """R$"" #,0.000"
+		displayFolder: Preços
+		lineageTag: 92cee4e2-0297-5987-86d3-4819e833d049
+
+	measure 'Semana Mais Recente' = CALCULATE ( MAX ( fato_preco_uf_semana[semana] ), fato_preco_uf_semana[uf] = "RS", REMOVEFILTERS ( dim_semana ) )
+		formatString: dd/MM/yyyy
+		displayFolder: Preços
+		lineageTag: 8ee3f0ff-fc06-5134-a8ec-656bd36e2746
+
+	measure 'Texto Dados Até' = "Postos pesquisados até a semana de " & FORMAT ( [Semana Mais Recente], "dd/MM/yyyy" )
+		displayFolder: Preços
+		lineageTag: 4566e258-9049-5dd3-baba-9aef4fbd5784
+
+	column semana
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		isHidden
+		lineageTag: 34fd3659-6bf0-5501-9abc-4acd31b4b8b9
+		sourceLineageTag: semana
+		summarizeBy: none
+		sourceColumn: semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column uf
+		dataType: string
+		lineageTag: 120a4bcf-05d4-5ea9-9b94-689900670204
+		sourceLineageTag: uf
+		summarizeBy: none
+		sourceColumn: uf
+
+		annotation SummarizationSetBy = Automatic
+
+	column produto
+		dataType: string
+		isHidden
+		lineageTag: b4cbb086-3710-5e07-a83d-261867a17d4e
+		sourceLineageTag: produto
+		summarizeBy: none
+		sourceColumn: produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_medio
+		dataType: decimal
+		formatString: """R$"" #,0.000"
+		lineageTag: c9afe847-1d3d-5d0a-baf2-84653753a6e0
+		sourceLineageTag: preco_medio
+		summarizeBy: none
+		sourceColumn: preco_medio
+
+		annotation SummarizationSetBy = Automatic
+
+	column coletas
+		dataType: int64
+		formatString: #,0
+		lineageTag: 770bdcb2-e53b-5342-85bb-84ff1c1a3ced
+		sourceLineageTag: coletas
+		summarizeBy: none
+		sourceColumn: coletas
+
+		annotation SummarizationSetBy = Automatic
+
+	column postos
+		dataType: int64
+		formatString: #,0
+		lineageTag: 405ae1b6-795c-5996-a90e-f385eb89ed53
+		sourceLineageTag: postos
+		summarizeBy: none
+		sourceColumn: postos
+
+		annotation SummarizationSetBy = Automatic
+
+	column municipios
+		dataType: int64
+		formatString: #,0
+		lineageTag: c4ddb144-e465-5383-94a7-2fafc2cd89b2
+		sourceLineageTag: municipios
+		summarizeBy: none
+		sourceColumn: municipios
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fato_preco_uf_semana = entity
+		mode: directLake
+		source
+			entityName: fato_preco_uf_semana
+			schemaName: gold
+			expressionSource: DatabaseQuery

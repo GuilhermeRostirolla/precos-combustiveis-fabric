@@ -1,0 +1,118 @@
+table repasse_evento
+	lineageTag: 51360b8b-e88e-5bd7-9881-96b14843b2d0
+	sourceLineageTag: [gold].[repasse_evento]
+
+	measure 'Reajustes na Refinaria' = COUNTROWS ( repasse_evento )
+		formatString: #,0
+		displayFolder: Repasse
+		lineageTag: 0aa8d7b7-8af9-5fe5-88b6-5d1e95733d1b
+
+	measure 'Reajustes Isolados' = CALCULATE ( COUNTROWS ( repasse_evento ), repasse_evento[isolado] = TRUE () )
+		formatString: #,0
+		displayFolder: Repasse
+		lineageTag: 94707109-d85a-53d0-85d8-11e69b9d88e7
+
+	column produto
+		dataType: string
+		isHidden
+		lineageTag: 6ffa2366-55cc-5b16-bc56-df3424c63b73
+		sourceLineageTag: produto
+		summarizeBy: none
+		sourceColumn: produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column semana_evento
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: d23d8a10-0abb-5bc7-945e-59eb0d7f8afc
+		sourceLineageTag: semana_evento
+		summarizeBy: none
+		sourceColumn: semana_evento
+
+		annotation SummarizationSetBy = Automatic
+
+	column direcao
+		dataType: string
+		lineageTag: 6a21e3c8-6dff-5560-b955-d080a0adaba9
+		sourceLineageTag: direcao
+		summarizeBy: none
+		sourceColumn: direcao
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_antes
+		dataType: decimal
+		formatString: """R$"" #,0.0000"
+		lineageTag: 56fb0517-99ac-5c59-b389-ff01e1bb4df5
+		sourceLineageTag: preco_antes
+		summarizeBy: none
+		sourceColumn: preco_antes
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_depois
+		dataType: decimal
+		formatString: """R$"" #,0.0000"
+		lineageTag: 17095e4b-1334-5cdf-b7cb-76d69858a7c2
+		sourceLineageTag: preco_depois
+		summarizeBy: none
+		sourceColumn: preco_depois
+
+		annotation SummarizationSetBy = Automatic
+
+	column variacao_refinaria
+		dataType: decimal
+		formatString: "+""R$"" #,0.0000;-""R$"" #,0.0000"
+		lineageTag: 3fb97c6b-37e1-5411-ba11-ec6251e28294
+		sourceLineageTag: variacao_refinaria
+		summarizeBy: none
+		sourceColumn: variacao_refinaria
+
+		annotation SummarizationSetBy = Automatic
+
+	column variacao_refinaria_pct
+		dataType: double
+		formatString: +0.0%;-0.0%
+		lineageTag: aff7e57f-c449-5440-bb9a-cc4044510cd4
+		sourceLineageTag: variacao_refinaria_pct
+		summarizeBy: none
+		sourceColumn: variacao_refinaria_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column fracao_fossil
+		dataType: decimal
+		formatString: 0%
+		lineageTag: 53f572e0-76d4-5af6-a96a-6db5ec0a57f2
+		sourceLineageTag: fracao_fossil
+		summarizeBy: none
+		sourceColumn: fracao_fossil
+
+		annotation SummarizationSetBy = Automatic
+
+	column repasse_esperado
+		dataType: decimal
+		formatString: "+""R$"" #,0.0000;-""R$"" #,0.0000"
+		lineageTag: 7747ade0-60b3-5fdb-ae0a-4adbb62ba198
+		sourceLineageTag: repasse_esperado
+		summarizeBy: none
+		sourceColumn: repasse_esperado
+
+		annotation SummarizationSetBy = Automatic
+
+	column isolado
+		dataType: boolean
+		lineageTag: 3f9700df-f282-5d9f-b752-e80071e232be
+		sourceLineageTag: isolado
+		summarizeBy: none
+		sourceColumn: isolado
+
+		annotation SummarizationSetBy = Automatic
+
+	partition repasse_evento = entity
+		mode: directLake
+		source
+			entityName: repasse_evento
+			schemaName: gold
+			expressionSource: DatabaseQuery

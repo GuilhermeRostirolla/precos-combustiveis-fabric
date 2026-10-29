@@ -1,0 +1,118 @@
+table fato_preco_municipio_semana
+	lineageTag: b3f43685-e815-55e8-a071-fb63e329a4fd
+	sourceLineageTag: [gold].[fato_preco_municipio_semana]
+
+	column semana
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		isHidden
+		lineageTag: ebe6a63a-1960-542a-9bc5-af8c4cc045e4
+		sourceLineageTag: semana
+		summarizeBy: none
+		sourceColumn: semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column uf
+		dataType: string
+		lineageTag: 5bd6c15e-b68c-54d3-8f04-80e611f08685
+		sourceLineageTag: uf
+		summarizeBy: none
+		sourceColumn: uf
+
+		annotation SummarizationSetBy = Automatic
+
+	column municipio
+		dataType: string
+		lineageTag: 47959244-5f02-511e-83d1-e0d8f86ce7f9
+		sourceLineageTag: municipio
+		summarizeBy: none
+		sourceColumn: municipio
+
+		annotation SummarizationSetBy = Automatic
+
+	column produto
+		dataType: string
+		isHidden
+		lineageTag: 5c249c7d-cb0a-5fc5-a09e-1ebb086e69e7
+		sourceLineageTag: produto
+		summarizeBy: none
+		sourceColumn: produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_medio
+		dataType: decimal
+		formatString: """R$"" #,0.000"
+		lineageTag: 211709af-d20c-5fed-8452-7c1b045bdf2b
+		sourceLineageTag: preco_medio
+		summarizeBy: none
+		sourceColumn: preco_medio
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_mediano
+		dataType: decimal
+		formatString: """R$"" #,0.000"
+		lineageTag: 3ebbb0f0-a8bd-555b-a769-80445a90eb9c
+		sourceLineageTag: preco_mediano
+		summarizeBy: none
+		sourceColumn: preco_mediano
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_minimo
+		dataType: decimal
+		formatString: """R$"" #,0.000"
+		lineageTag: c0172ca6-7ac0-522a-9c3f-8b59a6ad425b
+		sourceLineageTag: preco_minimo
+		summarizeBy: none
+		sourceColumn: preco_minimo
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_maximo
+		dataType: decimal
+		formatString: """R$"" #,0.000"
+		lineageTag: 07dd3774-1074-526f-a897-0fb4b9057892
+		sourceLineageTag: preco_maximo
+		summarizeBy: none
+		sourceColumn: preco_maximo
+
+		annotation SummarizationSetBy = Automatic
+
+	column coletas
+		dataType: int64
+		formatString: #,0
+		lineageTag: 3fa0616c-36bb-522a-bbb6-c1e974f07f9c
+		sourceLineageTag: coletas
+		summarizeBy: none
+		sourceColumn: coletas
+
+		annotation SummarizationSetBy = Automatic
+
+	column postos
+		dataType: int64
+		formatString: #,0
+		lineageTag: fda55b0c-476d-516d-ba1e-e56f0ebeda1f
+		sourceLineageTag: postos
+		summarizeBy: none
+		sourceColumn: postos
+
+		annotation SummarizationSetBy = Automatic
+
+	column amostra_suficiente
+		dataType: boolean
+		lineageTag: 831c905c-5671-5571-a438-79b3ca86bfd0
+		sourceLineageTag: amostra_suficiente
+		summarizeBy: none
+		sourceColumn: amostra_suficiente
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fato_preco_municipio_semana = entity
+		mode: directLake
+		source
+			entityName: fato_preco_municipio_semana
+			schemaName: gold
+			expressionSource: DatabaseQuery
