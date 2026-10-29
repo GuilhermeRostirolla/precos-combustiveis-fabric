@@ -29,10 +29,17 @@ TABELAS = {
     "fato_preco_produtor_semana": [("semana", "date"), ("semana_fim", "date"), ("produto", "string"),
                                    ("regiao", "string"), ("preco_produtor", "dec"), ("fracao_fossil", "dec"),
                                    ("mandato", "string"), ("custo_fossil_por_litro", "dec")],
-    "repasse_evento": [("produto", "string"), ("semana_evento", "date"), ("direcao", "string"),
-                       ("preco_antes", "dec"), ("preco_depois", "dec"), ("variacao_refinaria", "dec"),
-                       ("variacao_refinaria_pct", "double"), ("fracao_fossil", "dec"),
-                       ("repasse_esperado", "dec"), ("isolado", "bool")],
+    "refinaria_suavizada": [("produto", "string"), ("semana", "date"), ("preco_produtor", "dec"),
+                            ("fracao_fossil", "dec"), ("preco_suavizado", "dec")],
+    "repasse_evento": [("produto", "string"), ("semana_evento", "date"), ("semana_fim_reajuste", "date"),
+                       ("semanas_reajuste", "int"), ("direcao", "string"), ("preco_antes", "dec"),
+                       ("preco_depois", "dec"), ("variacao_refinaria", "dec"), ("variacao_refinaria_pct", "double"),
+                       ("fracao_fossil", "dec"), ("repasse_esperado", "dec"), ("proximo_reajuste", "date"),
+                       ("semanas_acompanhadas", "int")],
+    "repasse_curva": [("produto", "string"), ("semana_evento", "date"), ("direcao", "string"), ("escopo", "string"),
+                      ("municipio", "string"), ("h", "int"), ("semana", "date"), ("preco_bomba_antes", "dec"),
+                      ("preco_bomba", "dec"), ("variacao_bomba", "dec"), ("repasse_esperado", "dec"),
+                      ("repasse", "dec")],
     "repasse_resumo": [("produto", "string"), ("escopo", "string"), ("direcao", "string"), ("h", "int"),
                        ("eventos", "int"), ("repasse_mediano", "dec"), ("repasse_medio", "dec")],
     "repasse_velocidade": [("produto", "string"), ("escopo", "string"), ("direcao", "string"), ("eventos", "int"),
@@ -57,6 +64,15 @@ FORMATO_COLUNA = {
     ("repasse_evento", "variacao_refinaria"): '+"R$" #,0.0000;-"R$" #,0.0000',
     ("repasse_evento", "repasse_esperado"): '+"R$" #,0.0000;-"R$" #,0.0000',
     ("repasse_evento", "variacao_refinaria_pct"): "+0.0%;-0.0%",
+    ("refinaria_suavizada", "preco_produtor"): '"R$" #,0.0000',
+    ("refinaria_suavizada", "preco_suavizado"): '"R$" #,0.0000',
+    ("refinaria_suavizada", "fracao_fossil"): "0%",
+    ("repasse_curva", "repasse"): "0%",
+    ("repasse_curva", "preco_bomba"): '"R$" #,0.000',
+    ("repasse_curva", "preco_bomba_antes"): '"R$" #,0.000',
+    ("repasse_curva", "variacao_bomba"): '+"R$" #,0.000;-"R$" #,0.000',
+    ("repasse_curva", "repasse_esperado"): '+"R$" #,0.0000;-"R$" #,0.0000',
+    ("repasse_curva", "h"): "0",
     ("repasse_resumo", "repasse_mediano"): "0%",
     ("repasse_resumo", "repasse_medio"): "0%",
     ("repasse_resumo", "h"): "0",
@@ -72,6 +88,8 @@ OCULTAS = {
     "repasse_resumo": {"produto"},
     "repasse_velocidade": {"produto"},
     "repasse_evento": {"produto"},
+    "repasse_curva": {"produto"},
+    "refinaria_suavizada": {"produto", "semana"},
     "dim_semana": {"ano_mes"},
 }
 ORDENAR_POR = {("dim_semana", "rotulo"): "semana"}
@@ -86,6 +104,9 @@ RELACIONAMENTOS = [
     ("repasse_resumo.produto", "dim_produto.produto"),
     ("repasse_velocidade.produto", "dim_produto.produto"),
     ("repasse_evento.produto", "dim_produto.produto"),
+    ("repasse_curva.produto", "dim_produto.produto"),
+    ("refinaria_suavizada.semana", "dim_semana.semana"),
+    ("refinaria_suavizada.produto", "dim_produto.produto"),
 ]
 
 REAIS, REAIS4, PCT, SEMANAS, INT = '"R$" #,0.000', '"R$" #,0.0000', "0%", "0.0", "#,0"
@@ -127,9 +148,12 @@ MEDIDAS = {
     "fato_preco_produtor_semana": [
         ("Preço Refinaria Sul", "Refinaria", REAIS4,
          f"CALCULATE ( AVERAGE ( fato_preco_produtor_semana[preco_produtor] ), {SUL} )"),
-        ("Custo Fóssil na Bomba", "Refinaria", REAIS4,
-         f"// preço na refinaria x parcela fóssil do litro vendido no posto\n"
-         f"CALCULATE ( AVERAGE ( fato_preco_produtor_semana[custo_fossil_por_litro] ), {SUL} )"),
+    ],
+    "refinaria_suavizada": [
+        ("Refinaria Sul Suavizada", "Refinaria", REAIS4, "AVERAGE ( refinaria_suavizada[preco_suavizado] )"),
+        ("Custo Fóssil na Bomba", "Refinaria", REAIS,
+         "// preço na refinaria (suavizado) x parcela fóssil do litro vendido no posto\n"
+         "AVERAGEX ( refinaria_suavizada, refinaria_suavizada[preco_suavizado] * refinaria_suavizada[fracao_fossil] )"),
         ("Bomba menos Refinaria", "Refinaria", REAIS,
          "// tudo o que não é o derivado fóssil: etanol ou biodiesel, impostos, frete e margens\n"
          "IF (\n    NOT ISBLANK ( [Preço Bomba RS] ) && NOT ISBLANK ( [Custo Fóssil na Bomba] ),\n"
@@ -137,8 +161,14 @@ MEDIDAS = {
     ],
     "repasse_evento": [
         ("Reajustes na Refinaria", "Repasse", INT, "COUNTROWS ( repasse_evento )"),
-        ("Reajustes Isolados", "Repasse", INT,
-         "CALCULATE ( COUNTROWS ( repasse_evento ), repasse_evento[isolado] = TRUE () )"),
+        ("Altas na Refinaria", "Repasse", INT,
+         'CALCULATE ( COUNTROWS ( repasse_evento ), repasse_evento[direcao] = "alta" )'),
+        ("Baixas na Refinaria", "Repasse", INT,
+         'CALCULATE ( COUNTROWS ( repasse_evento ), repasse_evento[direcao] = "baixa" )'),
+    ],
+    "repasse_curva": [
+        ("Repasse do Reajuste", "Repasse", PCT,
+         f"CALCULATE ( AVERAGE ( repasse_curva[repasse] ), repasse_curva[escopo] = {ESTADO} )"),
     ],
     "repasse_resumo": [
         ("Repasse Mediano RS", "Repasse", PCT,

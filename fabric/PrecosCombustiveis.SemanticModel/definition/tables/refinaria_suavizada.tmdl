@@ -1,0 +1,85 @@
+table refinaria_suavizada
+	lineageTag: 8aaa0d21-fe2f-510d-89ea-bb0da98eeb96
+	sourceLineageTag: [gold].[refinaria_suavizada]
+
+	measure 'Refinaria Sul Suavizada' = AVERAGE ( refinaria_suavizada[preco_suavizado] )
+		formatString: """R$"" #,0.0000"
+		displayFolder: Refinaria
+		lineageTag: e31d0d2b-1924-59c1-b0f9-57dd491808a6
+
+	measure 'Custo Fóssil na Bomba' = ```
+			// preço na refinaria (suavizado) x parcela fóssil do litro vendido no posto
+			AVERAGEX ( refinaria_suavizada, refinaria_suavizada[preco_suavizado] * refinaria_suavizada[fracao_fossil] )
+			```
+		formatString: """R$"" #,0.000"
+		displayFolder: Refinaria
+		lineageTag: 7d9c8baa-07a4-5fe7-a848-53c8a97617a1
+
+	measure 'Bomba menos Refinaria' = ```
+			// tudo o que não é o derivado fóssil: etanol ou biodiesel, impostos, frete e margens
+			IF (
+			    NOT ISBLANK ( [Preço Bomba RS] ) && NOT ISBLANK ( [Custo Fóssil na Bomba] ),
+			    [Preço Bomba RS] - [Custo Fóssil na Bomba]
+			)
+			```
+		formatString: """R$"" #,0.000"
+		displayFolder: Refinaria
+		lineageTag: eb694e59-f072-586d-a257-3877fdd530f8
+
+	column produto
+		dataType: string
+		isHidden
+		lineageTag: 2bdc4365-8e12-5b35-a23e-90a6a45c9fd5
+		sourceLineageTag: produto
+		summarizeBy: none
+		sourceColumn: produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column semana
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		isHidden
+		lineageTag: b72ac73e-31f9-5a87-9950-808b7407bbf1
+		sourceLineageTag: semana
+		summarizeBy: none
+		sourceColumn: semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_produtor
+		dataType: decimal
+		formatString: """R$"" #,0.0000"
+		lineageTag: ea68d3d2-c93d-5840-b757-e4142f568ca3
+		sourceLineageTag: preco_produtor
+		summarizeBy: none
+		sourceColumn: preco_produtor
+
+		annotation SummarizationSetBy = Automatic
+
+	column fracao_fossil
+		dataType: decimal
+		formatString: 0%
+		lineageTag: c0240c16-59f8-5fbc-9c18-d4448480f205
+		sourceLineageTag: fracao_fossil
+		summarizeBy: none
+		sourceColumn: fracao_fossil
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_suavizado
+		dataType: decimal
+		formatString: """R$"" #,0.0000"
+		lineageTag: 793736a5-4ad8-5fd1-96c4-b21cf3afe5d2
+		sourceLineageTag: preco_suavizado
+		summarizeBy: none
+		sourceColumn: preco_suavizado
+
+		annotation SummarizationSetBy = Automatic
+
+	partition refinaria_suavizada = entity
+		mode: directLake
+		source
+			entityName: refinaria_suavizada
+			schemaName: gold
+			expressionSource: DatabaseQuery

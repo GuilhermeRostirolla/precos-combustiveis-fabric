@@ -61,7 +61,6 @@ GO
 INSERT INTO config.parametro VALUES
     ('limiar_reajuste', 0.020000, 'Variação semanal mínima do preço na refinaria para contar como reajuste (2%)'),
     ('horizonte_semanas', 8, 'Semanas acompanhadas depois do reajuste'),
-    ('janela_isolamento', 6, 'Semanas sem outro reajuste depois do evento para ele contar como isolado'),
     ('preco_minimo', 1.500000, 'Preço de venda abaixo disso vai para a quarentena (R$/litro)'),
     ('preco_maximo', 15.000000, 'Preço de venda acima disso vai para a quarentena (R$/litro)'),
     ('postos_minimos', 5, 'Postos pesquisados na semana para a média de um município entrar na análise');

@@ -7,25 +7,6 @@ table fato_preco_produtor_semana
 		displayFolder: Refinaria
 		lineageTag: 42dd402b-66cd-5da7-a3e4-69a931834720
 
-	measure 'Custo Fóssil na Bomba' = ```
-			// preço na refinaria x parcela fóssil do litro vendido no posto
-			CALCULATE ( AVERAGE ( fato_preco_produtor_semana[custo_fossil_por_litro] ), fato_preco_produtor_semana[regiao] = "Sul" )
-			```
-		formatString: """R$"" #,0.0000"
-		displayFolder: Refinaria
-		lineageTag: 0738ad42-1aa3-5758-ad5b-fe14ba069563
-
-	measure 'Bomba menos Refinaria' = ```
-			// tudo o que não é o derivado fóssil: etanol ou biodiesel, impostos, frete e margens
-			IF (
-			    NOT ISBLANK ( [Preço Bomba RS] ) && NOT ISBLANK ( [Custo Fóssil na Bomba] ),
-			    [Preço Bomba RS] - [Custo Fóssil na Bomba]
-			)
-			```
-		formatString: """R$"" #,0.000"
-		displayFolder: Refinaria
-		lineageTag: d73e45b6-4daa-5893-9392-2bde6f8290ad
-
 	column semana
 		dataType: dateTime
 		formatString: dd/MM/yyyy

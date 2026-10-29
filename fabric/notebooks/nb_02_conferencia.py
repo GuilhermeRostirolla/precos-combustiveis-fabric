@@ -11,6 +11,7 @@
 
 # %%
 import struct
+from decimal import Decimal
 
 import numpy as np
 import pandas as pd
@@ -32,7 +33,12 @@ def sql(consulta: str) -> pd.DataFrame:
                         "Encrypt=yes", attrs_before={1256: struct.pack(f"<I{len(token)}s", len(token), token)}) as c:
         cursor = c.execute(consulta)
         colunas = [d[0] for d in cursor.description]
-        return pd.DataFrame.from_records(cursor.fetchall(), columns=colunas)
+        df = pd.DataFrame.from_records([tuple(linha) for linha in cursor.fetchall()], columns=colunas)
+    # decimal do SQL chega como decimal.Decimal; as contas daqui são em float
+    for coluna in colunas:
+        if df[coluna].map(lambda v: isinstance(v, Decimal)).any():
+            df[coluna] = df[coluna].astype(float)
+    return df
 
 
 parametros = sql("SELECT nome, valor FROM config.parametro").set_index("nome")["valor"].astype(float)
@@ -60,47 +66,58 @@ diferenca = float((comparacao["py"] - comparacao["wh"]).abs().max())
 print(f"média semanal RS: {len(comparacao)} semanas x produto, {so_um_lado} só de um lado, maior diferença {diferenca:.6f}")
 
 # %%
-# 2. Reajustes na refinaria (região Sul), com a mesma regra do T-SQL.
-p = spark.table("bronze_produtor").where((F.col("regiao") == "Sul") & F.col("preco").isNotNull()).toPandas()
-p = p.merge(produtos, left_on="produto", right_on="produto_produtor", suffixes=("_produtor", ""))
+# 2. Reajustes na refinaria (região Sul), com a mesma regra do T-SQL: mediana de 3 semanas, semanas seguidas no
+#    mesmo sentido viram um reajuste só, e cada reajuste é acompanhado até o seguinte.
+p = spark.table("bronze_produtor").where((F.col("regiao") == "Sul") & F.col("preco").isNotNull()
+                                         & (F.col("preco") > 0)).toPandas()
+p = p.rename(columns={"produto": "produto_produtor"}).merge(produtos, on="produto_produtor")
 p["semana"] = pd.to_datetime(p["semana_inicio"])
 p = p.drop_duplicates(["produto", "semana"]).sort_values(["produto", "semana"])
 mistura["vigente_de"] = pd.to_datetime(mistura["vigente_de"])
 mistura["vigente_ate"] = pd.to_datetime(mistura["vigente_ate"])
 p = p.merge(mistura, on="produto")
-p = p[(p["semana"] >= p["vigente_de"]) & (p["semana"] <= p["vigente_ate"])].copy()
+p = p[(p["semana"] >= p["vigente_de"]) & (p["semana"] <= p["vigente_ate"])].sort_values(["produto", "semana"]).copy()
 p["preco"] = p["preco"].round(4)
-p["anterior"] = p.groupby("produto")["preco"].shift()
-p["semana_anterior"] = p.groupby("produto")["semana"].shift()
-p["variacao"] = p["preco"] / p["anterior"] - 1
-p["sinal"] = np.where(p["preco"] > p["anterior"], 1, -1)
-cand = p[((p["semana"] - p["semana_anterior"]).dt.days == 7) & (p["variacao"].abs() >= parametros["limiar_reajuste"])]
-chave = set(zip(cand["produto"], cand["semana"], cand["sinal"]))
-precos = p.set_index(["produto", "semana"])["preco"]
+vizinhos = pd.concat([p.groupby("produto")["preco"].shift(1), p["preco"], p.groupby("produto")["preco"].shift(-1)],
+                     axis=1)
+p["suave"] = np.where(vizinhos.isna().any(axis=1), p["preco"], vizinhos.median(axis=1))
+p["anterior"] = p.groupby("produto")["suave"].shift()
+p["distancia"] = (p["semana"] - p.groupby("produto")["semana"].shift()).dt.days
+p["sinal"] = np.where(p["suave"] > p["anterior"], 1, -1)
+cand = p[(p["distancia"] == 7) & ((p["suave"] / p["anterior"] - 1).abs() >= parametros["limiar_reajuste"])].copy()
+cand["grupo"] = ((cand["semana"] - pd.Timestamp("1900-01-01")).dt.days // 7
+                 - cand.groupby(["produto", "sinal"]).cumcount() - 1)
+sequencias = cand.groupby(["produto", "sinal", "grupo"]).agg(inicio=("semana", "min"), fim=("semana", "max"))
+suave = p.set_index(["produto", "semana"])
+inicio_bomba = pd.Timestamp(sql("SELECT MIN(semana) AS s FROM gold.fato_preco_uf_semana WHERE uf = 'RS'")["s"].iloc[0])
+horizonte = int(parametros["horizonte_semanas"])
 eventos = []
-for r in cand.itertuples():
-    if (r.produto, r.semana - pd.Timedelta(days=7), r.sinal) in chave:
+for (produto, sinal, _), s in sequencias.iterrows():
+    chave_antes, chave_depois = (produto, s.inicio - pd.Timedelta(days=7)), (produto, s.fim + pd.Timedelta(days=7))
+    if chave_antes not in suave.index or chave_depois not in suave.index:
         continue
-    antes = precos.get((r.produto, r.semana - pd.Timedelta(days=7)))
-    depois = precos.get((r.produto, r.semana + pd.Timedelta(days=7)))
-    if antes is None or depois is None or depois == antes or np.sign(depois - antes) != r.sinal:
+    antes, depois = suave.loc[chave_antes, "suave"], suave.loc[chave_depois, "suave"]
+    if (s.inicio < inicio_bomba + pd.Timedelta(days=7) or np.sign(depois - antes) != sinal
+            or abs(depois / antes - 1) < parametros["limiar_reajuste"]):
         continue
-    eventos.append({"produto": r.produto, "semana_evento": r.semana, "esperado": (depois - antes) * r.fracao_fossil})
-eventos = pd.DataFrame(eventos)
-janela = pd.Timedelta(days=7 * int(parametros["janela_isolamento"]))
-eventos["isolado"] = [not ((eventos["produto"] == e.produto) & (eventos["semana_evento"] > e.semana_evento)
-                           & (eventos["semana_evento"] <= e.semana_evento + janela)).any() for e in eventos.itertuples()]
+    eventos.append({"produto": produto, "semana_evento": s.inicio,
+                    "esperado": round((depois - antes) * suave.loc[chave_depois, "fracao_fossil"], 4)})
+eventos = pd.DataFrame(eventos).sort_values(["produto", "semana_evento"])
+eventos["proximo"] = eventos.groupby("produto")["semana_evento"].shift(-1)
+eventos["acompanhadas"] = [horizonte if pd.isna(e.proximo) else min(horizonte, (e.proximo - e.semana_evento).days // 7 - 1)
+                           for e in eventos.itertuples()]
 
-eventos_wh = sql("SELECT produto, semana_evento, CAST(repasse_esperado AS float) AS esperado_wh, isolado AS isolado_wh "
-                 "FROM gold.repasse_evento")
+eventos_wh = sql("SELECT produto, semana_evento, CAST(repasse_esperado AS float) AS esperado_wh, "
+                 "semanas_acompanhadas AS acompanhadas_wh FROM gold.repasse_evento")
 eventos_wh["semana_evento"] = pd.to_datetime(eventos_wh["semana_evento"])
 ev = eventos.merge(eventos_wh, on=["produto", "semana_evento"], how="outer", indicator=True)
 eventos_divergentes = int((ev["_merge"] != "both").sum())
 diferenca_eventos = float((ev["esperado"] - ev["esperado_wh"]).abs().max())
-isolado_divergente = int((ev.dropna(subset=["isolado", "isolado_wh"])
-                          .pipe(lambda d: d["isolado"].astype(bool) != d["isolado_wh"].astype(bool))).sum())
+acompanhadas_divergentes = int((ev.dropna(subset=["acompanhadas", "acompanhadas_wh"])
+                          .pipe(lambda d: d["acompanhadas"] != d["acompanhadas_wh"])).sum())
 print(f"reajustes: {len(eventos)} em Python, {len(eventos_wh)} no warehouse, {eventos_divergentes} divergentes, "
-      f"maior diferença no repasse esperado {diferenca_eventos:.6f}, {isolado_divergente} com 'isolado' diferente")
+      f"maior diferença no repasse esperado {diferenca_eventos:.6f}, "
+      f"{acompanhadas_divergentes} com semanas acompanhadas diferentes")
 
 # %%
 # 3. Curva de repasse do estado.
@@ -110,11 +127,11 @@ for e in eventos.itertuples():
     base = serie.get((e.produto, e.semana_evento - pd.Timedelta(days=7)))
     if base is None:
         continue
-    for h in range(int(parametros["horizonte_semanas"]) + 1):
+    for h in range(int(e.acompanhadas) + 1):
         valor = serie.get((e.produto, e.semana_evento + pd.Timedelta(days=7 * h)))
         if valor is not None:
             curva.append({"produto": e.produto, "semana_evento": e.semana_evento, "h": h,
-                          "repasse_py": (round(valor, 4) - round(base, 4)) / round(e.esperado, 4)})
+                          "repasse_py": (round(valor, 4) - round(base, 4)) / e.esperado})
 curva = pd.DataFrame(curva)
 curva_wh = sql("SELECT produto, semana_evento, h, CAST(repasse AS float) AS repasse_wh FROM gold.repasse_curva "
                "WHERE escopo = 'RS (estado)'")
@@ -128,8 +145,8 @@ print(f"curva do estado: {len(cc)} pontos, {curva_divergente} só de um lado, ma
 problemas = []
 if so_um_lado or diferenca > TOLERANCIA:
     problemas.append(f"média semanal (diferença {diferenca:.6f}, {so_um_lado} sem par)")
-if eventos_divergentes or diferenca_eventos > TOLERANCIA or isolado_divergente:
-    problemas.append(f"reajustes ({eventos_divergentes} divergentes, {isolado_divergente} isolado)")
+if eventos_divergentes or diferenca_eventos > TOLERANCIA or acompanhadas_divergentes:
+    problemas.append(f"reajustes ({eventos_divergentes} divergentes, {acompanhadas_divergentes} com semanas acompanhadas diferentes)")
 if curva_divergente or diferenca_curva > 0.01:
     problemas.append(f"curva de repasse (diferença {diferenca_curva:.4f}, {curva_divergente} sem par)")
 if problemas:
@@ -163,8 +180,9 @@ SELECT (SELECT CAST(MIN(semana) AS varchar(10)) FROM gold.fato_preco_uf_semana W
        (SELECT COUNT(DISTINCT municipio) FROM gold.fato_preco_municipio_semana
         WHERE uf = 'RS' AND amostra_suficiente = 1) AS municipios_rs_com_amostra""")
 eventos_lista = sql("""
-SELECT produto, CAST(semana_evento AS varchar(10)) AS semana, direcao, CAST(variacao_refinaria AS float) AS refinaria,
-       CAST(variacao_refinaria_pct AS float) AS refinaria_pct, CAST(repasse_esperado AS float) AS esperado, isolado
+SELECT produto, CAST(semana_evento AS varchar(10)) AS semana, direcao, semanas_reajuste,
+       CAST(variacao_refinaria AS float) AS refinaria, CAST(variacao_refinaria_pct AS float) AS refinaria_pct,
+       CAST(repasse_esperado AS float) AS esperado, semanas_acompanhadas
 FROM gold.repasse_evento ORDER BY produto, semana_evento""")
 municipios = sql("""
 SELECT produto, escopo, direcao, eventos, CAST(semanas_mediana_ate_50 AS float) AS ate_50,

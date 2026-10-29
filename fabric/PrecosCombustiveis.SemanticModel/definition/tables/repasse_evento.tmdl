@@ -7,10 +7,15 @@ table repasse_evento
 		displayFolder: Repasse
 		lineageTag: 0aa8d7b7-8af9-5fe5-88b6-5d1e95733d1b
 
-	measure 'Reajustes Isolados' = CALCULATE ( COUNTROWS ( repasse_evento ), repasse_evento[isolado] = TRUE () )
+	measure 'Altas na Refinaria' = CALCULATE ( COUNTROWS ( repasse_evento ), repasse_evento[direcao] = "alta" )
 		formatString: #,0
 		displayFolder: Repasse
-		lineageTag: 94707109-d85a-53d0-85d8-11e69b9d88e7
+		lineageTag: cc3732d4-5396-5adc-98b3-46a29e588af1
+
+	measure 'Baixas na Refinaria' = CALCULATE ( COUNTROWS ( repasse_evento ), repasse_evento[direcao] = "baixa" )
+		formatString: #,0
+		displayFolder: Repasse
+		lineageTag: e9d52bc2-58df-58cc-8db6-9de90a3be0fa
 
 	column produto
 		dataType: string
@@ -29,6 +34,26 @@ table repasse_evento
 		sourceLineageTag: semana_evento
 		summarizeBy: none
 		sourceColumn: semana_evento
+
+		annotation SummarizationSetBy = Automatic
+
+	column semana_fim_reajuste
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 7a2ebfe7-f99f-569c-ae5b-3d0c479b97d3
+		sourceLineageTag: semana_fim_reajuste
+		summarizeBy: none
+		sourceColumn: semana_fim_reajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column semanas_reajuste
+		dataType: int64
+		formatString: #,0
+		lineageTag: f716b58d-4dec-5980-a407-f0f255e4a16c
+		sourceLineageTag: semanas_reajuste
+		summarizeBy: none
+		sourceColumn: semanas_reajuste
 
 		annotation SummarizationSetBy = Automatic
 
@@ -101,12 +126,23 @@ table repasse_evento
 
 		annotation SummarizationSetBy = Automatic
 
-	column isolado
-		dataType: boolean
-		lineageTag: 3f9700df-f282-5d9f-b752-e80071e232be
-		sourceLineageTag: isolado
+	column proximo_reajuste
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: efce03fe-7b3a-5238-bfaa-75e4af2f8041
+		sourceLineageTag: proximo_reajuste
 		summarizeBy: none
-		sourceColumn: isolado
+		sourceColumn: proximo_reajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column semanas_acompanhadas
+		dataType: int64
+		formatString: #,0
+		lineageTag: df56daf9-f2eb-5f31-84f4-406184840f38
+		sourceLineageTag: semanas_acompanhadas
+		summarizeBy: none
+		sourceColumn: semanas_acompanhadas
 
 		annotation SummarizationSetBy = Automatic
 

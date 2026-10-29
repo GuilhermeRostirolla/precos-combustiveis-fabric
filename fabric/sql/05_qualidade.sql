@@ -78,16 +78,19 @@ BEGIN
         SELECT 'postos_desatualizados', 'aviso',
             CASE WHEN (SELECT MAX(data_coleta) FROM silver.preco_revenda) < DATEADD(day, -75, GETDATE()) THEN 1 ELSE 0 END
         UNION ALL
-        SELECT 'sem_reajustes_isolados', 'erro',
-            CASE WHEN (SELECT COUNT(*) FROM gold.repasse_evento WHERE isolado = 1) = 0 THEN 1 ELSE 0 END
+        SELECT 'sem_reajustes_no_periodo', 'erro',
+            CASE WHEN (SELECT COUNT(*) FROM gold.repasse_evento) = 0 THEN 1 ELSE 0 END
         UNION ALL
         SELECT 'curva_sem_semana_zero', 'erro', COUNT(*)
         FROM gold.repasse_evento AS e
-        WHERE e.isolado = 1
-          AND NOT EXISTS (SELECT 1 FROM gold.repasse_curva AS c
+        WHERE NOT EXISTS (SELECT 1 FROM gold.repasse_curva AS c
                           WHERE c.produto = e.produto AND c.semana_evento = e.semana_evento
                             AND c.escopo = 'RS (estado)' AND c.h = 0)
-          AND e.semana_evento > (SELECT MIN(semana) FROM gold.fato_preco_uf_semana)
+        UNION ALL
+        -- Pico de uma semana só na refinaria (sobe e volta): a suavização tira da análise, aqui só fica registrado.
+        SELECT 'refinaria_pico_de_uma_semana', 'aviso', COUNT(*)
+        FROM gold.refinaria_suavizada
+        WHERE ABS(preco_produtor / preco_suavizado - 1) >= (SELECT valor FROM config.parametro WHERE nome = 'limiar_reajuste')
     ) AS regras (regra, severidade, violacoes);
 
     INSERT INTO qualidade.resultado

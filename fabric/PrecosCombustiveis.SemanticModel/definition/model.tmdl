@@ -9,7 +9,9 @@ ref table dim_produto
 ref table fato_preco_uf_semana
 ref table fato_preco_municipio_semana
 ref table fato_preco_produtor_semana
+ref table refinaria_suavizada
 ref table repasse_evento
+ref table repasse_curva
 ref table repasse_resumo
 ref table repasse_velocidade
 

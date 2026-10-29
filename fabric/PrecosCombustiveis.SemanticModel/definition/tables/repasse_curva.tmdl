@@ -1,0 +1,132 @@
+table repasse_curva
+	lineageTag: 7b4e7f8b-318d-5635-9012-0554480a6e53
+	sourceLineageTag: [gold].[repasse_curva]
+
+	measure 'Repasse do Reajuste' = CALCULATE ( AVERAGE ( repasse_curva[repasse] ), repasse_curva[escopo] = "RS (estado)" )
+		formatString: 0%
+		displayFolder: Repasse
+		lineageTag: 09ee55f5-58b2-5242-9cd5-90c0e43d90a2
+
+	column produto
+		dataType: string
+		isHidden
+		lineageTag: b6ed2c52-3648-5f42-8ac0-72b2e592be95
+		sourceLineageTag: produto
+		summarizeBy: none
+		sourceColumn: produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column semana_evento
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 9998d593-c36f-50eb-9f69-c9c5a3be7fb2
+		sourceLineageTag: semana_evento
+		summarizeBy: none
+		sourceColumn: semana_evento
+
+		annotation SummarizationSetBy = Automatic
+
+	column direcao
+		dataType: string
+		lineageTag: 1f0efe1b-8867-568a-a949-d1e8df7f9d20
+		sourceLineageTag: direcao
+		summarizeBy: none
+		sourceColumn: direcao
+
+		annotation SummarizationSetBy = Automatic
+
+	column escopo
+		dataType: string
+		lineageTag: 2c08352d-7f7f-5c38-82c0-b12b0bb36659
+		sourceLineageTag: escopo
+		summarizeBy: none
+		sourceColumn: escopo
+
+		annotation SummarizationSetBy = Automatic
+
+	column municipio
+		dataType: string
+		lineageTag: a5530857-70ce-5903-a107-a2a4002816c8
+		sourceLineageTag: municipio
+		summarizeBy: none
+		sourceColumn: municipio
+
+		annotation SummarizationSetBy = Automatic
+
+	column h
+		dataType: int64
+		formatString: 0
+		lineageTag: 31f54885-8cb6-57a8-a85a-356d07c2ec99
+		sourceLineageTag: h
+		summarizeBy: none
+		sourceColumn: h
+
+		annotation SummarizationSetBy = Automatic
+
+	column semana
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 43fd0fbc-f570-50ff-a0a8-adf4472b06c5
+		sourceLineageTag: semana
+		summarizeBy: none
+		sourceColumn: semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_bomba_antes
+		dataType: decimal
+		formatString: """R$"" #,0.000"
+		lineageTag: df783737-45a2-5185-a43c-6a21e8061e79
+		sourceLineageTag: preco_bomba_antes
+		summarizeBy: none
+		sourceColumn: preco_bomba_antes
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_bomba
+		dataType: decimal
+		formatString: """R$"" #,0.000"
+		lineageTag: a744223f-2af6-5c22-8f87-d618dc8271c2
+		sourceLineageTag: preco_bomba
+		summarizeBy: none
+		sourceColumn: preco_bomba
+
+		annotation SummarizationSetBy = Automatic
+
+	column variacao_bomba
+		dataType: decimal
+		formatString: "+""R$"" #,0.000;-""R$"" #,0.000"
+		lineageTag: b578e047-26ab-5eb6-a6e1-b257c00559a0
+		sourceLineageTag: variacao_bomba
+		summarizeBy: none
+		sourceColumn: variacao_bomba
+
+		annotation SummarizationSetBy = Automatic
+
+	column repasse_esperado
+		dataType: decimal
+		formatString: "+""R$"" #,0.0000;-""R$"" #,0.0000"
+		lineageTag: 02a3f467-1bb8-5f41-96b1-b85aae46b92e
+		sourceLineageTag: repasse_esperado
+		summarizeBy: none
+		sourceColumn: repasse_esperado
+
+		annotation SummarizationSetBy = Automatic
+
+	column repasse
+		dataType: decimal
+		formatString: 0%
+		lineageTag: 21470420-5623-51a0-a779-5a2efa77dfc0
+		sourceLineageTag: repasse
+		summarizeBy: none
+		sourceColumn: repasse
+
+		annotation SummarizationSetBy = Automatic
+
+	partition repasse_curva = entity
+		mode: directLake
+		source
+			entityName: repasse_curva
+			schemaName: gold
+			expressionSource: DatabaseQuery

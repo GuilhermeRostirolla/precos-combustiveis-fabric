@@ -33,3 +33,15 @@ relationship fa84fe63-5b54-5961-99a5-4b2912a7ab14
 relationship 92877f86-16aa-528c-96c3-b62d80f50477
 	fromColumn: repasse_evento.produto
 	toColumn: dim_produto.produto
+
+relationship 35534012-a361-51b7-8265-65f558a02f7b
+	fromColumn: repasse_curva.produto
+	toColumn: dim_produto.produto
+
+relationship 541e3bc1-a9e1-5450-bd7c-934a2c14c6d8
+	fromColumn: refinaria_suavizada.semana
+	toColumn: dim_semana.semana
+
+relationship 99239d89-c645-5f12-904f-a9706d02bafb
+	fromColumn: refinaria_suavizada.produto
+	toColumn: dim_produto.produto
