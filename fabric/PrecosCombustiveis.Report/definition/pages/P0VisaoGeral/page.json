@@ -47,5 +47,12 @@
         }
       }
     ]
-  }
+  },
+  "visualInteractions": [
+    {
+      "source": "09a6fb86e7f4b897bcf4",
+      "target": "d658944fca318d33ff44",
+      "type": "DataFilter"
+    }
+  ]
 }

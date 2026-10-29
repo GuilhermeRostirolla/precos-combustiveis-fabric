@@ -387,7 +387,7 @@ table composicao_preco_semana
 			VAR a = [Posto Mês Explicado]
 			VAR b = [Posto Mês Anterior]
 			RETURN
-			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), a - b )
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
 			```
 		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
 		displayFolder: Por que mudou
@@ -435,7 +435,7 @@ table composicao_preco_semana
 			VAR a = [Refinaria Mês Explicado]
 			VAR b = [Refinaria Mês Anterior]
 			RETURN
-			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), a - b )
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
 			```
 		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
 		displayFolder: Por que mudou
@@ -483,7 +483,7 @@ table composicao_preco_semana
 			VAR a = [Impostos Mês Explicado]
 			VAR b = [Impostos Mês Anterior]
 			RETURN
-			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), a - b )
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
 			```
 		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
 		displayFolder: Por que mudou
@@ -531,7 +531,7 @@ table composicao_preco_semana
 			VAR a = [Outros Mês Explicado]
 			VAR b = [Outros Mês Anterior]
 			RETURN
-			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), a - b )
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
 			```
 		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
 		displayFolder: Por que mudou

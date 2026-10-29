@@ -325,8 +325,8 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo(categoria), "direction": "Ascending"}]}},
             "objects": objetos, "visualContainerObjects": moldura(None, fundo=None, borda=False, respiro=0.0)})
 
-    def sem_interacao(self, origem, destino):
-        self.interacoes.append({"source": origem, "target": destino, "type": "NoFilter"})
+    def interacao(self, origem, destino, tipo="DataFilter"):
+        self.interacoes.append({"source": origem, "target": destino, "type": tipo})
 
 
 # --- páginas ------------------------------------------------------------------------------------------------------
@@ -377,13 +377,14 @@ def visao_geral() -> Pagina:
     p.texto("Preço no posto, média do mês contra o mês anterior", px + 16, 284, pw - 32, 20, 9.0, COR["suave"])
     p.cartao("Texto Δ Posto", px + 8, 304, pw - 16, 46, 26.0, medida_cor="Cor Δ Posto")
     p.cartao("Texto De Para", px + 8, 350, pw - 16, 22, 9.0, cor_valor=COR["suave"], negrito=False)
-    p.barras_coloridas(px + 8, 380, pw - 16, 150, "componente.componente", "Variação do Componente",
-                       "Cor do Componente")
+    barras = p.barras_coloridas(px + 8, 380, pw - 16, 150, "componente.componente", "Variação do Componente",
+                                "Cor do Componente")
     p.cartao("Conclusão", px + 8, 540, pw - 16, 30, 12.0, quebra=True)
     p.cartao("Conclusão Detalhe", px + 8, 572, pw - 16, 116, 9.5, cor_valor=COR["suave"], quebra=True,
              negrito=False)
-    # cartões e filtros ignoram o mês clicado no gráfico (as medidas já olham para a semana de referência)
-    del produto, estado, semana, grafico
+    # o mês clicado no gráfico filtra as barras do "por quê" (em vez de só destacar)
+    p.interacao(grafico, barras)
+    del produto, estado, semana
     return p
 
 

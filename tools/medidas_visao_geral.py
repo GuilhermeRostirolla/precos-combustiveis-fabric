@@ -67,7 +67,7 @@ def delta(componente: str, expr: str) -> list[tuple]:
         (f"{componente} Mês Anterior", "Por que mudou", REAIS, no_mes(expr, anterior=True)),
         (f"Δ {componente}", "Por que mudou", VARIACAO_REAIS,
          f"VAR a = [{componente} Mês Explicado]\nVAR b = [{componente} Mês Anterior]\nRETURN\n"
-         "    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), a - b )"),
+         "    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )"),
     ]
 
 
