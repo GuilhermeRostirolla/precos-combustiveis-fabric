@@ -6,7 +6,7 @@ Quando o preço da gasolina ou do diesel muda na refinaria, **quanto disso chega
 
 Este projeto responde com dados públicos da ANP: um pipeline no Microsoft Fabric busca toda semana o preço de cada posto pesquisado no Brasil e o preço médio de produtores e importadores, trata tudo em camadas (lakehouse → warehouse), mede o repasse de cada reajuste e entrega um relatório no Power BI.
 
-![Repasse](docs/img/repasse.png)
+![Repasse](docs/img/repasse.jpg)
 
 ## O que os dados mostram
 
@@ -76,7 +76,7 @@ A mesma análise roda para cada município do RS com pelo menos 5 postos pesquis
 
 | Bomba x refinaria | Municípios |
 |---|---|
-| ![Bomba x refinaria](docs/img/bomba_refinaria.png) | ![Municípios](docs/img/municipios.png) |
+| ![Bomba x refinaria](docs/img/bomba_refinaria.jpg) | ![Municípios](docs/img/municipios.jpg) |
 
 ## Como rodar
 
@@ -112,7 +112,7 @@ No Fabric:
 ## Limitações
 
 - O preço de produtores e importadores da região Sul é uma aproximação do que as distribuidoras do RS pagam; ele mistura refinarias e importadores.
-- A pesquisa da ANP é amostral: em média 300 postos de gasolina por semana no RS, menos nos municípios pequenos.
+- A pesquisa da ANP é amostral: em média 310 postos de gasolina por semana no RS, menos nos municípios pequenos.
 - O repasse compara a bomba com a parcela fóssil; mudanças no preço do etanol anidro, do biodiesel, do frete, das margens e do ICMS também mexem no preço final e não são separadas aqui. Nos reajustes do primeiro semestre de 2023 o ICMS ainda era uma alíquota, o que aumenta um pouco o repasse esperado.
 
 ## Estrutura

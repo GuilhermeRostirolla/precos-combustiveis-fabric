@@ -6,7 +6,7 @@ When the price of gasoline or diesel changes at the refinery, **how much of it r
 
 This project answers with public data from ANP, Brazil's oil and fuel regulator: a Microsoft Fabric pipeline fetches every week the price at each surveyed gas station in Brazil and the average price of producers and importers, processes it in layers (lakehouse → warehouse), measures the pass-through of every price change and delivers a Power BI report.
 
-![Pass-through](docs/img/repasse.png)
+![Pass-through](docs/img/repasse.jpg)
 
 ## What the data shows
 
@@ -76,7 +76,7 @@ The same analysis runs for each city in RS with at least 5 stations surveyed in 
 
 | Pump x refinery | Cities |
 |---|---|
-| ![Pump x refinery](docs/img/bomba_refinaria.png) | ![Cities](docs/img/municipios.png) |
+| ![Pump x refinery](docs/img/bomba_refinaria.jpg) | ![Cities](docs/img/municipios.jpg) |
 
 ## How to run
 
@@ -112,7 +112,7 @@ On Fabric:
 ## Limitations
 
 - The South-region producers-and-importers price approximates what distributors in RS pay; it mixes refineries and importers.
-- ANP's survey is a sample: about 300 gasoline stations per week in RS on average, fewer in small cities.
+- ANP's survey is a sample: about 310 gasoline stations per week in RS on average, fewer in small cities.
 - The pass-through compares the pump with the fossil share; changes in anhydrous ethanol, biodiesel, freight, margins and ICMS also move the final price and are not separated here. For changes in the first half of 2023, ICMS was still a percentage rate, which slightly increases the expected pass-through.
 
 ## Structure
