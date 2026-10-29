@@ -1,0 +1,366 @@
+"""Gera o relatório (PBIR) em fabric/PrecosCombustiveis.Report, sobre o modelo PrecosCombustiveis.
+
+    python tools/gerar_relatorio.py
+
+Campos: "tabela.coluna" para colunas e o nome da medida para medidas (as medidas vêm de tools/gerar_modelo.py).
+"""
+import hashlib
+import json
+import shutil
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gerar_modelo import MEDIDAS, NOME, TABELAS  # noqa: E402
+
+RAIZ = Path(__file__).resolve().parents[1]
+DESTINO = RAIZ / "fabric" / f"{NOME}.Report"
+SCHEMA = "https://developer.microsoft.com/json-schemas/fabric/item/report/definition"
+TEMA_BASE = "CY26SU04"
+TEMA = "TemaPrecosCombustiveis.json"
+LARGURA, ALTURA = 1280, 720
+
+COR = {"pagina": "#0A1020", "cartao": "#111A2C", "borda": "#1E2940", "texto": "#E8EDF5", "suave": "#9AA7BD",
+       "apagado": "#62718B", "grade": "#1A2438", "alta": "#E8803A", "baixa": "#3FA7D6", "bomba": "#E8EDF5",
+       "refinaria": "#E8803A", "gasolina": "#F2B33D", "diesel": "#5B8DEF", "barra": "#24365C"}
+
+TABELA_DA_MEDIDA = {m[0]: tabela for tabela, medidas in MEDIDAS.items() for m in medidas}
+
+
+# --- blocos do formato PBIR ---------------------------------------------------------------------------------------
+
+def lit(valor) -> dict:
+    if isinstance(valor, bool):
+        texto = "true" if valor else "false"
+    elif isinstance(valor, int):
+        texto = f"{valor}L"
+    elif isinstance(valor, float):
+        texto = f"{valor}D"
+    else:
+        texto = "'" + str(valor).replace("'", "''") + "'"
+    return {"expr": {"Literal": {"Value": texto}}}
+
+
+def cor(hexa: str) -> dict:
+    return {"solid": {"color": lit(hexa)}}
+
+
+def campo(ref: str) -> dict:
+    if ref in TABELA_DA_MEDIDA:
+        return {"Measure": {"Expression": {"SourceRef": {"Entity": TABELA_DA_MEDIDA[ref]}}, "Property": ref}}
+    tabela, coluna = ref.split(".", 1)
+    if tabela not in TABELAS or coluna not in {c for c, _ in TABELAS[tabela]}:
+        raise KeyError(f"campo desconhecido: {ref}")
+    return {"Column": {"Expression": {"SourceRef": {"Entity": tabela}}, "Property": coluna}}
+
+
+def projecao(ref: str, rotulo: str | None = None, ativo: bool = False) -> dict:
+    f = campo(ref)
+    tipo = "Column" if "Column" in f else "Measure"
+    entidade, propriedade = f[tipo]["Expression"]["SourceRef"]["Entity"], f[tipo]["Property"]
+    p = {"field": f, "queryRef": f"{entidade}.{propriedade}", "nativeQueryRef": rotulo or propriedade}
+    if rotulo:
+        p["displayName"] = rotulo
+    if ativo:
+        p["active"] = True
+    return p
+
+
+def campos(refs) -> list[dict]:
+    return [projecao(*(r if isinstance(r, tuple) else (r,))) for r in refs]
+
+
+def _literal_filtro(v) -> str:
+    if isinstance(v, bool):
+        return "true" if v else "false"
+    return f"{v}L" if isinstance(v, int) else "'" + str(v).replace("'", "''") + "'"
+
+
+def filtro(ref: str, valores, nome: str, negar: bool = False) -> dict:
+    tabela, coluna = ref.split(".", 1)
+    valores = valores if isinstance(valores, list) else [valores]
+    condicao = {"In": {"Expressions": [{"Column": {"Expression": {"SourceRef": {"Source": "t"}}, "Property": coluna}}],
+                       "Values": [[{"Literal": {"Value": _literal_filtro(v)}}] for v in valores]}}
+    if negar:
+        condicao = {"Not": {"Expression": condicao}}
+    return {"name": nome, "field": campo(ref), "type": "Categorical",
+            "filter": {"Version": 2, "From": [{"Name": "t", "Entity": tabela, "Type": 0}],
+                       "Where": [{"Condition": condicao}]},
+            "howCreated": "User"}
+
+
+def moldura(titulo: str | None, subtitulo: str | None = None, fundo: str | None = COR["cartao"],
+            borda: bool = True, respiro: float = 12.0) -> dict:
+    objetos = {
+        "title": [{"properties": {"show": lit(bool(titulo)), **({
+            "text": lit(titulo), "fontColor": cor(COR["texto"]), "fontSize": lit(12.0),
+            "fontFamily": lit("Segoe UI Semibold")} if titulo else {})}}],
+        "background": [{"properties": {"show": lit(fundo is not None),
+                                       **({"color": cor(fundo), "transparency": lit(0.0)} if fundo else {})}}],
+        "border": [{"properties": {"show": lit(borda), "color": cor(COR["borda"]), "radius": lit(12.0)}}],
+        "dropShadow": [{"properties": {"show": lit(False)}}],
+        "visualHeader": [{"properties": {"show": lit(False)}}],
+        "padding": [{"properties": {k: lit(respiro) for k in ("top", "bottom", "left", "right")}}],
+    }
+    if subtitulo:
+        objetos["subTitle"] = [{"properties": {"show": lit(True), "text": lit(subtitulo),
+                                               "fontColor": cor(COR["suave"]), "fontSize": lit(9.0)}}]
+    return objetos
+
+
+# --- página -------------------------------------------------------------------------------------------------------
+
+class Pagina:
+
+    def __init__(self, nome: str, titulo: str, subtitulo: str):
+        self.nome, self.titulo = nome, titulo
+        self.visuais: list[dict] = []
+        self.texto(titulo, 24, 14, 760, 36, 20, COR["texto"], negrito=True)
+        self.texto(subtitulo, 24, 48, 900, 24, 10.5, COR["suave"])
+        self.valor("Texto Dados Até", 900, 22, 356, 28, 9.0, COR["apagado"])
+
+    def _add(self, x, y, w, h, visual: dict, filtros: list[dict] | None = None) -> None:
+        z = len(self.visuais) * 100
+        nome = hashlib.sha1(f"{self.nome}/{len(self.visuais)}".encode()).hexdigest()[:20]
+        conteiner = {
+            "$schema": f"{SCHEMA}/visualContainer/2.11.0/schema.json",
+            "name": nome,
+            "position": {"x": x, "y": y, "z": z, "height": h, "width": w, "tabOrder": z},
+            "visual": {**visual, "drillFilterOtherVisuals": True},
+        }
+        if filtros:
+            conteiner["filterConfig"] = {"filters": [
+                filtro(*f[:2], nome=hashlib.sha1(f"{nome}/{i}".encode()).hexdigest()[:20],
+                       negar=len(f) > 2 and f[2]) for i, f in enumerate(filtros)]}
+        self.visuais.append(conteiner)
+
+    def texto(self, conteudo, x, y, w, h, tamanho, cor_texto, negrito=False):
+        estilo = {"fontFamily": "Segoe UI Semibold" if negrito else "Segoe UI", "fontSize": f"{tamanho}pt",
+                  "color": cor_texto}
+        self._add(x, y, w, h, {
+            "visualType": "textbox",
+            "objects": {"general": [{"properties": {"paragraphs": [
+                {"textRuns": [{"value": conteudo, "textStyle": estilo}], "horizontalTextAlignment": "left"}]}}]},
+            "visualContainerObjects": moldura(None, fundo=None, borda=False, respiro=0.0)})
+
+    def valor(self, medida, x, y, w, h, tamanho, cor_valor, alinhamento="right"):
+        self._add(x, y, w, h, {
+            "visualType": "card",
+            "query": {"queryState": {"Values": {"projections": campos([medida])}}},
+            "objects": {"labels": [{"properties": {"fontSize": lit(float(tamanho)), "color": cor(cor_valor),
+                                                   "fontFamily": lit("Segoe UI")}}],
+                        "categoryLabels": [{"properties": {"show": lit(False)}}]},
+            "visualContainerObjects": moldura(None, fundo=None, borda=False, respiro=0.0)})
+
+    def kpi(self, medida, rotulo, contexto, x, y, w, h, filtros=None, cor_valor=COR["texto"]):
+        self._add(x, y, w, h, {
+            "visualType": "card",
+            "query": {"queryState": {"Values": {"projections": campos([medida])}}},
+            "objects": {"labels": [{"properties": {"fontSize": lit(26.0), "color": cor(cor_valor),
+                                                   "fontFamily": lit("Segoe UI Semibold")}}],
+                        "categoryLabels": [{"properties": {"show": lit(False)}}]},
+            "visualContainerObjects": moldura(rotulo, contexto)}, filtros)
+
+    def linhas(self, titulo, subtitulo, x, y, w, h, eixo, medidas, cores, legenda=None, filtros=None,
+               formato_eixo_y=None, eixo_continuo=False):
+        query = {"Category": {"projections": [projecao(eixo, ativo=True)]}, "Y": {"projections": campos(medidas)}}
+        if legenda:
+            query["Series"] = {"projections": [projecao(legenda)]}
+        pontos = []
+        if legenda:
+            for valor_legenda, c in cores.items():
+                pontos.append({"properties": {"fill": cor(c)}, "selector": {"data": [{"scopeId": {"Comparison": {
+                    "ComparisonKind": 0, "Left": campo(legenda),
+                    "Right": {"Literal": {"Value": _literal_filtro(valor_legenda)}}}}}]}})
+        else:
+            for medida, c in zip([m if isinstance(m, str) else m[0] for m in medidas], cores.values(), strict=True):
+                pontos.append({"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(medida)["queryRef"]}})
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
+                                             "showAxisTitle": lit(not eixo_continuo),
+                                             "titleColor": cor(COR["apagado"]), "titleFontSize": lit(8.5),
+                                             "axisType": lit("Continuous" if eixo_continuo else "Categorical"),
+                                             "gridlineShow": lit(False)}}],
+            "valueAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["apagado"]),
+                                          "showAxisTitle": lit(False), "gridlineShow": lit(True),
+                                          "gridlineColor": cor(COR["grade"]), "gridlineStyle": lit("solid"),
+                                          **({"labelDisplayUnits": lit(1.0)} if formato_eixo_y else {})}}],
+            "legend": [{"properties": {"show": lit(True), "position": lit("Top"), "showTitle": lit(False),
+                                       "fontSize": lit(9.0), "labelColor": cor(COR["suave"])}}],
+            "lineStyles": [{"properties": {"strokeWidth": lit(2.5), "showMarker": lit(not eixo_continuo),
+                                           "markerSize": lit(4.0)}}],
+            "dataPoint": pontos,
+        }
+        self._add(x, y, w, h, {"visualType": "lineChart", "query": {"queryState": query,
+                                                                     "sortDefinition": {"sort": [{
+                                                                         "field": campo(eixo),
+                                                                         "direction": "Ascending"}]}},
+                               "objects": objetos, "visualContainerObjects": moldura(titulo, subtitulo)}, filtros)
+
+    def tabela(self, titulo, subtitulo, x, y, w, h, colunas, ordem, crescente=False, filtros=None, barras=None):
+        objetos = {
+            "columnHeaders": [{"properties": {"fontColor": cor(COR["apagado"]), "bold": lit(True),
+                                              "backColor": cor(COR["cartao"]), "fontSize": lit(8.5),
+                                              "outline": lit("BottomOnly"), "wordWrap": lit(True)}}],
+            "values": [{"properties": {"fontSize": lit(9.0), "fontColorPrimary": cor(COR["texto"]),
+                                       "fontColorSecondary": cor(COR["texto"]), "backColorPrimary": cor(COR["cartao"]),
+                                       "backColorSecondary": cor(COR["cartao"])}}],
+            "grid": [{"properties": {"gridHorizontal": lit(True), "gridHorizontalColor": cor(COR["grade"]),
+                                     "gridVertical": lit(False), "outlineColor": cor(COR["borda"]),
+                                     "rowPadding": lit(5)}}],
+            "total": [{"properties": {"totals": lit(False)}}],
+        }
+        if barras:
+            objetos["columnFormatting"] = [
+                {"properties": {"dataBars": {"positiveColor": cor(c), "negativeColor": cor(c),
+                                             "axisColor": cor(COR["borda"]), "reverseDirection": lit(False),
+                                             "hideText": lit(False)}},
+                 "selector": {"metadata": projecao(ref)["queryRef"]}} for ref, c in barras.items()]
+        self._add(x, y, w, h, {
+            "visualType": "tableEx",
+            "query": {"queryState": {"Values": {"projections": campos(colunas)}},
+                      "sortDefinition": {"sort": [{"field": campo(ordem),
+                                                   "direction": "Ascending" if crescente else "Descending"}]}},
+            "objects": objetos, "visualContainerObjects": moldura(titulo, subtitulo)}, filtros)
+
+    def barras(self, titulo, subtitulo, x, y, w, h, categoria, medida, cor_barra, filtros=None, top=None):
+        query = {"Category": {"projections": [projecao(categoria, ativo=True)]},
+                 "Y": {"projections": campos([medida])}}
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["texto"]),
+                                             "showAxisTitle": lit(False), "maxMarginFactor": lit(40)}}],
+            "valueAxis": [{"properties": {"show": lit(False), "gridlineShow": lit(False)}}],
+            "labels": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "color": cor(COR["texto"])}}],
+            "dataPoint": [{"properties": {"defaultColor": cor(cor_barra)}}],
+        }
+        self._add(x, y, w, h, {"visualType": "clusteredBarChart",
+                               "query": {"queryState": query, "sortDefinition": {"sort": [{
+                                   "field": campo(medida), "direction": "Descending"}]}},
+                               "objects": objetos, "visualContainerObjects": moldura(titulo, subtitulo)}, filtros)
+
+
+# --- páginas ------------------------------------------------------------------------------------------------------
+
+GAS, DIESEL = ("dim_produto.produto", "GASOLINA"), ("dim_produto.produto", "DIESEL S10")
+ESTADO = ("repasse_resumo.escopo", "RS (estado)")
+CORES_DIRECAO = {"alta": COR["alta"], "baixa": COR["baixa"]}
+
+
+def paginas() -> list[Pagina]:
+    resumo = Pagina("P1Repasse", "Da refinaria à bomba no RS",
+                    "Quanto e em quanto tempo um reajuste na refinaria chega ao preço do posto, "
+                    "em % do repasse esperado")
+    y, w, h = 92, 293, 104
+    for i, (produto, rotulo, direcao, medida) in enumerate([
+        (GAS, "Gasolina · alta na refinaria", "alta", "Repasse em 4 Semanas (alta)"),
+        (GAS, "Gasolina · baixa na refinaria", "baixa", "Repasse em 4 Semanas (baixa)"),
+        (DIESEL, "Diesel S10 · alta na refinaria", "alta", "Repasse em 4 Semanas (alta)"),
+        (DIESEL, "Diesel S10 · baixa na refinaria", "baixa", "Repasse em 4 Semanas (baixa)"),
+    ]):
+        resumo.kpi(medida, rotulo, "repassado à bomba em 4 semanas (mediana)", 24 + i * (w + 10), y, w, h,
+                   filtros=[produto], cor_valor=CORES_DIRECAO[direcao])
+    for i, (produto, titulo) in enumerate([(GAS, "Gasolina comum"), (DIESEL, "Diesel S10")]):
+        resumo.linhas(titulo, "Repasse mediano semana a semana depois do reajuste (0 = semana do reajuste)",
+                      24 + i * 621, 208, 611, 492, "repasse_resumo.h", [("Repasse Mediano RS", "Repasse")],
+                      CORES_DIRECAO, legenda="repasse_resumo.direcao", filtros=[produto, ESTADO])
+
+    serie = Pagina("P2BombaRefinaria", "Bomba x refinaria",
+                   "Preço médio no posto (RS) e custo da parcela fóssil do litro na refinaria (região Sul)")
+    for i, (produto, titulo) in enumerate([(GAS, "Gasolina comum"), (DIESEL, "Diesel S10")]):
+        serie.linhas(titulo, "R$ por litro, por semana", 24, 92 + i * 236, 760, 226, "dim_semana.semana",
+                     [("Preço Bomba RS", "Bomba (RS)"), ("Custo Fóssil na Bomba", "Refinaria (parcela fóssil)")],
+                     {"bomba": COR["bomba"], "refinaria": COR["refinaria"]},
+                     filtros=[produto, ("dim_semana.ano", [2023, 2024, 2025, 2026, 2027])],
+                     formato_eixo_y=True, eixo_continuo=True)
+    serie.tabela("Reajustes na refinaria", "Do mais recente para o mais antigo", 794, 92, 462, 608,
+                 [("repasse_evento.semana_evento", "Semana"), ("dim_produto.produto", "Produto"),
+                  ("repasse_evento.direcao", "Sentido"), ("repasse_evento.variacao_refinaria_pct", "Refinaria"),
+                  ("repasse_evento.repasse_esperado", "Esperado na bomba"),
+                  ("repasse_evento.semanas_acompanhadas", "Semanas acomp.")],
+                 ordem="repasse_evento.semana_evento", filtros=[("dim_produto.produto", ["GASOLINA", "DIESEL S10"])])
+
+    municipios = Pagina("P3Municipios", "Municípios do RS",
+                        "Cidades com pelo menos 5 postos pesquisados na semana")
+    for i, (produto, titulo) in enumerate([(GAS, "Gasolina comum"), (DIESEL, "Diesel S10")]):
+        municipios.tabela(f"{titulo}: velocidade do repasse",
+                          "Semanas, na mediana, até a bomba chegar a 50% e 80% do repasse esperado (99 = não chegou)",
+                          24 + i * 621, 92, 611, 300,
+                          [("repasse_velocidade.escopo", "Município"), ("repasse_velocidade.direcao", "Sentido"),
+                           ("repasse_velocidade.eventos", "Reajustes"),
+                           ("repasse_velocidade.semanas_mediana_ate_50", "Até 50%"),
+                           ("repasse_velocidade.semanas_mediana_ate_80", "Até 80%")],
+                          ordem="repasse_velocidade.semanas_mediana_ate_80", crescente=True,
+                          filtros=[produto, ("repasse_velocidade.escopo", "RS (estado)", True)])
+        municipios.barras(f"{titulo}: preço na semana mais recente", "Média dos postos pesquisados, R$ por litro",
+                          24 + i * 621, 402, 611, 298, "fato_preco_municipio_semana.municipio",
+                          "Preço Município Última Semana", COR["gasolina"] if i == 0 else COR["diesel"],
+                          filtros=[produto, ("fato_preco_municipio_semana.uf", "RS"),
+                                   ("fato_preco_municipio_semana.amostra_suficiente", True)])
+    return [resumo, serie, municipios]
+
+
+def tema() -> dict:
+    return {"name": "TemaPrecosCombustiveis",
+            "dataColors": [COR[c] for c in ("alta", "baixa", "gasolina", "diesel", "bomba", "suave")],
+            "foreground": COR["texto"], "foregroundNeutralSecondary": COR["suave"],
+            "foregroundNeutralTertiary": COR["apagado"], "background": COR["cartao"], "backgroundLight": COR["cartao"],
+            "backgroundNeutral": COR["borda"], "tableAccent": COR["alta"],
+            "textClasses": {"callout": {"fontFace": "Segoe UI Semibold", "color": COR["texto"]},
+                            "title": {"fontFace": "Segoe UI Semibold", "color": COR["texto"], "fontSize": 12},
+                            "header": {"fontFace": "Segoe UI Semibold", "color": COR["texto"]},
+                            "label": {"fontFace": "Segoe UI", "color": COR["suave"]}},
+            "visualStyles": {"*": {"*": {"dropShadow": [{"show": False}], "visualHeader": [{"show": False}]}}}}
+
+
+def escrever(caminho: Path, conteudo) -> None:
+    caminho.parent.mkdir(parents=True, exist_ok=True)
+    texto = conteudo if isinstance(conteudo, str) else json.dumps(conteudo, ensure_ascii=False, indent=2) + "\n"
+    caminho.write_text(texto, encoding="utf-8")
+
+
+def gerar(destino: Path = DESTINO) -> list[Pagina]:
+    if destino.exists():
+        shutil.rmtree(destino)
+    lista = paginas()
+    escrever(destino / "definition.pbir", {
+        "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definitionProperties/2.0.0/schema.json",
+        "version": "4.0", "datasetReference": {"byPath": {"path": f"../{NOME}.SemanticModel"}}})
+    versao = {"visual": "2.8.0", "report": "3.2.0", "page": "2.3.1"}
+    escrever(destino / "definition" / "report.json", {
+        "$schema": f"{SCHEMA}/report/3.3.0/schema.json",
+        "themeCollection": {"baseTheme": {"name": TEMA_BASE, "reportVersionAtImport": versao, "type": "SharedResources"},
+                            "customTheme": {"name": TEMA, "reportVersionAtImport": versao,
+                                            "type": "RegisteredResources"}},
+        "resourcePackages": [
+            {"name": "RegisteredResources", "type": "RegisteredResources",
+             "items": [{"name": TEMA, "path": TEMA, "type": "CustomTheme"}]},
+            {"name": "SharedResources", "type": "SharedResources",
+             "items": [{"name": TEMA_BASE, "path": f"BaseThemes/{TEMA_BASE}.json", "type": "BaseTheme"}]}],
+        "settings": {"useStylableVisualContainerHeader": True, "exportDataMode": "AllowSummarized",
+                     "defaultDrillFilterOtherVisuals": True, "allowChangeFilterTypes": True,
+                     "useEnhancedTooltips": True, "useDefaultAggregateDisplayName": True}})
+    escrever(destino / "definition" / "version.json", {
+        "$schema": f"{SCHEMA}/versionMetadata/1.0.0/schema.json", "version": "2.0.0"})
+    escrever(destino / "definition" / "pages" / "pages.json", {
+        "$schema": f"{SCHEMA}/pagesMetadata/1.1.0/schema.json",
+        "pageOrder": [p.nome for p in lista], "activePageName": lista[0].nome})
+    for p in lista:
+        pasta = destino / "definition" / "pages" / p.nome
+        escrever(pasta / "page.json", {
+            "$schema": f"{SCHEMA}/page/2.1.0/schema.json", "name": p.nome, "displayName": p.titulo,
+            "displayOption": "FitToPage", "height": ALTURA, "width": LARGURA,
+            "objects": {"background": [{"properties": {"color": cor(COR["pagina"]), "transparency": lit(0.0)}}],
+                        "outspace": [{"properties": {"color": cor(COR["pagina"])}}]}})
+        for v in p.visuais:
+            escrever(pasta / "visuals" / v["name"] / "visual.json", v)
+    base = destino / "StaticResources" / "SharedResources" / "BaseThemes"
+    base.mkdir(parents=True, exist_ok=True)
+    shutil.copy(RAIZ / "tools" / "recursos" / f"{TEMA_BASE}.json", base / f"{TEMA_BASE}.json")
+    escrever(destino / "StaticResources" / "RegisteredResources" / TEMA, tema())
+    return lista
+
+
+if __name__ == "__main__":
+    gerado = gerar()
+    print(f"relatório gerado em {DESTINO.relative_to(RAIZ)}: "
+          + ", ".join(f"{p.titulo} ({len(p.visuais)} visuais)" for p in gerado))

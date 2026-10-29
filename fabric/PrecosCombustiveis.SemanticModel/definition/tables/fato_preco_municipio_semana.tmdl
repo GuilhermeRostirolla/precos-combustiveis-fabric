@@ -2,6 +2,19 @@ table fato_preco_municipio_semana
 	lineageTag: b3f43685-e815-55e8-a071-fb63e329a4fd
 	sourceLineageTag: [gold].[fato_preco_municipio_semana]
 
+	measure 'Preço Município Última Semana' = ```
+			VAR ultima = [Semana Mais Recente]
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( fato_preco_municipio_semana[preco_medio] ),
+			        fato_preco_municipio_semana[semana] = ultima,
+			        REMOVEFILTERS ( dim_semana )
+			    )
+			```
+		formatString: """R$"" #,0.000"
+		displayFolder: Preços
+		lineageTag: afe3a98e-9857-5a4a-976c-110ca46bbee8
+
 	column semana
 		dataType: dateTime
 		formatString: dd/MM/yyyy

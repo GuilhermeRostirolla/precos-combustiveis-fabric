@@ -1,0 +1,53 @@
+{
+  "name": "TemaPrecosCombustiveis",
+  "dataColors": [
+    "#E8803A",
+    "#3FA7D6",
+    "#F2B33D",
+    "#5B8DEF",
+    "#E8EDF5",
+    "#9AA7BD"
+  ],
+  "foreground": "#E8EDF5",
+  "foregroundNeutralSecondary": "#9AA7BD",
+  "foregroundNeutralTertiary": "#62718B",
+  "background": "#111A2C",
+  "backgroundLight": "#111A2C",
+  "backgroundNeutral": "#1E2940",
+  "tableAccent": "#E8803A",
+  "textClasses": {
+    "callout": {
+      "fontFace": "Segoe UI Semibold",
+      "color": "#E8EDF5"
+    },
+    "title": {
+      "fontFace": "Segoe UI Semibold",
+      "color": "#E8EDF5",
+      "fontSize": 12
+    },
+    "header": {
+      "fontFace": "Segoe UI Semibold",
+      "color": "#E8EDF5"
+    },
+    "label": {
+      "fontFace": "Segoe UI",
+      "color": "#9AA7BD"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "dropShadow": [
+          {
+            "show": false
+          }
+        ],
+        "visualHeader": [
+          {
+            "show": false
+          }
+        ]
+      }
+    }
+  }
+}

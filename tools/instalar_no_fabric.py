@@ -189,6 +189,61 @@ if not _agendas:
             "localTimeZoneId": "E. South America Standard Time"}})
     print("agenda      quartas 08:00 (Brasília):", _resposta.status_code)
 
+# --- modelo semântico e relatório ---------------------------------------------------------------------------------
+NOME_MODELO = "PrecosCombustiveis"
+_arvore = requests.get(f"https://api.github.com/repos/{REPOSITORIO}/git/trees/{COMMIT}?recursive=1", timeout=60).json()
+
+
+def _partes(pasta: str, ajustar=lambda caminho, texto: texto) -> list[dict]:
+    partes = []
+    for item in _arvore["tree"]:
+        if item["type"] != "blob" or not item["path"].startswith(pasta) or item["path"].endswith(".platform"):
+            continue
+        conteudo = requests.get(f"https://raw.githubusercontent.com/{REPOSITORIO}/{COMMIT}/{item['path']}",
+                                timeout=60).content
+        conteudo = ajustar(item["path"], conteudo)
+        partes.append({"path": item["path"][len(pasta):], "payloadType": "InlineBase64",
+                       "payload": base64.b64encode(conteudo).decode()})
+    return partes
+
+
+def _endereco_do_warehouse(caminho, conteudo):
+    if not caminho.endswith("expressions.tmdl"):
+        return conteudo
+    return re.sub(rb'Sql\.Database\("[^"]*", "[^"]*"\)',
+                  f'Sql.Database("{_servidor}", "{_warehouse}")'.encode(), conteudo)
+
+
+def _publicar(rota, nome, definicao, descricao):
+    existentes = {i["displayName"]: i for i in _cliente.get(f"v1/workspaces/{_ws}/{rota}").json()["value"]}
+    if nome in existentes:
+        _esperar(_cliente.post(f"v1/workspaces/{_ws}/{rota}/{existentes[nome]['id']}/updateDefinition",
+                               json={"definition": definicao}), f"atualizar {nome}")
+        print(f"atualizado  {nome} ({rota})")
+    else:
+        _esperar(_cliente.post(f"v1/workspaces/{_ws}/{rota}", json={"displayName": nome, "description": descricao,
+                                                                     "definition": definicao}), f"criar {nome}")
+        print(f"criado      {nome} ({rota})")
+    return {i["displayName"]: i for i in _cliente.get(f"v1/workspaces/{_ws}/{rota}").json()["value"]}[nome]["id"]
+
+
+_id_modelo = _publicar("semanticModels", NOME_MODELO,
+                       {"parts": _partes(f"fabric/{NOME_MODELO}.SemanticModel/", _endereco_do_warehouse)},
+                       "Preços de combustíveis no RS e repasse da refinaria à bomba (Direct Lake no wh_combustiveis)")
+
+
+def _ligar_ao_modelo(caminho, conteudo):
+    if not caminho.endswith("definition.pbir"):
+        return conteudo
+    pbir = json.loads(conteudo)
+    pbir["datasetReference"] = {"byConnection": {"connectionString": f"semanticmodelid={_id_modelo}"}}
+    return json.dumps(pbir).encode("utf-8")
+
+
+_publicar("reports", NOME_MODELO, {"format": "PBIR", "parts": _partes(f"fabric/{NOME_MODELO}.Report/",
+                                                                       _ligar_ao_modelo)},
+          "Da refinaria à bomba no RS: repasse dos reajustes, bomba x refinaria e municípios")
+
 print("\ninstalação concluída")
 
 if EXECUTAR:

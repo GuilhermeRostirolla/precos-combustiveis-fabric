@@ -145,6 +145,12 @@ MEDIDAS = {
         ("Texto Dados Até", "Preços", None,
          '"Postos pesquisados até a semana de " & FORMAT ( [Semana Mais Recente], "dd/MM/yyyy" )'),
     ],
+    "fato_preco_municipio_semana": [
+        ("Preço Município Última Semana", "Preços", REAIS,
+         "VAR ultima = [Semana Mais Recente]\nRETURN\n    CALCULATE (\n"
+         "        AVERAGE ( fato_preco_municipio_semana[preco_medio] ),\n"
+         "        fato_preco_municipio_semana[semana] = ultima,\n        REMOVEFILTERS ( dim_semana )\n    )"),
+    ],
     "fato_preco_produtor_semana": [
         ("Preço Refinaria Sul", "Refinaria", REAIS4,
          f"CALCULATE ( AVERAGE ( fato_preco_produtor_semana[preco_produtor] ), {SUL} )"),
