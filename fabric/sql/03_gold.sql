@@ -87,5 +87,65 @@ BEGIN
            CASE WHEN c.produto IS NULL THEN CAST(0 AS bit) ELSE CAST(1 AS bit) END AS tem_preco_refinaria
     FROM silver.preco_revenda AS r
     LEFT JOIN config.produto AS c ON c.produto = r.produto;
+
+    -- Do que é feito o preço no posto, semana a semana, por estado e para o Brasil (uf = 'BR').
+    -- Mesmo método da Síntese Semanal da ANP: preço no posto = refinaria (parte fóssil, sem tributos)
+    -- + tributos federais + ICMS + o restante (etanol anidro ou biodiesel, frete e margens).
+    -- A série de produtores e importadores oscila quando muda a proporção de importadores; usa-se a
+    -- mediana de três semanas, como na análise de repasse.
+    DROP TABLE IF EXISTS #produtor;
+    SELECT produto, regiao, semana, fracao_fossil, preco_produtor,
+           LAG(preco_produtor) OVER (PARTITION BY produto, regiao ORDER BY semana) AS anterior,
+           LEAD(preco_produtor) OVER (PARTITION BY produto, regiao ORDER BY semana) AS seguinte
+    INTO #produtor
+    FROM gold.fato_preco_produtor_semana;
+
+    DROP TABLE IF EXISTS #produtor_suavizado;
+    SELECT produto, regiao, semana, fracao_fossil,
+           CASE WHEN anterior IS NULL OR seguinte IS NULL THEN preco_produtor
+                ELSE preco_produtor + anterior + seguinte
+                     - CASE WHEN preco_produtor >= anterior AND preco_produtor >= seguinte THEN preco_produtor
+                            WHEN anterior >= seguinte THEN anterior ELSE seguinte END
+                     - CASE WHEN preco_produtor <= anterior AND preco_produtor <= seguinte THEN preco_produtor
+                            WHEN anterior <= seguinte THEN anterior ELSE seguinte END
+           END AS preco_produtor
+    INTO #produtor_suavizado
+    FROM #produtor;
+
+    -- Preço no posto por estado e a média do Brasil (média de todos os postos pesquisados).
+    DROP TABLE IF EXISTS #posto;
+    SELECT u.semana, u.uf, u.produto, u.preco_medio AS preco_posto, u.coletas
+    INTO #posto
+    FROM gold.fato_preco_uf_semana AS u
+    JOIN config.produto AS c ON c.produto = u.produto
+    UNION ALL
+    SELECT u.semana, 'BR', u.produto,
+           CAST(SUM(u.preco_medio * u.coletas) / SUM(u.coletas) AS decimal(8,4)), SUM(u.coletas)
+    FROM gold.fato_preco_uf_semana AS u
+    JOIN config.produto AS c ON c.produto = u.produto
+    GROUP BY u.semana, u.produto;
+
+    DROP TABLE IF EXISTS gold.composicao_preco_semana;
+    CREATE TABLE gold.composicao_preco_semana AS
+    SELECT x.semana, x.uf, x.produto, x.preco_posto, x.fracao_fossil,
+           CAST(x.refinaria AS decimal(8,4)) AS refinaria,
+           CAST(x.tributos_federais AS decimal(8,4)) AS tributos_federais,
+           x.icms,
+           CAST(x.preco_posto - x.refinaria - x.tributos_federais - x.icms AS decimal(8,4)) AS outros
+    FROM (
+        SELECT p.semana, p.uf, p.produto, p.preco_posto, s.fracao_fossil, t.icms,
+               s.fracao_fossil * (s.preco_produtor - t.federal_fossil) AS refinaria,
+               s.fracao_fossil * t.federal_fossil + (1 - s.fracao_fossil) * t.federal_bio AS tributos_federais
+        FROM #posto AS p
+        JOIN config.uf_regiao AS r ON r.uf = p.uf
+        JOIN #produtor_suavizado AS s ON s.produto = p.produto AND s.regiao = r.regiao AND s.semana = p.semana
+        JOIN config.tributo AS t ON t.produto = p.produto AND p.semana BETWEEN t.vigente_de AND t.vigente_ate
+    ) AS x;
+
+    DROP TABLE IF EXISTS gold.evento;
+    CREATE TABLE gold.evento AS
+    SELECT data, DATEADD(day, -(DATEDIFF(day, '19000101', data) % 7), data) AS semana,
+           produto, tipo, descricao
+    FROM config.evento;
 END;
 GO

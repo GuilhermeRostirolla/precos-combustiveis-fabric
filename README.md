@@ -33,7 +33,7 @@ São poucos reajustes por grupo (6 a 11), então os números indicam um padrão,
 | [Série histórica de preços de combustíveis](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis) (ANP) | Preço de venda de cada posto pesquisado, por produto e data da coleta | Arquivos semestrais compactados desde 2023 e, para o semestre corrente, os mensais. Só baixa de novo o que é novo ou mudou de tamanho |
 | [Preços médios ponderados semanais de produtores e importadores](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/ppidp/precos-medios-ponderados-semanais-2013.xls) (ANP) | Preço médio semanal, sem ICMS, de gasolina A e diesel S10 A, por região | Uma planilha .xls, recarregada inteira |
 
-A gasolina vendida no posto é a gasolina A com etanol anidro (27% até jul/2025, 30% depois), e o diesel S10 é o diesel A com biodiesel (B10 a B15). A mistura vigente em cada semana fica numa tabela de configuração e define a parcela fóssil do litro.
+A gasolina vendida no posto é a gasolina A com etanol anidro (27% até jul/2025, 30% de ago/2025 a jul/2026 e 32% desde ago/2026), e o diesel S10 é o diesel A com biodiesel (B10 a B15). A mistura vigente em cada semana fica numa tabela de configuração e define a parcela fóssil do litro.
 
 ## Arquitetura
 

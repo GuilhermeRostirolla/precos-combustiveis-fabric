@@ -27,7 +27,7 @@ INSERT INTO config.produto VALUES
 GO
 
 -- Fração fóssil do litro vendido no posto, conforme o mandato de mistura vigente.
--- Gasolina: E27 desde 16/03/2015 e E30 desde 01/08/2025.
+-- Gasolina: E27 desde 16/03/2015, E30 desde 01/08/2025 e E32 desde 01/08/2026 (Resolução CNPE 9/2026).
 -- Diesel: B10 em 2022, B12 (04/2023), B14 (03/2024) e B15 (08/2025). Antes de 2022 o mandato do biodiesel
 -- mudou várias vezes (B10 a B13 entre 2020 e 2021); como a análise começa em 2023, a tabela parte de 2022.
 DROP TABLE IF EXISTS config.mistura;
@@ -42,7 +42,8 @@ CREATE TABLE config.mistura (
 GO
 INSERT INTO config.mistura VALUES
     ('GASOLINA',   '2015-03-16', '2025-07-31', 0.7300, 'E27'),
-    ('GASOLINA',   '2025-08-01', '2099-12-31', 0.7000, 'E30'),
+    ('GASOLINA',   '2025-08-01', '2026-07-31', 0.7000, 'E30'),
+    ('GASOLINA',   '2026-08-01', '2099-12-31', 0.6800, 'E32'),
     ('DIESEL S10', '2022-01-01', '2023-03-31', 0.9000, 'B10'),
     ('DIESEL S10', '2023-04-01', '2024-02-29', 0.8800, 'B12'),
     ('DIESEL S10', '2024-03-01', '2025-07-31', 0.8600, 'B14'),
@@ -64,4 +65,78 @@ INSERT INTO config.parametro VALUES
     ('preco_minimo', 1.500000, 'Preço de venda abaixo disso vai para a quarentena (R$/litro)'),
     ('preco_maximo', 15.000000, 'Preço de venda acima disso vai para a quarentena (R$/litro)'),
     ('postos_minimos', 5, 'Postos pesquisados na semana para a média de um município entrar na análise');
+GO
+
+-- Região de cada estado, para usar o preço de produtores e importadores da região certa.
+DROP TABLE IF EXISTS config.uf_regiao;
+GO
+CREATE TABLE config.uf_regiao (
+    uf char(2) NOT NULL,
+    regiao varchar(20) NOT NULL
+);
+GO
+INSERT INTO config.uf_regiao VALUES
+    ('AC','Norte'), ('AM','Norte'), ('AP','Norte'), ('PA','Norte'), ('RO','Norte'), ('RR','Norte'), ('TO','Norte'),
+    ('AL','Nordeste'), ('BA','Nordeste'), ('CE','Nordeste'), ('MA','Nordeste'), ('PB','Nordeste'),
+    ('PE','Nordeste'), ('PI','Nordeste'), ('RN','Nordeste'), ('SE','Nordeste'),
+    ('DF','Centro-Oeste'), ('GO','Centro-Oeste'), ('MS','Centro-Oeste'), ('MT','Centro-Oeste'),
+    ('ES','Sudeste'), ('MG','Sudeste'), ('RJ','Sudeste'), ('SP','Sudeste'),
+    ('PR','Sul'), ('RS','Sul'), ('SC','Sul'),
+    ('BR','Brasil');
+GO
+
+-- Tributos por litro, para dividir o preço do posto em partes (mesmo método da Síntese Semanal da ANP).
+-- icms: valor fixo por litro vendido no posto, igual em todo o país (Convênios ICMS do Confaz).
+-- federal_fossil: PIS/Pasep, Cofins e Cide por litro de gasolina A ou diesel A.
+-- federal_bio: PIS/Pasep e Cofins por litro de etanol anidro ou biodiesel.
+-- Os valores federais são as alíquotas cheias que a ANP soma ao preço de produtores e importadores.
+-- As reduções temporárias de 2026 (diesel desde 12/03; gasolina a partir de 10/09) não entram nessa
+-- planilha da ANP, então também não entram aqui: ficam registradas em config.evento.
+DROP TABLE IF EXISTS config.tributo;
+GO
+CREATE TABLE config.tributo (
+    produto varchar(40) NOT NULL,
+    vigente_de date NOT NULL,
+    vigente_ate date NOT NULL,
+    icms decimal(8,4) NOT NULL,
+    federal_fossil decimal(8,4) NOT NULL,
+    federal_bio decimal(8,4) NOT NULL
+);
+GO
+INSERT INTO config.tributo VALUES
+    ('GASOLINA',   '2024-01-01', '2024-01-31', 1.2200, 0.8925, 0.1922),
+    ('GASOLINA',   '2024-02-01', '2025-01-31', 1.3700, 0.8925, 0.1922),
+    ('GASOLINA',   '2025-02-01', '2025-12-31', 1.4700, 0.8925, 0.1922),
+    ('GASOLINA',   '2026-01-01', '2099-12-31', 1.5700, 0.8925, 0.1922),
+    ('DIESEL S10', '2024-01-01', '2024-01-31', 0.9456, 0.3515, 0.1480),
+    ('DIESEL S10', '2024-02-01', '2025-01-31', 1.0635, 0.3515, 0.1480),
+    ('DIESEL S10', '2025-02-01', '2025-12-31', 1.1200, 0.3515, 0.1480),
+    ('DIESEL S10', '2026-01-01', '2099-12-31', 1.1700, 0.3515, 0.1480);
+GO
+
+-- Acontecimentos que ajudam a explicar as mudanças de preço (aparecem no relatório).
+DROP TABLE IF EXISTS config.evento;
+GO
+CREATE TABLE config.evento (
+    data date NOT NULL,
+    produto varchar(40) NOT NULL, -- GASOLINA, DIESEL S10 ou TODOS
+    tipo varchar(20) NOT NULL,    -- Imposto, Mistura, Mercado
+    descricao varchar(300) NOT NULL
+);
+GO
+INSERT INTO config.evento VALUES
+    ('2024-02-01', 'GASOLINA',   'Imposto', 'ICMS da gasolina sobe de R$ 1,22 para R$ 1,37 por litro'),
+    ('2024-02-01', 'DIESEL S10', 'Imposto', 'ICMS do diesel sobe de R$ 0,95 para R$ 1,06 por litro'),
+    ('2024-03-01', 'DIESEL S10', 'Mistura', 'Mistura de biodiesel no diesel passa de 12% para 14%'),
+    ('2025-02-01', 'GASOLINA',   'Imposto', 'ICMS da gasolina sobe de R$ 1,37 para R$ 1,47 por litro'),
+    ('2025-02-01', 'DIESEL S10', 'Imposto', 'ICMS do diesel sobe de R$ 1,06 para R$ 1,12 por litro'),
+    ('2025-08-01', 'GASOLINA',   'Mistura', 'Mistura de etanol na gasolina passa de 27% para 30%'),
+    ('2025-08-01', 'DIESEL S10', 'Mistura', 'Mistura de biodiesel no diesel passa de 14% para 15%'),
+    ('2026-01-01', 'GASOLINA',   'Imposto', 'ICMS da gasolina sobe de R$ 1,47 para R$ 1,57 por litro'),
+    ('2026-01-01', 'DIESEL S10', 'Imposto', 'ICMS do diesel sobe de R$ 1,12 para R$ 1,17 por litro'),
+    ('2026-03-01', 'TODOS',      'Mercado', 'Petróleo dispara com o conflito no Oriente Médio'),
+    ('2026-03-12', 'DIESEL S10', 'Imposto', 'Governo zera PIS/Cofins do diesel e cria subvenção a produtores e importadores'),
+    ('2026-08-01', 'GASOLINA',   'Mistura', 'Mistura de etanol na gasolina passa de 30% para 32%'),
+    ('2026-09-10', 'GASOLINA',   'Imposto', 'Governo reduz PIS/Cofins da gasolina em R$ 0,63 por litro até 05/10'),
+    ('2026-10-09', 'GASOLINA',   'Imposto', 'Governo anuncia tributos federais da gasolina zerados por 30 dias');
 GO

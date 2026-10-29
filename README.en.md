@@ -33,7 +33,7 @@ Each group has few price changes (6 to 11), so the numbers point to a pattern, n
 | [Fuel price historical series](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis) (ANP) | Selling price at each surveyed gas station, by product and collection date | Zipped half-year files since 2023 and, for the current half-year, the monthly files. Only new or resized files are downloaded again |
 | [Weekly weighted average prices of producers and importers](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/ppidp/precos-medios-ponderados-semanais-2013.xls) (ANP) | Weekly average price, without ICMS, of gasoline A and S10 diesel A, by region | One .xls sheet, fully reloaded |
 
-Gasoline sold at the pump is gasoline A blended with anhydrous ethanol (27% until Jul/2025, 30% after), and S10 diesel is diesel A blended with biodiesel (B10 to B15). The blend in force each week lives in a configuration table and sets the fossil share of the liter.
+Gasoline sold at the pump is gasoline A blended with anhydrous ethanol (27% until Jul/2025, 30% from Aug/2025 to Jul/2026 and 32% since Aug/2026), and S10 diesel is diesel A blended with biodiesel (B10 to B15). The blend in force each week lives in a configuration table and sets the fossil share of the liter.
 
 ## Architecture
 
