@@ -296,7 +296,7 @@ class Pagina:
                                              "axisType": lit("Categorical")}}],
             "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False),
                                           "gridlineShow": lit(False)}}],
-            "legend": [{"properties": {"show": lit(True), "position": lit("TopLeft"), "showTitle": lit(False),
+            "legend": [{"properties": {"show": lit(True), "position": lit("Top"), "showTitle": lit(False),
                                        "fontSize": lit(9.0), "labelColor": cor(COR["suave"])}}],
             "labels": [{"properties": {"show": lit(False)}}],
             "totals": [{"properties": {"show": lit(True), "color": cor(COR["texto"]), "fontSize": lit(9.0)}}],
@@ -312,7 +312,7 @@ class Pagina:
     def barras_coloridas(self, x, y, w, h, categoria, medida, medida_cor):
         objetos = {
             "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["texto"]),
-                                             "showAxisTitle": lit(False), "maxMarginFactor": lit(45)}}],
+                                             "showAxisTitle": lit(False), "maxMarginFactor": lit(60)}}],
             "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
             "labels": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "color": cor(COR["texto"])}}],
             "dataPoint": [{"properties": {"fill": {"solid": {"color": {"expr": campo(medida_cor)}}}},
