@@ -1,30 +1,30 @@
-# Da refinaria à bomba no RS · Microsoft Fabric + Power BI
+# Por que o combustível ficou mais caro? · Microsoft Fabric + Power BI
 
 [English version](README.en.md)
 
-Quando o preço da gasolina ou do diesel muda na refinaria, **quanto disso chega ao posto no Rio Grande do Sul, e em quanto tempo?** E chega igual quando sobe e quando cai?
+O preço da gasolina e do diesel no posto é a soma de três partes: **refinaria**, **impostos** e **etanol/biodiesel, frete e margens**. Este projeto mostra, para o Brasil e para cada estado, quanto custa o litro hoje, quanto mudou e qual dessas partes explica a mudança.
 
-Este projeto responde com dados públicos da ANP: um pipeline no Microsoft Fabric busca toda semana o preço de cada posto pesquisado no Brasil e o preço médio de produtores e importadores, trata tudo em camadas (lakehouse → warehouse), mede o repasse de cada reajuste e entrega um relatório no Power BI.
+Um pipeline no Microsoft Fabric busca toda semana os dados públicos da ANP (preço de cada posto pesquisado, levantamento semanal por estado e preço de produtores e importadores), trata tudo em camadas (lakehouse → warehouse), divide o preço do litro pelo método da Síntese Semanal da ANP e entrega um relatório no Power BI.
 
-![Repasse](docs/img/repasse.jpg)
+![Visão geral](docs/img/visao_geral.jpg)
 
 ## O que os dados mostram
 
-Desde janeiro de 2023, a série da refinaria (região Sul) teve **31 reajustes**: 12 na gasolina e 19 no diesel S10. Para cada um, comparei a variação no preço médio dos postos do RS com o que a refinaria explicaria (variação × parcela fóssil do litro).
+Semana de 19/10/2026, média do Brasil, comparada com a mesma semana de 2025:
 
-| Quanto do reajuste chegou à bomba (RS) | na semana | em 1 semana | em 2 semanas |
-|---|---|---|---|
-| Gasolina, **alta** na refinaria (6 reajustes) | 69% | 125% | 150% |
-| Gasolina, **baixa** na refinaria (6 reajustes) | 15% | 35% | 39% |
-| Diesel S10, **alta** na refinaria (8 reajustes) | 18% | 53% | 89% |
-| Diesel S10, **baixa** na refinaria (11 reajustes) | 10% | 28% | 44% |
+| | Gasolina comum | Diesel S10 |
+|---|---|---|
+| Preço no posto | R$ 6,21 → **R$ 6,49** (+R$ 0,28) | R$ 6,11 → **R$ 7,30** (+R$ 1,19) |
+| Refinaria | +R$ 0,28 | +R$ 0,38 |
+| Impostos | −R$ 0,52 | −R$ 0,25 |
+| Etanol/biodiesel, frete e margens | +R$ 0,52 | +R$ 1,06 |
 
-*Repasse ponderado: soma das variações na bomba ÷ soma do que a refinaria explicaria, então cada reajuste pesa pelo seu tamanho. Acima de 100% = a bomba subiu mais do que o custo do derivado fóssil explica.*
+- **O governo cortou impostos, mas o preço subiu mesmo assim.** Na gasolina, os tributos federais foram reduzidos em setembro e zerados em outubro de 2026; o litro pagou R$ 0,52 a menos de imposto, e o preço no posto ainda subiu R$ 0,28.
+- **A maior parte da alta está depois da refinaria.** No diesel, R$ 1,06 dos R$ 1,19 de aumento estão em biodiesel, frete e margens. Na gasolina, essa parte subiu R$ 0,52, tanto quanto o corte de impostos.
+- **O corte de setembro não chegou à bomba.** Depois de 10/09, a gasolina continuou entre R$ 6,56 e R$ 6,57 por três semanas.
+- **Diferenças regionais:** a gasolina custa R$ 6,91 no Norte e R$ 6,34 no Sul.
 
-- **Sobe de foguete, desce de pena.** Na gasolina, as altas chegam inteiras ao posto em uma semana; nas baixas, menos de 40% chegou em duas semanas. No diesel a assimetria é menor, mas existe.
-- **O choque do diesel em 2026** é o caso mais claro. Em março a refinaria subiu 50% em três semanas (de R$ 3,64 para R$ 5,45 por litro, média de produtores e importadores do Sul) e o diesel S10 no RS foi de R$ 6,19 para R$ 7,51: 86% do esperado em três semanas. Em abril a refinaria voltou para R$ 3,77; três semanas depois, só 27% da queda tinha chegado à bomba. Em agosto, com a refinaria de volta ao nível de fevereiro, o diesel no RS ainda custava R$ 6,59, R$ 0,40 acima de antes do choque.
-
-São poucos reajustes por grupo (6 a 11), então os números indicam um padrão, não uma lei. E o preço na bomba tem outros componentes que também mudam (etanol anidro e biodiesel, frete, margens e ICMS); a análise mede o quanto a bomba se moveu em relação ao que a refinaria explicaria, não prova a causa da diferença.
+O que cada indicador calcula, a conferência com a ANP e os impostos considerados estão em [docs/indicadores.md](docs/indicadores.md).
 
 ## Fontes
 
@@ -32,6 +32,8 @@ São poucos reajustes por grupo (6 a 11), então os números indicam um padrão,
 |---|---|---|
 | [Série histórica de preços de combustíveis](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis) (ANP) | Preço de venda de cada posto pesquisado, por produto e data da coleta | Arquivos semestrais compactados desde 2023 e, para o semestre corrente, os mensais. Só baixa de novo o que é novo ou mudou de tamanho |
 | [Preços médios ponderados semanais de produtores e importadores](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/ppidp/precos-medios-ponderados-semanais-2013.xls) (ANP) | Preço médio semanal, sem ICMS, de gasolina A e diesel S10 A, por região | Uma planilha .xls, recarregada inteira |
+| Levantamento semanal de preços por estado (ANP) | Preço médio de revenda de cada estado e produto, toda semana | Uma planilha .xlsx; cobre as semanas que a série posto a posto ainda não trouxe (ela sai por mês, com atraso) |
+| Decretos e convênios (tabela `config.tributo`) | ICMS e tributos federais por litro, inclusive os cortes de 2026 | Configuração versionada no repositório |
 
 A gasolina vendida no posto é a gasolina A com etanol anidro (27% até jul/2025, 30% de ago/2025 a jul/2026 e 32% desde ago/2026), e o diesel S10 é o diesel A com biodiesel (B10 a B15). A mistura vigente em cada semana fica numa tabela de configuração e define a parcela fóssil do litro.
 
@@ -51,12 +53,22 @@ flowchart LR
 
 - **Bronze (`nb_01_ingestao`)**: lê a página da ANP, descobre os arquivos (o nome dos arquivos mensais mudou ao longo do tempo) e grava cada um como veio, com o arquivo de origem e a hora da carga. Uma tabela de controle guarda tamanho e hash de cada arquivo; os dois mais recentes são sempre reprocessados porque a ANP ainda os corrige.
 - **Silver (T-SQL)**: tipa datas e valores, fica só com combustível líquido vendido por litro e deduplica (o mesmo posto, produto e dia pode vir em dois arquivos). Registro inválido não some: vai para a quarentena com o motivo (`data_invalida`, `valor_fora_da_faixa`, `unidade_inesperada`…).
-- **Gold (T-SQL)**: preço médio, mediano e faixa por semana, município e estado; preço da refinaria com a parcela fóssil de cada semana; calendário semanal.
-- **Análise (T-SQL)**: estudo de eventos do repasse (abaixo).
-- **Modelo e relatório**: o modelo semântico (TMDL, Direct Lake sobre o Warehouse) e o relatório (PBIR, 3 páginas) são gerados por código em `tools/` e publicados pelo instalador.
+- **Gold (T-SQL)**: preço médio, mediano e faixa por semana, município e estado; preço da refinaria com a parcela fóssil de cada semana; a divisão do preço do litro em refinaria, impostos e o restante, por estado e para o Brasil; calendário semanal.
+- **Análise (T-SQL)**: estudo de eventos do repasse da refinaria à bomba no RS (abaixo).
+- **Modelo e relatório**: o modelo semântico (TMDL, Direct Lake sobre o Warehouse) e o relatório (PBIR) são gerados por código em `tools/` e publicados pelo instalador. A imagem de fundo da página (molduras) é desenhada em HTML e gerada com Playwright.
 - **Orquestração**: um pipeline do Data Factory roda tudo toda quarta às 8h. A ANP atualiza a planilha de refinaria com cerca de 12 dias de atraso.
 
-## Como o repasse é medido
+## Como o preço é dividido
+
+Mesmo método da [Síntese Semanal da ANP](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/sintese-semanal-do-comportamento-dos-precos-dos-combustiveis): preço no posto = refinaria (parcela fóssil, sem tributos) + tributos federais + ICMS + o restante (etanol anidro ou biodiesel, frete e margens), com o posto da semana comparado com a refinaria da semana anterior.
+
+A diferença em relação à Síntese é que os **tributos federais são os efetivamente cobrados**, calculados dia a dia. A Síntese usa sempre a alíquota cheia, então, durante os cortes de 2026, o corte aparece como queda do preço da refinaria. A prova está nos dados: quando os tributos da gasolina foram zerados (10/10/2026), o preço de produtores e importadores caiu R$ 0,28, quase o imposto que saiu (R$ 0,26); e, depois de 10/09, a Síntese mostra a gasolina A a R$ 2,56, enquanto a Petrobras a vendia a R$ 3,05 sem tributos. Fora dos períodos de corte, os números batem com a Síntese (tabela em [docs/indicadores.md](docs/indicadores.md)).
+
+## Análise complementar: repasse da refinaria à bomba no RS
+
+O warehouse também mede, reajuste a reajuste, quanto da mudança na refinaria chega aos postos do Rio Grande do Sul. Desde janeiro de 2023 foram 31 reajustes na refinaria da região Sul: na gasolina, as altas chegaram inteiras ao posto em uma semana, e nas baixas menos de 40% chegou em duas semanas.
+
+### Como o repasse é medido
 
 1. **Série da refinaria**: preço médio de produtores e importadores da região Sul, **suavizado pela mediana de 3 semanas**. A planilha mistura refinarias e importadores, e a proporção muda de uma semana para outra; sem a suavização, um pico de uma semana (gasolina: 3,50 → 4,53 → 3,50 em agosto/2026) virava um falso reajuste de −23%.
 2. **Reajuste**: semana em que a série suavizada varia 2% ou mais. Semanas seguidas no mesmo sentido contam como um reajuste só (a alta do diesel em 2026 veio ao longo de três semanas).
@@ -69,14 +81,12 @@ A mesma análise roda para cada município do RS com pelo menos 5 postos pesquis
 ## Qualidade e conferência
 
 - **Regras de qualidade** (`fabric/sql/05_qualidade.sql`), gravadas a cada execução em `qualidade.resultado`: reconciliação de linhas entre bronze, silver e quarentena; chaves duplicadas na silver e na gold; refinaria sem mistura configurada no período analisado; média do RS fora de faixa; semanas faltando; fontes desatualizadas; picos de uma semana na refinaria. Regra com severidade `erro` interrompe o pipeline.
-- **Conferência independente** (`nb_02_conferencia`): recalcula em Python, direto da bronze, o preço médio semanal do RS, a lista de reajustes e a curva de repasse, e compara com o que o Warehouse produziu em T-SQL. Se não bater, o pipeline falha. Foi essa conferência que confirmou que a regra nova de reajustes dá o mesmo resultado nas duas linguagens.
-- **Testes** (`tests/`): leitura dos arquivos da ANP (BOM, latin-1, zip, colunas faltando), descoberta dos arquivos na página nos dois formatos de nome e conversão da planilha de refinaria.
+- **Conferência independente** (`nb_02_conferencia`): recalcula em Python, direto da bronze, o preço médio semanal do RS, a lista de reajustes e a curva de repasse, e compara com o que o Warehouse produziu em T-SQL. Se não bater, o pipeline falha. Antes de conferir, atualiza o modelo semântico, para que tabelas novas da gold apareçam no Direct Lake.
+- **Testes** (`tests/`): leitura dos arquivos da ANP (BOM, latin-1, zip, colunas faltando), descoberta dos arquivos na página nos dois formatos de nome, conversão da planilha de refinaria e do levantamento semanal por estado.
 
 ## Relatório
 
-| Bomba x refinaria | Municípios |
-|---|---|
-| ![Bomba x refinaria](docs/img/bomba_refinaria.jpg) | ![Municípios](docs/img/municipios.jpg) |
+Uma página, em tema escuro, sem textos de apoio: cinco cartões (preço no posto, variação em 4 semanas e em 12 meses, impostos no litro e etanol ÷ gasolina, que vira a variação da refinaria quando o diesel é escolhido), a composição do preço semana a semana, o que mudou em cada parte em 12 meses e o preço por região. Filtros de combustível (gasolina comum ou diesel S10) e de estado.
 
 ## Como rodar
 
@@ -108,12 +118,18 @@ No Fabric:
 - **Tabelas temporárias no Warehouse do Fabric.** Só uma temporária criada com `SELECT ... INTO` pode ser combinada com tabelas do warehouse na mesma consulta; por isso as regras de qualidade ficam num único `SELECT INTO`.
 - **SQL endpoint atrasado.** Logo depois da ingestão, o endpoint do lakehouse ainda não enxerga as tabelas novas; o notebook pede a atualização dos metadados antes de o Warehouse ler a bronze.
 - **Decimal do SQL no Python.** O `pyodbc` devolve `decimal.Decimal`, que não se mistura com `float` nas contas da conferência.
+- **Cortes de imposto no meio da semana.** Os cortes de 2026 começaram numa quinta (10/09) e num sábado (10/10). Com o imposto da semana inteira, uma semana aparecia com R$ 0,40 a mais de margem; o tributo passou a ser a média dos dias.
+- **A planilha da refinaria traz o imposto cobrado, não o cheio.** A primeira versão descontava a alíquota cheia, e o corte de setembro aparecia como queda da refinaria. A queda de R$ 0,28 quando os tributos foram zerados em outubro mostrou o contrário.
+- **Dados com um mês de atraso.** A série posto a posto sai por mês; o levantamento semanal por estado completa as semanas mais recentes. A última semana de cada mês da série vem incompleta e é substituída pelo levantamento semanal.
+- **Tabela antiga presa no modelo.** Uma tabela removida da gold continuava como arquivo no modelo gerado e fazia a atualização falhar; o gerador agora apaga arquivos de tabelas que saíram.
 
 ## Limitações
 
-- O preço de produtores e importadores da região Sul é uma aproximação do que as distribuidoras do RS pagam; ele mistura refinarias e importadores.
-- A pesquisa da ANP é amostral: em média 310 postos de gasolina por semana no RS, menos nos municípios pequenos.
-- O repasse compara a bomba com a parcela fóssil; mudanças no preço do etanol anidro, do biodiesel, do frete, das margens e do ICMS também mexem no preço final e não são separadas aqui. Nos reajustes do primeiro semestre de 2023 o ICMS ainda era uma alíquota, o que aumenta um pouco o repasse esperado.
+- A ANP só publica o preço de refinaria por região: um estado usa o da região dele (a página mostra qual).
+- A pesquisa da ANP é amostral (cerca de 4.500 postos de gasolina por semana no Brasil, menos de 50 em alguns estados); variações de poucos centavos podem ser só diferença de amostra.
+- "Etanol/biodiesel, frete e margens" é o que sobra da conta: não há fonte pública semanal que separe cada item.
+- O preço de produtores e importadores mistura refinarias e importadores; as subvenções de 2026 aparecem como preço menor da refinaria.
+- No estudo de repasse, mudanças no etanol anidro, no biodiesel, no frete, nas margens e no ICMS também mexem no preço final e não são separadas.
 
 ## Estrutura
 
@@ -124,6 +140,7 @@ fabric/sql/                 config, silver, gold, análise do repasse e qualidad
 fabric/*.SemanticModel/     modelo semântico (TMDL), gerado por tools/gerar_modelo.py
 fabric/*.Report/            relatório (PBIR), gerado por tools/gerar_relatorio.py
 tools/instalar_no_fabric.py instalação e atualização no workspace
+docs/indicadores.md         o que cada indicador calcula e a conferência com a ANP
 tests/
 ```
 
