@@ -195,13 +195,6 @@
                 }
               }
             },
-            "start": {
-              "expr": {
-                "Literal": {
-                  "Value": "0.0D"
-                }
-              }
-            },
             "gridlineShow": {
               "expr": {
                 "Literal": {
@@ -273,27 +266,6 @@
                   "Value": "9.0D"
                 }
               }
-            },
-            "seriesFontFamily": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Segoe UI Semibold'"
-                }
-              }
-            },
-            "seriesWordWrap": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "seriesMaximumWidth": {
-              "expr": {
-                "Literal": {
-                  "Value": "110.0D"
-                }
-              }
             }
           }
         }
@@ -305,13 +277,6 @@
               "expr": {
                 "Literal": {
                   "Value": "3L"
-                }
-              }
-            },
-            "showMarker": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
                 }
               }
             }
