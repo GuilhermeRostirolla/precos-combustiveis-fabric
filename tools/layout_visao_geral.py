@@ -30,7 +30,7 @@ def cartao_x(i: int) -> int:
 
 
 # área empilhada: as partes do preço semana a semana (somadas dão o preço no posto)
-GRAFICO = {"x": 28, "y": 230, "w": 1224, "h": 234, "titulo": "Do que é feito o preço do litro · média de cada mês · R$"}
+GRAFICO = {"x": 28, "y": 230, "w": 1224, "h": 234, "titulo": "As três partes do preço do litro · média de cada mês · R$"}
 
 # faixa de baixo: o que mudou em cada parte do litro e o ranking dos estados
 PONTE = {"x": 28, "y": 476, "w": 606, "h": 220, "titulo": "O que mudou em 12 meses · R$/litro"}

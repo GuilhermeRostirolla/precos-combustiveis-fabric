@@ -466,6 +466,33 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo(categoria), "direction": "Ascending"}]}},
             "objects": objetos})
 
+    def linhas_rotuladas(self, x, y, w, h, eixo, medidas, cores):
+        """Uma linha por série, no mesmo eixo, com o nome da série escrito na ponta (sem legenda)."""
+        pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
+                  for m, c in zip([m[0] for m in medidas], cores, strict=True)]
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                             "gridlineShow": lit(False)}}],
+            "valueAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
+                                          "fontFamily": lit(FONTE), "showAxisTitle": lit(False), "start": lit(0.0),
+                                          "gridlineShow": lit(True), "gridlineColor": cor(COR["grade"]),
+                                          "labelDisplayUnits": lit(1.0), "labelPrecision": lit(0)}}],
+            "legend": [{"properties": {"show": lit(False)}}],
+            "seriesLabels": [{"properties": {"show": lit(True), "seriesMatchColor": lit(True), "textSize": lit(9.0),
+                                             "seriesFontFamily": lit(FONTE_FORTE), "seriesWordWrap": lit(True),
+                                             "seriesMaximumWidth": lit(110.0)}}],
+            "lineStyles": [{"properties": {"strokeWidth": lit(3), "showMarker": lit(False)}}],
+            "labels": [{"properties": {"show": lit(False)}}],
+            "dataPoint": pontos,
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "lineChart",
+            "query": {"queryState": {"Category": {"projections": [projecao(eixo, ativo=True)]},
+                                     "Y": {"projections": campos(medidas)}},
+                      "sortDefinition": {"sort": [{"field": campo(eixo), "direction": "Ascending"}]}},
+            "objects": objetos})
+
     def interacao(self, origem, destino, tipo="DataFilter"):
         self.interacoes.append({"source": origem, "target": destino, "type": tipo})
 
@@ -513,11 +540,11 @@ def visao_geral() -> Pagina:
                      cor_texto=COR["etanol"], medida_fundo="Cor Fundo Barra")
     marca = x + L.BARRA_X + round(0.7 * L.BARRA_W) - 4
     p.texto_dinamico("Marca 70%", marca, y + L.BARRA_Y + 12, 44, 14, 7.0, cor_texto=COR["suave"])
-    # do que é feito o preço, mês a mês (as três partes somadas dão o preço no posto)
+    # as três partes do preço, cada uma na sua linha (empilhadas, não dava para ver quem subiu e quem caiu)
     g = L.GRAFICO
     p.rotulo(g["titulo"], g["x"] + 8, g["y"] + 6, 700, 28, 11, COR["texto"], forte=True)
     # média de cada mês: semana a semana, a refinaria do diesel oscila quando muda a proporção de importadores
-    p.areas(g["x"] + 12, g["y"] + 36, g["w"] - 24, g["h"] - 44, "dim_semana.mes_inicio",
+    p.linhas_rotuladas(g["x"] + 12, g["y"] + 36, g["w"] - 24, g["h"] - 44, "dim_semana.mes_inicio",
             [("Refinaria na Semana", "Refinaria"), ("Impostos na Semana", "Impostos"),
              ("Outros na Semana", "Etanol/biodiesel, frete e margens")],
             [COR["refinaria"], "#8A7CF0", COR["alta"]])
