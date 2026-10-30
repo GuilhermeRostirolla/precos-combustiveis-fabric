@@ -402,10 +402,10 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          '    IF ( u = "BR", "Brasil", "região " & LOOKUPVALUE ( regiao_comparacao[regiao], regiao_comparacao[uf], u ) )'),
         ("Diferença para o Brasil", "Gráfico", VARIACAO_REAIS,
          "// preço da região (ou do estado escolhido) menos o do Brasil, na semana de referência\n"
-         "VAR item = SELECTEDVALUE ( comparacao_item[item] )\nVAR tipo = SELECTEDVALUE ( comparacao_item[tipo] )\n"
+         "VAR escolha = SELECTEDVALUE ( comparacao_item[item] )\nVAR tipo = SELECTEDVALUE ( comparacao_item[tipo] )\n"
          'VAR escolhido = SELECTEDVALUE ( dim_uf[uf], "BR" )\nVAR s = [Semana de Referência]\n'
          "VAR ufs =\n    SELECTCOLUMNS (\n        FILTER ( ALL ( regiao_comparacao ),\n"
-         '            IF ( tipo = "Estado", regiao_comparacao[uf] = item, regiao_comparacao[regiao] = item ) ),\n'
+         '            IF ( tipo = "Estado", regiao_comparacao[uf] = escolha, regiao_comparacao[regiao] = escolha ) ),\n'
          '        "uf", regiao_comparacao[uf]\n    )\n'
          "VAR preco =\n    CALCULATE (\n        DIVIDE ( SUMX ( fato_preco_uf_semana, fato_preco_uf_semana[preco_medio] "
          "* fato_preco_uf_semana[coletas] ), SUM ( fato_preco_uf_semana[coletas] ) ),\n"
@@ -415,7 +415,7 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          "* fato_preco_uf_semana[coletas] ), SUM ( fato_preco_uf_semana[coletas] ) ),\n"
          "        REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), fato_preco_uf_semana[semana] = s\n    )\n"
          "RETURN\n"
-         '    IF ( tipo = "Estado" && item <> escolhido, BLANK (), IF ( NOT ISBLANK ( preco ), ROUND ( preco - brasil, 2 ) ) )'),
+         '    IF ( tipo = "Estado" && escolha <> escolhido, BLANK (), IF ( NOT ISBLANK ( preco ), ROUND ( preco - brasil, 2 ) ) )'),
         ("Cor Diferença para o Brasil", "Cores", None,
          'VAR d = [Diferença para o Brasil]\nRETURN\n'
          f'    IF ( SELECTEDVALUE ( comparacao_item[tipo] ) = "Estado", "{CORES["outros"]}", '

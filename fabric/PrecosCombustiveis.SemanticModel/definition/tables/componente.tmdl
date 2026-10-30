@@ -384,14 +384,14 @@ table componente
 
 	measure 'Diferença para o Brasil' = ```
 			// preço da região (ou do estado escolhido) menos o do Brasil, na semana de referência
-			VAR item = SELECTEDVALUE ( comparacao_item[item] )
+			VAR escolha = SELECTEDVALUE ( comparacao_item[item] )
 			VAR tipo = SELECTEDVALUE ( comparacao_item[tipo] )
 			VAR escolhido = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR s = [Semana de Referência]
 			VAR ufs =
 			    SELECTCOLUMNS (
 			        FILTER ( ALL ( regiao_comparacao ),
-			            IF ( tipo = "Estado", regiao_comparacao[uf] = item, regiao_comparacao[regiao] = item ) ),
+			            IF ( tipo = "Estado", regiao_comparacao[uf] = escolha, regiao_comparacao[regiao] = escolha ) ),
 			        "uf", regiao_comparacao[uf]
 			    )
 			VAR preco =
@@ -406,7 +406,7 @@ table componente
 			        REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), fato_preco_uf_semana[semana] = s
 			    )
 			RETURN
-			    IF ( tipo = "Estado" && item <> escolhido, BLANK (), IF ( NOT ISBLANK ( preco ), ROUND ( preco - brasil, 2 ) ) )
+			    IF ( tipo = "Estado" && escolha <> escolhido, BLANK (), IF ( NOT ISBLANK ( preco ), ROUND ( preco - brasil, 2 ) ) )
 			```
 		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
 		displayFolder: Gráfico
