@@ -172,7 +172,10 @@ class Pagina:
                    "selection": [{"properties": selecao}],
                    "header": [{"properties": {"show": lit(False), "outlineStyle": lit(0)}}],
                    "items": [{"properties": {"fontColor": cor(COR["texto"]), "background": cor(COR["cartao"]),
-                                             "textSize": lit(10.0), "fontFamily": lit(FONTE), "outlineStyle": lit(0)}}]}
+                                             "textSize": lit(10.0), "fontFamily": lit(FONTE), "outlineStyle": lit(0),
+                                             # o tema base liga o contraste de acessibilidade, que desenha uma
+                                             # borda clara em volta da lista suspensa
+                                             "accessibilityContrastProperties": lit(False)}}]}
         if padrao is not None:
             tabela, col = coluna.split(".", 1)
             objetos["general"][0]["properties"]["filter"] = {"filter": condicao_em(tabela, col, [padrao])}

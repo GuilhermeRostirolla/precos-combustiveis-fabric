@@ -208,6 +208,13 @@
                   "Value": "0L"
                 }
               }
+            },
+            "accessibilityContrastProperties": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
             }
           }
         }
