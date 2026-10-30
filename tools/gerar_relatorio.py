@@ -27,6 +27,8 @@ LARGURA, ALTURA = 1280, 720
 COR = L.COR
 FONTE, FONTE_FORTE = "Segoe UI", "Segoe UI Semibold"
 
+UFS = ["BR", "AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR",
+       "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
 TABELA_DA_MEDIDA = {m[0]: tabela for tabela, medidas in MEDIDAS.items() for m in medidas}
 
 
@@ -470,7 +472,8 @@ def visao_geral() -> Pagina:
     # filtros: rótulo à esquerda e lista suspensa à direita, dentro da mesma moldura
     for f, coluna, extra in [(L.COMBUSTIVEL, "dim_produto.nome",
                               {"padrao": "Gasolina comum", "filtros": [("dim_produto.produto", ["GASOLINA", "DIESEL S10"])]}),
-                             (L.ESTADO, "dim_uf.estado", {"padrao": "Brasil"})]:
+                             # só os estados e o Brasil (o Direct Lake às vezes guarda um membro em branco)
+                             (L.ESTADO, "dim_uf.estado", {"padrao": "Brasil", "filtros": [("dim_uf.uf", UFS)]})]:
         p.rotulo(f["rotulo"], f["x"] + 4, f["y"] + 3, f["rotulo_w"], f["h"] - 6, 9)
         p.lista(coluna, f["x"] + f["rotulo_w"], f["y"] + 2, f["w"] - f["rotulo_w"] - 4, f["h"] - 4, **extra)
     r = L.REFINARIA
