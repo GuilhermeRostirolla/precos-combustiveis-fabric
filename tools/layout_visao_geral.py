@@ -9,19 +9,18 @@ COR = {"pagina": "#090E1A", "cartao": "#111A2B", "borda": "#1F2A40", "texto": "#
        "nota": "#6B7590", "apagado": "#4A5570", "trilho": "#1F2A40", "grade": "#1A2438",
        "alta": "#E8833A", "baixa": "#3BA3D9", "etanol": "#4CC38A", "posto": "#E8833A", "refinaria": "#3BA3D9"}
 
-TITULO = "Preço dos combustíveis no Brasil"
-SUBTITULO = "Quanto custa hoje, quanto mudou e quanto da refinaria chega ao posto"
+TITULO = "Preço dos combustíveis"
 
 # filtros
-COMBUSTIVEL = {"x": 28, "y": 91, "w": 230, "h": 30, "rotulo": "Combustível", "rotulo_w": 88}
-ESTADO = {"x": 268, "y": 91, "w": 150, "h": 30, "rotulo": "Estado", "rotulo_w": 54}
-SEMANA = {"x": 428, "y": 91, "w": 176, "h": 30, "rotulo": "Semana", "rotulo_w": 62}
+COMBUSTIVEL = {"x": 28, "y": 72, "w": 230, "h": 30, "rotulo": "Combustível", "rotulo_w": 88}
+ESTADO = {"x": 268, "y": 72, "w": 150, "h": 30, "rotulo": "Estado", "rotulo_w": 54}
+SEMANA = {"x": 428, "y": 72, "w": 176, "h": 30, "rotulo": "Semana", "rotulo_w": 62}
 
 # cartões
-CARTAO_Y, CARTAO_W, CARTAO_H, CARTAO_GAP = 136, 235, 124, 12
-CARTOES = ["Preço médio no posto", "Variação em 12 meses", "Diferença posto − refinaria",
-           "Refinaria nas últimas 4 semanas", "Etanol ÷ gasolina"]
-BARRA_Y, BARRA_H = 78, 8          # trilho das barras de progresso (relativo ao cartão)
+CARTAO_Y, CARTAO_W, CARTAO_H, CARTAO_GAP = 118, 235, 100, 12
+CARTOES = ["Preço no posto", "Variação em 12 meses", "Posto − refinaria",
+           "Refinaria · 4 semanas", "Etanol ÷ gasolina"]
+BARRA_Y, BARRA_H = 76, 8          # trilho das barras de progresso (relativo ao cartão)
 BARRA_X, BARRA_W = 16, 203
 SUFIXO_LITRO_X = 128              # "/litro" depois de "R$ 0,00" (largura fixa: um dígito antes da vírgula)
 
@@ -31,10 +30,7 @@ def cartao_x(i: int) -> int:
 
 
 # gráfico
-GRAFICO = {"x": 28, "y": 274, "w": 1224, "h": 206,
-           "titulo": "O que aconteceu com o preço, mês a mês",
-           "subtitulo": "Quanto o litro subiu ou caiu em relação ao mês anterior (R$) · últimos 12 meses"}
+GRAFICO = {"x": 28, "y": 230, "w": 1224, "h": 234, "titulo": "Variação mensal · R$/litro"}
 
-# por que mudou em 12 meses: frase no topo e um gráfico de barras
-PONTE = {"x": 28, "y": 492, "w": 1224, "h": 204, "titulo": "Por que o preço mudou em 12 meses",
-         "subtitulo": "Quanto cada parte do litro subiu ou caiu (R$)"}
+# variação de cada parte do litro em 12 meses
+PONTE = {"x": 28, "y": 476, "w": 1224, "h": 220, "titulo": "Variação em 12 meses por parte do preço · R$/litro"}

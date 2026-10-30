@@ -339,48 +339,36 @@ class Pagina:
 
 def visao_geral() -> Pagina:
     p = Pagina("VisaoGeral", "Visão geral", fundo=FUNDO)
-    # nota do canto superior direito
-    p.texto_dinamico("Texto Dados Até a Semana", 1068, 22, 190, 18, 8.0, cor_texto=COR["nota"], fundo=COR["pagina"])
-    p.texto_dinamico("Texto Postos e Fonte", 948, 39, 310, 18, 8.0, cor_texto=COR["nota"], fundo=COR["pagina"])
     # filtros
     for f, coluna, extra in [(L.COMBUSTIVEL, "dim_produto.nome",
                               {"padrao": "Gasolina comum", "filtros": [("dim_produto.produto", ["GASOLINA", "DIESEL S10"])]}),
                              (L.ESTADO, "dim_uf.estado", {"padrao": "Brasil"}),
                              (L.SEMANA, "semana_referencia.rotulo", {"obrigatorio": False, "decrescente": True})]:
         p.lista(coluna, f["x"] + f["rotulo_w"], f["y"] + 2, f["w"] - f["rotulo_w"] - 4, f["h"] - 4, **extra)
-    # cartões: título na imagem de fundo; número grande e uma linha de apoio
+    # cartões: título na imagem de fundo; só o número
     y = L.CARTAO_Y
-    for i, (valor, cor_valor, apoio, cor_apoio, w_valor) in enumerate([
-        ("Preço no Posto", None, "Apoio Preço no Posto", "Cor Apoio Preço no Posto", 110),
-        (None, None, "Posto x Refinaria 12 Meses", None, None),
-        ("Diferença Posto Refinaria", None, "Apoio Diferença", None, 110),
-        ("Variação Refinaria 4 Semanas", "Cor Refinaria 4 Semanas", "Apoio Repasse 4 Semanas", None, 211),
-        ("Etanol ÷ Gasolina", "Cor Etanol", "Apoio Etanol", None, 211),
-    ]):
-        x = L.cartao_x(i)
-        if valor:
-            p.texto_dinamico(valor, x + 12, y + 32, w_valor, 40, 22.0, medida_cor=cor_valor, forte=True)
-        p.texto_dinamico(apoio, x + 12, y + 96, 211, 22, 8.5, cor_texto=COR["suave"], medida_cor=cor_apoio)
+    for i, valor, cor_valor in [(0, "Preço no Posto", None), (2, "Diferença Posto Refinaria", None),
+                                (3, "Variação Refinaria 4 Semanas", "Cor Refinaria 4 Semanas"),
+                                (4, "Etanol ÷ Gasolina", "Cor Etanol")]:
+        p.texto_dinamico(valor, L.cartao_x(i) + 12, y + 32, 211 if i > 2 else 110, 40, 22.0, medida_cor=cor_valor,
+                         forte=True)
     x = L.cartao_x(1)
     p.texto_dinamico("Variação 12 Meses Posto", x + 12, y + 34, 96, 36, 20.0, medida_cor="Cor Variação 12 Meses",
                      forte=True)
     p.texto_dinamico("Variação 12 Meses Refinaria", x + 108, y + 34, 115, 36, 20.0,
                      medida_cor="Cor Variação 12 Meses Refinaria", forte=True)
-    for i, barra, cor_barra in [(3, "Texto Barra Repasse", COR["baixa"]), (4, "Texto Barra Etanol", COR["etanol"])]:
-        # a barra é um texto de blocos "█" sobre um fundo da cor do trilho (o Power BI não desenha gráficos tão baixos)
-        x = L.cartao_x(i)
-        p.texto_dinamico(barra, x + L.BARRA_X, y + L.BARRA_Y - 3, L.BARRA_W, 14, 7.0, cor_texto=cor_barra,
-                         fundo=COR["trilho"])
-    # o que aconteceu com o preço, mês a mês
+    # etanol ÷ gasolina: barra de blocos "█" sobre o trilho, com a marca de 70% na imagem de fundo
+    x = L.cartao_x(4)
+    p.texto_dinamico("Texto Barra Etanol", x + L.BARRA_X, y + L.BARRA_Y - 3, L.BARRA_W, 14, 7.0,
+                     cor_texto=COR["etanol"], fundo=COR["trilho"])
+    # variação mensal
     g = L.GRAFICO
-    p.colunas_lado_a_lado(g["x"] + 12, g["y"] + 54, g["w"] - 24, g["h"] - 62, "dim_semana.mes_rotulo",
+    p.colunas_lado_a_lado(g["x"] + 12, g["y"] + 40, g["w"] - 24, g["h"] - 48, "dim_semana.mes_rotulo",
                           [("Variação Mensal Posto R$", "Posto"), ("Variação Mensal Refinaria R$", "Refinaria (no litro)")],
                           [COR["posto"], COR["refinaria"]], rotulos_em="Variação Mensal Posto R$")
-    # por que o preço mudou em 12 meses: frase-resumo e um gráfico de barras
+    # variação de cada parte do litro em 12 meses
     b = L.PONTE
-    p.texto_dinamico("Manchete 12 Meses", b["x"] + 12, b["y"] + 56, b["w"] - 24, 28, 12.0,
-                     medida_cor="Cor Conclusão 12 Meses", forte=True)
-    p.barras_coloridas(b["x"] + 12, b["y"] + 90, b["w"] - 24, b["h"] - 98, "componente.componente",
+    p.barras_coloridas(b["x"] + 12, b["y"] + 40, b["w"] - 24, b["h"] - 48, "componente.componente",
                        "Variação 12 Meses do Componente", "Cor Variação 12 Meses do Componente")
     return p
 

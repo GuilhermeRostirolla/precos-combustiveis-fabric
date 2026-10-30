@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "f18f2dc04d416501e6c5",
   "position": {
-    "x": 40,
-    "y": 168,
+    "x": 781,
+    "y": 150,
     "z": 500,
     "height": 40,
-    "width": 110,
+    "width": 211,
     "tabOrder": 500
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Preço no Posto"
+                  "Property": "Variação Refinaria 4 Semanas"
                 }
               },
-              "queryRef": "composicao_preco_semana.Preço no Posto",
-              "nativeQueryRef": "Preço no Posto"
+              "queryRef": "composicao_preco_semana.Variação Refinaria 4 Semanas",
+              "nativeQueryRef": "Variação Refinaria 4 Semanas"
             }
           ]
         }
@@ -55,8 +55,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Refinaria 4 Semanas"
                     }
                   }
                 }
@@ -99,8 +104,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Refinaria 4 Semanas"
                     }
                   }
                 }

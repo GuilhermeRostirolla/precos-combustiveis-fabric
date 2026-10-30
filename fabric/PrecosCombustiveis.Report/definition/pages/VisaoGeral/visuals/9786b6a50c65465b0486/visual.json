@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "9786b6a50c65465b0486",
   "position": {
-    "x": 40,
-    "y": 232,
+    "x": 1028,
+    "y": 150,
     "z": 600,
-    "height": 22,
+    "height": 40,
     "width": 211,
     "tabOrder": 600
   },
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Apoio Preço no Posto"
+                  "Property": "Etanol ÷ Gasolina"
                 }
               },
-              "queryRef": "composicao_preco_semana.Apoio Preço no Posto",
-              "nativeQueryRef": "Apoio Preço no Posto"
+              "queryRef": "composicao_preco_semana.Etanol ÷ Gasolina",
+              "nativeQueryRef": "Etanol ÷ Gasolina"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "8.5D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -61,7 +61,7 @@
                           "Entity": "composicao_preco_semana"
                         }
                       },
-                      "Property": "Cor Apoio Preço no Posto"
+                      "Property": "Cor Etanol"
                     }
                   }
                 }
@@ -89,14 +89,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "8.5D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -110,7 +110,7 @@
                           "Entity": "composicao_preco_semana"
                         }
                       },
-                      "Property": "Cor Apoio Preço no Posto"
+                      "Property": "Cor Etanol"
                     }
                   }
                 }

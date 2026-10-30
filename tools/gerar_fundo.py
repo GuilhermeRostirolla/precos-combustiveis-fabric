@@ -27,7 +27,7 @@ def texto(t, x, y, tamanho, peso, cor):
 
 
 def html() -> str:
-    partes = [texto(L.TITULO, 28, 24, 26, 700, C["texto"]), texto(L.SUBTITULO, 28, 59, 13, 400, C["suave"])]
+    partes = [texto(L.TITULO, 28, 24, 24, 700, C["texto"])]
     # filtros
     for f in (L.COMBUSTIVEL, L.ESTADO, L.SEMANA):
         partes.append(caixa(f["x"], f["y"], f["w"], f["h"], raio=8))
@@ -39,8 +39,8 @@ def html() -> str:
         if i in (0, 2):
             partes.append(texto("/litro", x + L.SUFIXO_LITRO_X, y + 50, 13, 500, C["suave"]))
         if i == 1:
-            partes += [texto("no posto", x + 16, y + 72, 11, 400, C["suave"]),
-                       texto("na refinaria", x + 112, y + 72, 11, 400, C["suave"])]
+            partes += [texto("posto", x + 16, y + 72, 11, 400, C["suave"]),
+                       texto("refinaria", x + 112, y + 72, 11, 400, C["suave"])]
         if i == 4:
             marca = x + L.BARRA_X + round(0.7 * L.BARRA_W)
             partes.append(f'<div style="position:absolute;left:{marca}px;top:{y + L.BARRA_Y - 4}px;width:2px;'
@@ -49,10 +49,8 @@ def html() -> str:
     g = L.GRAFICO
     partes += [caixa(g["x"], g["y"], g["w"], g["h"]),
                texto(g["titulo"], g["x"] + 16, g["y"] + 15, 14, 600, C["texto"]),
-               texto(g["subtitulo"], g["x"] + 16, g["y"] + 35, 12, 400, C["suave"]),
                caixa(L.PONTE["x"], L.PONTE["y"], L.PONTE["w"], L.PONTE["h"]),
                texto(L.PONTE["titulo"], L.PONTE["x"] + 16, L.PONTE["y"] + 15, 14, 600, C["texto"])]
-    partes.append(texto(L.PONTE["subtitulo"], L.PONTE["x"] + 16, L.PONTE["y"] + 35, 12, 400, C["suave"]))
     return ('<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0}'
             f'body{{width:1280px;height:720px;background:{C["pagina"]};position:relative;'
             'font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}</style></head><body>'

@@ -2,114 +2,70 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "f11cf42ea484f2d3bfbc",
   "position": {
-    "x": 490,
-    "y": 93,
+    "x": 534,
+    "y": 150,
     "z": 400,
-    "height": 26,
+    "height": 40,
     "width": 110,
     "tabOrder": 400
   },
   "visual": {
-    "visualType": "slicer",
+    "visualType": "multiRowCard",
     "query": {
       "queryState": {
         "Values": {
           "projections": [
             {
               "field": {
-                "Column": {
+                "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "semana_referencia"
+                      "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "rotulo"
+                  "Property": "Diferença Posto Refinaria"
                 }
               },
-              "queryRef": "semana_referencia.rotulo",
-              "nativeQueryRef": "rotulo",
-              "active": true
+              "queryRef": "composicao_preco_semana.Diferença Posto Refinaria",
+              "nativeQueryRef": "Diferença Posto Refinaria"
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "semana_referencia"
-                  }
-                },
-                "Property": "rotulo"
-              }
-            },
-            "direction": "Descending"
-          }
-        ]
       }
     },
     "objects": {
-      "data": [
+      "dataLabels": [
         {
           "properties": {
-            "mode": {
+            "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "'Dropdown'"
+                  "Value": "22.0D"
                 }
               }
-            }
-          }
-        }
-      ],
-      "general": [
-        {
-          "properties": {
-            "outlineColor": {
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "color": {
               "solid": {
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#111A2B'"
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }
               }
-            },
-            "outlineWeight": {
-              "expr": {
-                "Literal": {
-                  "Value": "0.0D"
-                }
-              }
             }
           }
         }
       ],
-      "selection": [
-        {
-          "properties": {
-            "strictSingleSelect": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "singleSelect": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "header": [
+      "categoryLabels": [
         {
           "properties": {
             "show": {
@@ -122,10 +78,24 @@
           }
         }
       ],
-      "items": [
+      "cardTitle": [
         {
           "properties": {
-            "fontColor": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "22.0D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "color": {
               "solid": {
                 "color": {
                   "expr": {
@@ -135,8 +105,35 @@
                   }
                 }
               }
+            }
+          }
+        }
+      ],
+      "card": [
+        {
+          "properties": {
+            "outline": {
+              "expr": {
+                "Literal": {
+                  "Value": "'None'"
+                }
+              }
             },
-            "background": {
+            "barShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "cardPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
+                }
+              }
+            },
+            "cardBackground": {
               "solid": {
                 "color": {
                   "expr": {
@@ -144,27 +141,6 @@
                       "Value": "'#111A2B'"
                     }
                   }
-                }
-              }
-            },
-            "textSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "10.0D"
-                }
-              }
-            },
-            "fontFamily": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Segoe UI'"
-                }
-              }
-            },
-            "outline": {
-              "expr": {
-                "Literal": {
-                  "Value": "'None'"
                 }
               }
             }

@@ -2,18 +2,37 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "46c5046fc1273ba02cc7",
   "position": {
-    "x": 781,
-    "y": 168,
+    "x": 40,
+    "y": 270,
     "z": 1000,
-    "height": 40,
-    "width": 211,
+    "height": 186,
+    "width": 1200,
     "tabOrder": 1000
   },
   "visual": {
-    "visualType": "multiRowCard",
+    "visualType": "clusteredColumnChart",
     "query": {
       "queryState": {
-        "Values": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_semana"
+                    }
+                  },
+                  "Property": "mes_rotulo"
+                }
+              },
+              "queryRef": "dim_semana.mes_rotulo",
+              "nativeQueryRef": "mes_rotulo",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
           "projections": [
             {
               "field": {
@@ -23,54 +42,110 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Variação Refinaria 4 Semanas"
+                  "Property": "Variação Mensal Posto R$"
                 }
               },
-              "queryRef": "composicao_preco_semana.Variação Refinaria 4 Semanas",
-              "nativeQueryRef": "Variação Refinaria 4 Semanas"
+              "queryRef": "composicao_preco_semana.Variação Mensal Posto R$",
+              "nativeQueryRef": "Posto",
+              "displayName": "Posto"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "composicao_preco_semana"
+                    }
+                  },
+                  "Property": "Variação Mensal Refinaria R$"
+                }
+              },
+              "queryRef": "composicao_preco_semana.Variação Mensal Refinaria R$",
+              "nativeQueryRef": "Refinaria (no litro)",
+              "displayName": "Refinaria (no litro)"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_semana"
+                  }
+                },
+                "Property": "mes_rotulo"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
       }
     },
     "objects": {
-      "dataLabels": [
+      "categoryAxis": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "22.0D"
+                  "Value": "8.5D"
+                }
+              }
+            },
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#8B95A9'"
+                    }
+                  }
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Refinaria 4 Semanas"
-                    }
-                  }
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "gridlineShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "axisType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Categorical'"
                 }
               }
             }
           }
         }
       ],
-      "categoryLabels": [
+      "valueAxis": [
         {
           "properties": {
             "show": {
@@ -79,17 +154,101 @@
                   "Value": "false"
                 }
               }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "gridlineShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
             }
           }
         }
       ],
-      "cardTitle": [
+      "legend": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "position": {
+              "expr": {
+                "Literal": {
+                  "Value": "'TopRight'"
+                }
+              }
+            },
+            "showTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "22.0D"
+                  "Value": "9.0D"
+                }
+              }
+            },
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#8B95A9'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E8833A'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8.0D"
                 }
               }
             },
@@ -100,60 +259,65 @@
                 }
               }
             },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Refinaria 4 Semanas"
-                    }
-                  }
+            "labelPosition": {
+              "expr": {
+                "Literal": {
+                  "Value": "'OutsideEnd'"
                 }
               }
             }
           }
-        }
-      ],
-      "card": [
+        },
         {
           "properties": {
-            "outline": {
-              "expr": {
-                "Literal": {
-                  "Value": "'None'"
-                }
-              }
-            },
-            "barShow": {
+            "showSeries": {
               "expr": {
                 "Literal": {
                   "Value": "false"
                 }
               }
-            },
-            "cardPadding": {
-              "expr": {
-                "Literal": {
-                  "Value": "0.0D"
-                }
-              }
-            },
-            "cardBackground": {
+            }
+          },
+          "selector": {
+            "metadata": "composicao_preco_semana.Variação Mensal Refinaria R$"
+          }
+        }
+      ],
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
               "solid": {
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#111A2B'"
+                      "Value": "'#E8833A'"
                     }
                   }
                 }
               }
             }
+          },
+          "selector": {
+            "metadata": "composicao_preco_semana.Variação Mensal Posto R$"
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#3BA3D9'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "composicao_preco_semana.Variação Mensal Refinaria R$"
           }
         }
       ]
