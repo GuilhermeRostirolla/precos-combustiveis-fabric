@@ -1,37 +1,36 @@
 {
   "name": "TemaPrecosCombustiveis",
   "dataColors": [
-    "#E8803A",
-    "#3FA7D6",
-    "#F2B33D",
-    "#5B8DEF",
-    "#E8EDF5",
-    "#9AA7BD"
+    "#3BA3D9",
+    "#8A7CF0",
+    "#E8833A",
+    "#E6EAF2",
+    "#8B95A9"
   ],
-  "foreground": "#E8EDF5",
-  "foregroundNeutralSecondary": "#9AA7BD",
-  "foregroundNeutralTertiary": "#62718B",
-  "background": "#111A2C",
-  "backgroundLight": "#111A2C",
-  "backgroundNeutral": "#1E2940",
-  "tableAccent": "#E8803A",
+  "foreground": "#E6EAF2",
+  "foregroundNeutralSecondary": "#8B95A9",
+  "foregroundNeutralTertiary": "#4A5570",
+  "background": "#111A2B",
+  "backgroundLight": "#111A2B",
+  "backgroundNeutral": "#1F2A40",
+  "tableAccent": "#E8833A",
   "textClasses": {
     "callout": {
       "fontFace": "Segoe UI Semibold",
-      "color": "#E8EDF5"
+      "color": "#E6EAF2"
     },
     "title": {
       "fontFace": "Segoe UI Semibold",
-      "color": "#E8EDF5",
+      "color": "#E6EAF2",
       "fontSize": 12
     },
     "header": {
       "fontFace": "Segoe UI Semibold",
-      "color": "#E8EDF5"
+      "color": "#E6EAF2"
     },
     "label": {
       "fontFace": "Segoe UI",
-      "color": "#9AA7BD"
+      "color": "#8B95A9"
     }
   },
   "visualStyles": {

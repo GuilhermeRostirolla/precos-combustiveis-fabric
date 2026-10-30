@@ -29,6 +29,11 @@
           "name": "TemaPrecosCombustiveis.json",
           "path": "TemaPrecosCombustiveis.json",
           "type": "CustomTheme"
+        },
+        {
+          "name": "fundo_visao_geral.png",
+          "path": "fundo_visao_geral.png",
+          "type": "Image"
         }
       ]
     },
