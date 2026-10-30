@@ -235,6 +235,99 @@ table composicao_preco_semana
 		displayFolder: Visão geral
 		lineageTag: e87843ad-5b7c-5890-a628-54d1c5b7c7d9
 
+	measure 'Refinaria no Litro do Posto' = ```
+			// parte da refinaria em um litro vendido no posto (só a parcela fóssil, sem tributos)
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência] - 0
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( composicao_preco_semana[refinaria] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] = s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Visão geral
+		lineageTag: 06d28c98-5337-5cc9-970e-c34381c41caa
+
+	measure 'Diferença Posto Refinaria' = ```
+			// tudo o que vem depois da refinaria: impostos, etanol ou biodiesel, frete e margens
+			VAR p = [Preço no Posto]
+			VAR r = [Refinaria no Litro do Posto]
+			RETURN
+			    IF ( NOT ISBLANK ( p ) && NOT ISBLANK ( r ), p - r )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Visão geral
+		lineageTag: bd7bd0d6-e5c5-5ef5-9329-f2f1441bcfb0
+
+	measure 'Diferença Média 12 Meses' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência]
+			RETURN
+			    CALCULATE (
+			        AVERAGEX ( composicao_preco_semana, composicao_preco_semana[preco_posto] - composicao_preco_semana[refinaria] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] > s - 364,
+			        composicao_preco_semana[semana] <= s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Visão geral
+		lineageTag: 106c3171-a3a3-55af-8356-2dd9801e0b58
+
+	measure 'Postos Pesquisados' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência]
+			RETURN
+			    CALCULATE (
+			        SUM ( fato_preco_uf_semana[postos] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        fato_preco_uf_semana[semana] = s,
+			        FILTER ( ALL ( fato_preco_uf_semana[uf] ), u = "BR" || fato_preco_uf_semana[uf] = u )
+			    )
+			```
+		formatString: #,0
+		displayFolder: Visão geral
+		lineageTag: 889f1220-2b7c-5a2f-9755-b02c8963cec2
+
+	measure 'Municípios Pesquisados' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência]
+			RETURN
+			    CALCULATE (
+			        SUM ( fato_preco_uf_semana[municipios] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        fato_preco_uf_semana[semana] = s,
+			        FILTER ( ALL ( fato_preco_uf_semana[uf] ), u = "BR" || fato_preco_uf_semana[uf] = u )
+			    )
+			```
+		formatString: #,0
+		displayFolder: Visão geral
+		lineageTag: 95986c42-1acc-534c-8f62-3a3190afdab8
+
+	measure 'Apoio Refinaria' = ```
+			VAR d = [Refinaria por Litro] - [Refinaria 4 Semanas Antes]
+			RETURN
+			    IF ( ISBLANK ( [Refinaria 4 Semanas Antes] ), "", IF ( d > 0.005, "▲ ", IF ( d < -0.005, "▼ ", "= " ) ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ) & " vs 4 semanas atrás" )
+			```
+		displayFolder: Visão geral
+		lineageTag: bf3cafb9-c823-5c40-9b00-8cd2eaac023c
+
+	measure 'Apoio Diferença' = IF ( ISBLANK ( [Diferença Média 12 Meses] ), "", "Média de 12 meses: R$ " & FORMAT ( [Diferença Média 12 Meses], "0.00" ) )
+		displayFolder: Visão geral
+		lineageTag: 825b76e6-2722-5ee3-9958-67a04ec0e1cf
+
+	measure 'Apoio Postos' = "em " & FORMAT ( [Municípios Pesquisados], "#,0" ) & " municípios"
+		displayFolder: Visão geral
+		lineageTag: e08ee33a-3f5f-5ec8-bf53-23079251944a
+
 	measure 'Apoio Preço no Posto' = ```
 			VAR d = [Preço no Posto] - [Preço no Posto Semana Anterior]
 			RETURN

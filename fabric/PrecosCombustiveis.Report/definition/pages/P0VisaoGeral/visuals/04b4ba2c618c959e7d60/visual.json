@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "04b4ba2c618c959e7d60",
   "position": {
-    "x": 1014,
-    "y": 166,
+    "x": 874,
+    "y": 250,
     "z": 2400,
-    "height": 36,
-    "width": 224,
+    "height": 30,
+    "width": 374,
     "tabOrder": 2400
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Etanol ÷ Gasolina"
+                  "Property": "Título Por Que Mudou"
                 }
               },
-              "queryRef": "composicao_preco_semana.Etanol ÷ Gasolina",
-              "nativeQueryRef": "Etanol ÷ Gasolina"
+              "queryRef": "composicao_preco_semana.Título Por Que Mudou",
+              "nativeQueryRef": "Título Por Que Mudou"
             }
           ]
         }
@@ -40,7 +40,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "12.0D"
                 }
               }
             },
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Etanol"
+                    "Literal": {
+                      "Value": "'#E8EDF5'"
                     }
                   }
                 }

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "e60820e5ee338a9dd4de",
   "position": {
-    "x": 276,
+    "x": 340,
     "y": 166,
     "z": 1200,
     "height": 36,
-    "width": 224,
+    "width": 289,
     "tabOrder": 1200
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Variação 12 Meses Posto"
+                  "Property": "Refinaria por Litro"
                 }
               },
-              "queryRef": "composicao_preco_semana.Variação 12 Meses Posto",
-              "nativeQueryRef": "Variação 12 Meses Posto"
+              "queryRef": "composicao_preco_semana.Refinaria por Litro",
+              "nativeQueryRef": "Refinaria por Litro"
             }
           ]
         }
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Variação 12 Meses"
+                    "Literal": {
+                      "Value": "'#E8EDF5'"
                     }
                   }
                 }

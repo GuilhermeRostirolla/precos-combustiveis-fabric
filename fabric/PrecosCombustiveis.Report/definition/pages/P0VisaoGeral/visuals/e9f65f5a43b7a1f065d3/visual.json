@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "e9f65f5a43b7a1f065d3",
   "position": {
-    "x": 282,
+    "x": 346,
     "y": 148,
     "z": 1100,
     "height": 20,
-    "width": 212,
+    "width": 277,
     "tabOrder": 1100
   },
   "visual": {
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Variação em 12 meses",
+                    "value": "Preço na refinaria (R$/litro, sem impostos)",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "9.0pt",

@@ -2,79 +2,34 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "6e735a83ad33360ad2d2",
   "position": {
-    "x": 1014,
-    "y": 202,
+    "x": 882,
+    "y": 284,
     "z": 2500,
     "height": 20,
-    "width": 224,
+    "width": 358,
     "tabOrder": 2500
   },
   "visual": {
-    "visualType": "card",
-    "query": {
-      "queryState": {
-        "Values": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "composicao_preco_semana"
-                    }
-                  },
-                  "Property": "Apoio Etanol"
-                }
-              },
-              "queryRef": "composicao_preco_semana.Apoio Etanol",
-              "nativeQueryRef": "Apoio Etanol"
-            }
-          ]
-        }
-      }
-    },
+    "visualType": "textbox",
     "objects": {
-      "labels": [
+      "general": [
         {
           "properties": {
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "8.5D"
-                }
-              }
-            },
-            "fontFamily": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Segoe UI'"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#9AA7BD'"
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Preço no posto, média do mês contra o mês anterior",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.0pt",
+                      "color": "#9AA7BD"
                     }
                   }
-                }
+                ],
+                "horizontalTextAlignment": "left"
               }
-            }
-          }
-        }
-      ],
-      "categoryLabels": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
+            ]
           }
         }
       ]

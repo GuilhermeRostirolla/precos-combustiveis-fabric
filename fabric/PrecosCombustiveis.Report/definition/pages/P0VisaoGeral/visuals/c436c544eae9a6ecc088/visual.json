@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "c436c544eae9a6ecc088",
   "position": {
-    "x": 768,
+    "x": 960,
     "y": 202,
     "z": 2100,
     "height": 20,
-    "width": 224,
+    "width": 289,
     "tabOrder": 2100
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Apoio Refinaria 4 Semanas"
+                  "Property": "Apoio Postos"
                 }
               },
-              "queryRef": "composicao_preco_semana.Apoio Refinaria 4 Semanas",
-              "nativeQueryRef": "Apoio Refinaria 4 Semanas"
+              "queryRef": "composicao_preco_semana.Apoio Postos",
+              "nativeQueryRef": "Apoio Postos"
             }
           ]
         }

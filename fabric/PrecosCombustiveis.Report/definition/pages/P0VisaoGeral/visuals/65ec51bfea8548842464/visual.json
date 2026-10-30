@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "65ec51bfea8548842464",
   "position": {
-    "x": 1020,
-    "y": 148,
+    "x": 866,
+    "y": 240,
     "z": 2300,
-    "height": 20,
-    "width": 212,
+    "height": 456,
+    "width": 390,
     "tabOrder": 2300
   },
   "visual": {
@@ -19,15 +19,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "Etanol ÷ gasolina",
-                    "textStyle": {
-                      "fontFamily": "Segoe UI",
-                      "fontSize": "9.0pt",
-                      "color": "#9AA7BD"
-                    }
+                    "value": " "
                   }
-                ],
-                "horizontalTextAlignment": "left"
+                ]
               }
             ]
           }
@@ -54,7 +48,25 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#111A2C'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
                 }
               }
             }
@@ -67,7 +79,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },

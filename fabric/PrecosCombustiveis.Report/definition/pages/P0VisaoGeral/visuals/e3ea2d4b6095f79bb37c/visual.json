@@ -3,9 +3,9 @@
   "name": "e3ea2d4b6095f79bb37c",
   "position": {
     "x": 874,
-    "y": 304,
+    "y": 572,
     "z": 3000,
-    "height": 46,
+    "height": 116,
     "width": 374,
     "tabOrder": 3000
   },
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Texto Δ Posto"
+                  "Property": "Conclusão Detalhe"
                 }
               },
-              "queryRef": "composicao_preco_semana.Texto Δ Posto",
-              "nativeQueryRef": "Texto Δ Posto"
+              "queryRef": "composicao_preco_semana.Conclusão Detalhe",
+              "nativeQueryRef": "Conclusão Detalhe"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "26.0D"
+                  "Value": "9.5D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Δ Posto"
+                    "Literal": {
+                      "Value": "'#9AA7BD'"
                     }
                   }
                 }
@@ -77,6 +72,19 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "wordWrap": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }

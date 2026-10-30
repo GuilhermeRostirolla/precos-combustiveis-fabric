@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "28f7662741c0fd92b60b",
   "position": {
-    "x": 768,
+    "x": 960,
     "y": 166,
     "z": 2000,
     "height": 36,
-    "width": 224,
+    "width": 289,
     "tabOrder": 2000
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Variação Refinaria 4 Semanas"
+                  "Property": "Postos Pesquisados"
                 }
               },
-              "queryRef": "composicao_preco_semana.Variação Refinaria 4 Semanas",
-              "nativeQueryRef": "Variação Refinaria 4 Semanas"
+              "queryRef": "composicao_preco_semana.Postos Pesquisados",
+              "nativeQueryRef": "Postos Pesquisados"
             }
           ]
         }
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Refinaria 4 Semanas"
+                    "Literal": {
+                      "Value": "'#E8EDF5'"
                     }
                   }
                 }

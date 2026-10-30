@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "76a89bdd6c0809dc9dde",
   "position": {
-    "x": 774,
+    "x": 966,
     "y": 148,
     "z": 1900,
     "height": 20,
-    "width": 212,
+    "width": 277,
     "tabOrder": 1900
   },
   "visual": {
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Refinaria nas últimas 4 semanas",
+                    "value": "Postos pesquisados na semana",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "9.0pt",

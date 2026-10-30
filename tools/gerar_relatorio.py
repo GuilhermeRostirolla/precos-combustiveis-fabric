@@ -349,14 +349,14 @@ def visao_geral() -> Pagina:
     semana = p.segmentacao("semana_referencia.rotulo", "Semana (vazio = a mais recente)", 404, 78, 220, 54,
                            obrigatorio=False, decrescente=True)
     # cartões: título e número num visual, a linha de apoio noutro por cima
-    x, y, w, h, gap = 24, 140, 236, 88, 10
+    x, y, w, h, gap = 24, 140, 301, 88, 9
     for i, (titulo, medida, apoio, medida_cor, c) in enumerate([
-        ("Preço médio no posto", "Preço no Posto", "Apoio Preço no Posto", None, COR["texto"]),
-        ("Variação em 12 meses", "Variação 12 Meses Posto", "Apoio Variação 12 Meses", "Cor Variação 12 Meses", None),
-        ("Impostos no litro", "Impostos no Litro", "Apoio Impostos", None, COR["texto"]),
-        ("Refinaria nas últimas 4 semanas", "Variação Refinaria 4 Semanas", "Apoio Refinaria 4 Semanas",
-         "Cor Refinaria 4 Semanas", None),
-        ("Etanol ÷ gasolina", "Etanol ÷ Gasolina", "Apoio Etanol", "Cor Etanol", None),
+        ("Preço médio no posto (R$/litro)", "Preço no Posto", "Apoio Preço no Posto", None, COR["texto"]),
+        ("Preço na refinaria (R$/litro, sem impostos)", "Refinaria por Litro", "Apoio Refinaria", None,
+         COR["texto"]),
+        ("Diferença posto − refinaria (R$/litro)", "Diferença Posto Refinaria", "Apoio Diferença", None,
+         COR["texto"]),
+        ("Postos pesquisados na semana", "Postos Pesquisados", "Apoio Postos", None, COR["texto"]),
     ]):
         xi = x + i * (w + gap)
         p.fundo(xi, y, w, h)

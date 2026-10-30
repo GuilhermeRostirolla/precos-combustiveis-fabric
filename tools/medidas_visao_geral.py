@@ -61,6 +61,15 @@ def preco_uf(produto: str) -> str:
             '        FILTER ( ALL ( fato_preco_uf_semana[uf] ), u = "BR" || fato_preco_uf_semana[uf] = u )\n    )')
 
 
+def postos(coluna: str) -> str:
+    """Postos ou municípios pesquisados na semana de referência, no estado escolhido (ou no Brasil)."""
+    return (f"{UF}\nVAR s = [Semana de Referência]\nRETURN\n    CALCULATE (\n"
+            f"        SUM ( fato_preco_uf_semana[{coluna}] ),\n"
+            "        REMOVEFILTERS ( dim_semana ),\n        REMOVEFILTERS ( dim_uf ),\n"
+            "        fato_preco_uf_semana[semana] = s,\n"
+            '        FILTER ( ALL ( fato_preco_uf_semana[uf] ), u = "BR" || fato_preco_uf_semana[uf] = u )\n    )')
+
+
 def delta(componente: str, expr: str) -> list[tuple]:
     return [
         (f"{componente} Mês Explicado", "Por que mudou", REAIS, no_mes(expr)),
@@ -97,6 +106,29 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Preço Etanol", "Visão geral", REAIS, preco_uf("ETANOL")),
         ("Preço Gasolina", "Visão geral", REAIS, preco_uf("GASOLINA")),
         ("Etanol ÷ Gasolina", "Visão geral", "0%", "DIVIDE ( [Preço Etanol], [Preço Gasolina] )"),
+        # quatro indicadores do topo
+        ("Refinaria no Litro do Posto", "Visão geral", REAIS,
+         "// parte da refinaria em um litro vendido no posto (só a parcela fóssil, sem tributos)\n"
+         + na_semana(f"AVERAGE ( {C}[refinaria] )")),
+        ("Diferença Posto Refinaria", "Visão geral", REAIS,
+         "// tudo o que vem depois da refinaria: impostos, etanol ou biodiesel, frete e margens\n"
+         "VAR p = [Preço no Posto]\nVAR r = [Refinaria no Litro do Posto]\nRETURN\n"
+         "    IF ( NOT ISBLANK ( p ) && NOT ISBLANK ( r ), p - r )"),
+        ("Diferença Média 12 Meses", "Visão geral", REAIS,
+         f"{UF}\nVAR s = [Semana de Referência]\nRETURN\n    CALCULATE (\n"
+         f"        AVERAGEX ( {C}, {C}[preco_posto] - {C}[refinaria] ),\n"
+         "        REMOVEFILTERS ( dim_semana ),\n        REMOVEFILTERS ( dim_uf ),\n"
+         f"        {C}[uf] = u,\n        {C}[semana] > s - 364,\n        {C}[semana] <= s\n    )"),
+        ("Postos Pesquisados", "Visão geral", "#,0", postos("postos")),
+        ("Municípios Pesquisados", "Visão geral", "#,0", postos("municipios")),
+        ("Apoio Refinaria", "Visão geral", None,
+         "VAR d = [Refinaria por Litro] - [Refinaria 4 Semanas Antes]\nRETURN\n"
+         f'    IF ( ISBLANK ( [Refinaria 4 Semanas Antes] ), "", {seta("d")} & " vs 4 semanas atrás" )'),
+        ("Apoio Diferença", "Visão geral", None,
+         'IF ( ISBLANK ( [Diferença Média 12 Meses] ), "", "Média de 12 meses: R$ " '
+         '& FORMAT ( [Diferença Média 12 Meses], "0.00" ) )'),
+        ("Apoio Postos", "Visão geral", None,
+         '"em " & FORMAT ( [Municípios Pesquisados], "#,0" ) & " municípios"'),
         ("Apoio Preço no Posto", "Visão geral", None,
          "VAR d = [Preço no Posto] - [Preço no Posto Semana Anterior]\nRETURN\n"
          f"    IF ( NOT ISBLANK ( [Preço no Posto Semana Anterior] ), {seta('d')} & \" vs semana anterior\", \"\" )"),

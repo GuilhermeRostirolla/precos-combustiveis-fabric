@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "8c390bd469b5200ce6bf",
   "position": {
-    "x": 522,
+    "x": 650,
     "y": 166,
     "z": 1600,
     "height": 36,
-    "width": 224,
+    "width": 289,
     "tabOrder": 1600
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Impostos no Litro"
+                  "Property": "Diferença Posto Refinaria"
                 }
               },
-              "queryRef": "composicao_preco_semana.Impostos no Litro",
-              "nativeQueryRef": "Impostos no Litro"
+              "queryRef": "composicao_preco_semana.Diferença Posto Refinaria",
+              "nativeQueryRef": "Diferença Posto Refinaria"
             }
           ]
         }
