@@ -231,7 +231,7 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          "        r >= 0.01, \"A refinaria subiu R$ \" & FORMAT ( r, \"0.00\" ),\n"
          "        \"A refinaria ficou estável\"\n    )\n"
          'VAR p = SELECTEDVALUE ( dim_produto[produto], "GASOLINA" )\nVAR ref = [Semana de Referência]\n'
-         "VAR eventos =\n    CONCATENATEX (\n        TOPN ( 3, FILTER ( evento, evento[data] > ref - 364 && evento[data] <= ref\n"
+         "VAR eventos =\n    CONCATENATEX (\n        TOPN ( 2, FILTER ( evento, evento[data] > ref - 364 && evento[data] <= ref\n"
          '            && ( evento[produto] = p || evento[produto] = "TODOS" ) ), evento[data], DESC ),\n'
          '        FORMAT ( evento[data], "mmm/yy" ) & ": " & evento[descricao],\n        " · ",\n        evento[data], DESC\n    )\n'
          "RETURN\n    IF (\n        ISBLANK ( d ),\n        \"\",\n"

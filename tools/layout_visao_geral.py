@@ -31,10 +31,10 @@ def cartao_x(i: int) -> int:
 
 
 # gráfico
-GRAFICO = {"x": 28, "y": 304, "w": 1224, "h": 220,
+GRAFICO = {"x": 28, "y": 304, "w": 1224, "h": 196,
            "titulo": "O que aconteceu com o preço, mês a mês",
            "subtitulo": "Variação do preço médio em relação ao mês anterior · últimos 12 meses"}
 
 # por que mudou: ponte de preço (esquerda) e conclusão em texto (direita)
-PONTE = {"x": 28, "y": 536, "w": 808, "h": 160, "titulo": "Por que o preço mudou em 12 meses"}
-CONCLUSAO = {"x": 848, "y": 536, "w": 404, "h": 160, "titulo": "Em resumo"}
+PONTE = {"x": 28, "y": 512, "w": 808, "h": 184, "titulo": "Por que o preço mudou em 12 meses"}
+CONCLUSAO = {"x": 848, "y": 512, "w": 404, "h": 184, "titulo": "Em resumo"}

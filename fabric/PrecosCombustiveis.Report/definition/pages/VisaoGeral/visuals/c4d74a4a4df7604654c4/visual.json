@@ -3,9 +3,9 @@
   "name": "c4d74a4a4df7604654c4",
   "position": {
     "x": 40,
-    "y": 592,
+    "y": 568,
     "z": 2100,
-    "height": 98,
+    "height": 122,
     "width": 784,
     "tabOrder": 2100
   },
@@ -112,6 +112,13 @@
                   "Value": "false"
                 }
               }
+            },
+            "concatenateLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
             }
           }
         }
@@ -188,6 +195,19 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "breakdown": [
+        {
+          "properties": {
+            "totalLabel": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Total no posto'"
                 }
               }
             }

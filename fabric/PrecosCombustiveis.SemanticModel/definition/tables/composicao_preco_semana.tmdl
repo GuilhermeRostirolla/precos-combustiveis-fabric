@@ -699,7 +699,7 @@ table composicao_preco_semana
 			VAR ref = [Semana de Referência]
 			VAR eventos =
 			    CONCATENATEX (
-			        TOPN ( 3, FILTER ( evento, evento[data] > ref - 364 && evento[data] <= ref
+			        TOPN ( 2, FILTER ( evento, evento[data] > ref - 364 && evento[data] <= ref
 			            && ( evento[produto] = p || evento[produto] = "TODOS" ) ), evento[data], DESC ),
 			        FORMAT ( evento[data], "mmm/yy" ) & ": " & evento[descricao],
 			        " · ",

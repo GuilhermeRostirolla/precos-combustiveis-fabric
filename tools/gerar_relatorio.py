@@ -295,11 +295,13 @@ class Pagina:
         """Gráfico em cascata: cada parte que subiu (laranja) ou caiu (azul) e o total no fim."""
         objetos = {
             "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["texto"]),
-                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False)}}],
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                             "concatenateLabels": lit(False)}}],
             "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
             "labels": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "color": cor(COR["texto"]),
                                        "fontFamily": lit(FONTE_FORTE)}}],
             "legend": [{"properties": {"show": lit(False)}}],
+            "breakdown": [{"properties": {"totalLabel": lit("Total no posto")}}],
             "sentimentColors": [{"properties": {"increaseFill": cor(COR["alta"]), "decreaseFill": cor(COR["baixa"]),
                                                 "totalFill": cor(COR["suave"])}}],
         }
@@ -365,7 +367,7 @@ def visao_geral() -> Pagina:
               ("Variação 12 Meses do Componente", "Variação no litro"))
     p.texto_dinamico("Conclusão 12 Meses", c["x"] + 12, c["y"] + 40, c["w"] - 24, 30, 13.0,
                      medida_cor="Cor Conclusão 12 Meses", forte=True)
-    p.texto_longo("Detalhe 12 Meses", c["x"] + 12, c["y"] + 72, c["w"] - 24, c["h"] - 80, 9.0, COR["suave"])
+    p.texto_longo("Detalhe 12 Meses", c["x"] + 12, c["y"] + 72, c["w"] - 24, c["h"] - 80, 8.5, COR["suave"])
     return p
 
 
