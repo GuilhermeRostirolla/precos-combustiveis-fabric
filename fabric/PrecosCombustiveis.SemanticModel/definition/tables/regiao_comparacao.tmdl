@@ -1,0 +1,28 @@
+table regiao_comparacao
+	lineageTag: 66e862a3-797a-5ae4-8dbb-d9c7c8d7b100
+	sourceLineageTag: [gold].[regiao_comparacao]
+
+	column uf
+		dataType: string
+		lineageTag: 7ecbe328-f081-57b7-815b-663629a48d17
+		sourceLineageTag: uf
+		summarizeBy: none
+		sourceColumn: uf
+
+		annotation SummarizationSetBy = Automatic
+
+	column regiao
+		dataType: string
+		lineageTag: 74381d00-2818-5dbe-8fb0-44646ed819ba
+		sourceLineageTag: regiao
+		summarizeBy: none
+		sourceColumn: regiao
+
+		annotation SummarizationSetBy = Automatic
+
+	partition regiao_comparacao = entity
+		mode: directLake
+		source
+			entityName: regiao_comparacao
+			schemaName: gold
+			expressionSource: DatabaseQuery

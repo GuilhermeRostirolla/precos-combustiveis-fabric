@@ -28,7 +28,7 @@ def texto(t, x, y, tamanho, peso, cor):
 
 def html() -> str:
     partes = []
-    for f in (L.COMBUSTIVEL, L.ESTADO, L.SEMANA):
+    for f in (L.COMBUSTIVEL, L.ESTADO):
         partes.append(caixa(f["x"], f["y"], f["w"], f["h"], raio=8))
     for i in range(len(L.CARTOES)):
         x, y = L.cartao_x(i), L.CARTAO_Y

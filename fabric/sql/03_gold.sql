@@ -163,10 +163,12 @@ BEGIN
            CASE WHEN uf = 'BR' THEN 0 ELSE ROW_NUMBER() OVER (ORDER BY uf) END AS ordem
     FROM config.uf_regiao;
 
-    -- Estados para o ranking (sem relação com as tabelas: o filtro de estado só destaca a barra escolhida).
+    -- Estados e regiões para a comparação por região (sem relação com as tabelas: o filtro de estado só destaca a
+    -- região dele). A linha 'BR' representa o Brasil inteiro.
     DROP TABLE IF EXISTS gold.uf_ranking;
-    CREATE TABLE gold.uf_ranking AS
-    SELECT uf FROM config.uf_regiao WHERE uf <> 'BR';
+    DROP TABLE IF EXISTS gold.regiao_comparacao;
+    CREATE TABLE gold.regiao_comparacao AS
+    SELECT uf, regiao FROM config.uf_regiao;
 
     DROP TABLE IF EXISTS gold.componente;
     CREATE TABLE gold.componente AS

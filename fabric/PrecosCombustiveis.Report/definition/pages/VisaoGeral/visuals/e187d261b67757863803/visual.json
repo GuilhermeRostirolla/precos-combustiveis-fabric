@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "e187d261b67757863803",
   "position": {
-    "x": 36,
-    "y": 236,
+    "x": 654,
+    "y": 482,
     "z": 2700,
     "height": 28,
-    "width": 600,
+    "width": 560,
     "tabOrder": 2700
   },
   "visual": {
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Preço do litro nas últimas 52 semanas · R$",
+                    "value": "Preço no posto por região · R$/litro",
                     "textStyle": {
                       "fontFamily": "Segoe UI Semibold",
                       "fontSize": "11pt",

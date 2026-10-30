@@ -391,6 +391,51 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo(medida), "direction": "Descending"}]}},
             "objects": objetos})
 
+    def areas(self, x, y, w, h, eixo, medidas, cores):
+        """Áreas empilhadas: as partes somadas formam o total."""
+        pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
+                  for m, c in zip([m[0] for m in medidas], cores, strict=True)]
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                             "gridlineShow": lit(False)}}],
+            "valueAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
+                                          "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                          "gridlineShow": lit(True), "gridlineColor": cor(COR["grade"]),
+                                          "labelDisplayUnits": lit(1.0), "labelPrecision": lit(0)}}],
+            "legend": [{"properties": {"show": lit(True), "position": lit("TopRight"), "showTitle": lit(False),
+                                       "fontSize": lit(9.0), "labelColor": cor(COR["suave"]),
+                                       "fontFamily": lit(FONTE)}}],
+            "lineStyles": [{"properties": {"strokeWidth": lit(1), "areaTransparency": lit(15)}}],
+            "labels": [{"properties": {"show": lit(False)}}],
+            "dataPoint": pontos,
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "stackedAreaChart",
+            "query": {"queryState": {"Category": {"projections": [projecao(eixo, ativo=True)]},
+                                     "Y": {"projections": campos(medidas)}},
+                      "sortDefinition": {"sort": [{"field": campo(eixo), "direction": "Ascending"}]}},
+            "objects": objetos})
+
+    def barras_ordenadas(self, x, y, w, h, categoria, medida, medida_cor):
+        """Barras horizontais do maior para o menor, coloridas por medida."""
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(10.0), "labelColor": cor(COR["texto"]),
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                             "maxMarginFactor": lit(30), "innerPadding": lit(30.0)}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
+            "labels": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "color": cor(COR["texto"]),
+                                       "fontFamily": lit(FONTE_FORTE)}}],
+            "dataPoint": [{"properties": {"fill": cor_da_medida(medida_cor)},
+                           "selector": {"data": [{"dataViewWildcard": {"matchingOption": 1}}]}}],
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "clusteredBarChart",
+            "query": {"queryState": {"Category": {"projections": [projecao(categoria, ativo=True)]},
+                                     "Y": {"projections": campos([medida])}},
+                      "sortDefinition": {"sort": [{"field": campo(medida), "direction": "Descending"}]}},
+            "objects": objetos})
+
     def interacao(self, origem, destino, tipo="DataFilter"):
         self.interacoes.append({"source": origem, "target": destino, "type": tipo})
 
@@ -403,8 +448,7 @@ def visao_geral() -> Pagina:
     # filtros: rótulo à esquerda e lista suspensa à direita, dentro da mesma moldura
     for f, coluna, extra in [(L.COMBUSTIVEL, "dim_produto.nome",
                               {"padrao": "Gasolina comum", "filtros": [("dim_produto.produto", ["GASOLINA", "DIESEL S10"])]}),
-                             (L.ESTADO, "dim_uf.estado", {"padrao": "Brasil"}),
-                             (L.SEMANA, "semana_referencia.rotulo", {"obrigatorio": False, "decrescente": True})]:
+                             (L.ESTADO, "dim_uf.estado", {"padrao": "Brasil"})]:
         p.rotulo(f["rotulo"], f["x"] + 4, f["y"] + 3, f["rotulo_w"], f["h"] - 6, 9)
         p.lista(coluna, f["x"] + f["rotulo_w"], f["y"] + 2, f["w"] - f["rotulo_w"] - 4, f["h"] - 4, **extra)
     d = L.DADOS_ATE
@@ -422,12 +466,8 @@ def visao_geral() -> Pagina:
     p.texto_dinamico("Variação Semana Posto %", L.cartao_x(1) + 12, y + 70, 211, 20, 9.0,
                      medida_cor="Cor Variação Semana")
     x = L.cartao_x(2)
-    p.texto_dinamico("Variação 12 Meses Posto", x + 12, y + 34, 96, 36, 20.0, medida_cor="Cor Variação 12 Meses",
-                     forte=True)
-    p.texto_dinamico("Variação 12 Meses Refinaria", x + 108, y + 34, 115, 36, 20.0,
-                     medida_cor="Cor Variação 12 Meses Refinaria", forte=True)
-    p.rotulo("posto", x + 8, y + 66, 80, 24, 8.5)
-    p.rotulo("refinaria", x + 104, y + 66, 90, 24, 8.5)
+    p.texto_dinamico("Δ12 Posto", x + 12, y + 32, 211, 40, 22.0, medida_cor="Cor Variação 12 Meses", forte=True)
+    p.texto_dinamico("Variação 12 Meses Posto", x + 12, y + 70, 211, 20, 9.0, medida_cor="Cor Variação 12 Meses")
     p.texto_dinamico("Impostos no Litro", L.cartao_x(3) + 12, y + 32, 110, 40, 22.0, forte=True)
     p.texto_dinamico("Impostos % do Preço", L.cartao_x(3) + 12, y + 70, 211, 20, 9.0, cor_texto=COR["suave"])
     x = L.cartao_x(4)
@@ -435,22 +475,23 @@ def visao_geral() -> Pagina:
     # barra de blocos "█" sobre o trilho; a marca de 70% está na imagem de fundo
     p.texto_dinamico("Texto Barra Etanol", x + L.BARRA_X, y + L.BARRA_Y - 3, L.BARRA_W, 14, 7.0,
                      cor_texto=COR["etanol"], fundo=COR["trilho"])
-    # preço do litro semana a semana
+    # do que é feito o preço, semana a semana (as três partes somadas dão o preço no posto)
     g = L.GRAFICO
-    p.rotulo(g["titulo"], g["x"] + 8, g["y"] + 6, 600, 28, 11, COR["texto"], forte=True)
-    p.linhas(g["x"] + 12, g["y"] + 36, g["w"] - 24, g["h"] - 44, "dim_semana.semana",
-             [("Posto na Semana", "Posto"), ("Refinaria na Semana", "Refinaria (no litro)")],
-             [COR["posto"], COR["refinaria"]])
+    p.rotulo(g["titulo"], g["x"] + 8, g["y"] + 6, 700, 28, 11, COR["texto"], forte=True)
+    p.areas(g["x"] + 12, g["y"] + 36, g["w"] - 24, g["h"] - 44, "dim_semana.semana",
+            [("Refinaria na Semana", "Refinaria"), ("Impostos na Semana", "Impostos"),
+             ("Outros na Semana", "Etanol/biodiesel, frete e margens")],
+            [COR["refinaria"], "#8A7CF0", COR["alta"]])
     # o que mudou em cada parte do litro em 12 meses
     b = L.PONTE
     p.rotulo(b["titulo"], b["x"] + 8, b["y"] + 6, 560, 28, 11, COR["texto"], forte=True)
     p.barras_coloridas(b["x"] + 12, b["y"] + 40, b["w"] - 24, b["h"] - 48, "componente.componente",
                        "Variação 12 Meses do Componente", "Cor Variação 12 Meses do Componente")
-    # ranking dos estados (o estado escolhido fica em destaque)
+    # preço por região, com o Brasil de referência (a região do estado escolhido fica em destaque)
     r = L.RANKING
     p.rotulo(r["titulo"], r["x"] + 8, r["y"] + 6, 560, 28, 11, COR["texto"], forte=True)
-    p.ranking(r["x"] + 12, r["y"] + 36, r["w"] - 24, r["h"] - 44, "uf_ranking.uf",
-              "Preço no Posto por Estado", "Cor do Estado")
+    p.barras_ordenadas(r["x"] + 12, r["y"] + 40, r["w"] - 24, r["h"] - 48, "regiao_comparacao.regiao",
+                       "Preço por Região", "Cor da Região")
     return p
 
 

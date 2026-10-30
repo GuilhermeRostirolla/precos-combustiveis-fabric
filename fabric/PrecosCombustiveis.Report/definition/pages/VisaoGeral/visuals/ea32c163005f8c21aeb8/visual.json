@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "ea32c163005f8c21aeb8",
   "position": {
-    "x": 530,
+    "x": 1024,
     "y": 124,
     "z": 1100,
     "height": 26,
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Variação em 12 meses",
+                    "value": "Etanol ÷ gasolina",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "9pt",

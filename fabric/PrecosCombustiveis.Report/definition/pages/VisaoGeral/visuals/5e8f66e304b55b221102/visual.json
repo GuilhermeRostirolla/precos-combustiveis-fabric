@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "5e8f66e304b55b221102",
   "position": {
-    "x": 630,
-    "y": 152,
+    "x": 781,
+    "y": 188,
     "z": 2000,
-    "height": 36,
-    "width": 115,
+    "height": 20,
+    "width": 211,
     "tabOrder": 2000
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "composicao_preco_semana"
+                      "Entity": "componente"
                     }
                   },
-                  "Property": "Variação 12 Meses Refinaria"
+                  "Property": "Impostos % do Preço"
                 }
               },
-              "queryRef": "composicao_preco_semana.Variação 12 Meses Refinaria",
-              "nativeQueryRef": "Variação 12 Meses Refinaria"
+              "queryRef": "componente.Impostos % do Preço",
+              "nativeQueryRef": "Impostos % do Preço"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "9.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Variação 12 Meses Refinaria"
+                    "Literal": {
+                      "Value": "'#8B95A9'"
                     }
                   }
                 }
@@ -89,14 +84,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "9.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -104,13 +99,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Variação 12 Meses Refinaria"
+                    "Literal": {
+                      "Value": "'#8B95A9'"
                     }
                   }
                 }

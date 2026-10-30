@@ -7,7 +7,7 @@ model Model
 ref table dim_semana
 ref table dim_uf
 ref table semana_referencia
-ref table uf_ranking
+ref table regiao_comparacao
 ref table componente
 ref table evento
 ref table composicao_preco_semana

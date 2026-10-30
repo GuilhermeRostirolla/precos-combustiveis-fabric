@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "f18f2dc04d416501e6c5",
   "position": {
-    "x": 432,
-    "y": 75,
+    "x": 1060,
+    "y": 72,
     "z": 500,
-    "height": 24,
-    "width": 62,
+    "height": 26,
+    "width": 70,
     "tabOrder": 500
   },
   "visual": {
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Semana",
+                    "value": "Dados até",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "9pt",

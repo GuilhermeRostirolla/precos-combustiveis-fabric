@@ -14,7 +14,6 @@ TITULO = "Preço dos combustíveis"
 # filtros
 COMBUSTIVEL = {"x": 28, "y": 72, "w": 230, "h": 30, "rotulo": "Combustível", "rotulo_w": 88}
 ESTADO = {"x": 268, "y": 72, "w": 150, "h": 30, "rotulo": "Estado", "rotulo_w": 54}
-SEMANA = {"x": 428, "y": 72, "w": 176, "h": 30, "rotulo": "Semana", "rotulo_w": 62}
 DADOS_ATE = {"x": 1060, "y": 78, "rotulo": "Dados até"}
 
 # cartões
@@ -29,9 +28,9 @@ def cartao_x(i: int) -> int:
     return 28 + i * (CARTAO_W + CARTAO_GAP)
 
 
-# gráfico de linha: preço do litro semana a semana
-GRAFICO = {"x": 28, "y": 230, "w": 1224, "h": 234, "titulo": "Preço do litro nas últimas 52 semanas · R$"}
+# área empilhada: as partes do preço semana a semana (somadas dão o preço no posto)
+GRAFICO = {"x": 28, "y": 230, "w": 1224, "h": 234, "titulo": "Do que é feito o preço do litro · últimas 52 semanas · R$"}
 
 # faixa de baixo: o que mudou em cada parte do litro e o ranking dos estados
 PONTE = {"x": 28, "y": 476, "w": 606, "h": 220, "titulo": "O que mudou em 12 meses · R$/litro"}
-RANKING = {"x": 646, "y": 476, "w": 606, "h": 220, "titulo": "Preço no posto por estado · R$/litro"}
+RANKING = {"x": 646, "y": 476, "w": 606, "h": 220, "titulo": "Preço no posto por região · R$/litro"}

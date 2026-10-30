@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a965f96a3d1f0d3da872",
   "position": {
-    "x": 1024,
-    "y": 124,
+    "x": 891,
+    "y": 160,
     "z": 1300,
-    "height": 26,
-    "width": 220,
+    "height": 24,
+    "width": 60,
     "tabOrder": 1300
   },
   "visual": {
@@ -19,10 +19,10 @@
               {
                 "textRuns": [
                   {
-                    "value": "Etanol ÷ gasolina",
+                    "value": "/litro",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
-                      "fontSize": "9pt",
+                      "fontSize": "10pt",
                       "color": "#8B95A9"
                     }
                   }

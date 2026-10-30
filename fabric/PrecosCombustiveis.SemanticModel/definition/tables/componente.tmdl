@@ -242,19 +242,7 @@ table componente
 		displayFolder: Visão geral
 		lineageTag: e5eb5e43-3c4f-5574-9521-15ce10487cde
 
-	measure 'Posto na Semana' = ```
-			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
-			VAR ref = [Semana de Referência]
-			VAR s = MAX ( dim_semana[semana] )
-			RETURN
-			    IF ( s > ref - 364 && s <= ref, CALCULATE ( AVERAGE ( composicao_preco_semana[preco_posto] ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u ) )
-			```
-		formatString: """R$"" #,0.00"
-		displayFolder: Gráfico
-		lineageTag: eabb445c-4f41-5fc0-b0f6-fdc66ef7e6cb
-
 	measure 'Refinaria na Semana' = ```
-			// parte da refinaria dentro do litro vendido no posto
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR ref = [Semana de Referência]
 			VAR s = MAX ( dim_semana[semana] )
@@ -265,20 +253,58 @@ table componente
 		displayFolder: Gráfico
 		lineageTag: a0f79096-e848-55cd-9cc3-37f64caf9208
 
-	measure 'Preço no Posto por Estado' = ```
-			VAR u = SELECTEDVALUE ( uf_ranking[uf] )
-			VAR s = [Semana de Referência]
+	measure 'Impostos na Semana' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR ref = [Semana de Referência]
+			VAR s = MAX ( dim_semana[semana] )
 			RETURN
-			    CALCULATE ( AVERAGE ( composicao_preco_semana[preco_posto] ), REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ),
-			        composicao_preco_semana[uf] = u, composicao_preco_semana[semana] = s )
+			    IF ( s > ref - 364 && s <= ref, CALCULATE ( AVERAGE ( composicao_preco_semana[tributos_federais] ) + AVERAGE ( composicao_preco_semana[icms] ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u ) )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Gráfico
+		lineageTag: f7588e23-2db9-5685-95e7-838364b5609c
+
+	measure 'Outros na Semana' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR ref = [Semana de Referência]
+			VAR s = MAX ( dim_semana[semana] )
+			RETURN
+			    IF ( s > ref - 364 && s <= ref, CALCULATE ( AVERAGE ( composicao_preco_semana[outros] ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u ) )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Gráfico
+		lineageTag: bc0f4e51-26be-5d5e-8719-f375d64416b6
+
+	measure 'Preço por Região' = ```
+			// média dos postos pesquisados nos estados da região (ou do Brasil), na semana de referência
+			VAR r = SELECTEDVALUE ( regiao_comparacao[regiao] )
+			VAR s = [Semana de Referência]
+			VAR ufs = IF ( r = "Brasil", ALL ( regiao_comparacao[uf] ), VALUES ( regiao_comparacao[uf] ) )
+			RETURN
+			    CALCULATE (
+			        DIVIDE (
+			            SUMX ( fato_preco_uf_semana, fato_preco_uf_semana[preco_medio] * fato_preco_uf_semana[coletas] ),
+			            SUM ( fato_preco_uf_semana[coletas] )
+			        ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        TREATAS ( ufs, fato_preco_uf_semana[uf] ),
+			        fato_preco_uf_semana[semana] = s
+			    )
 			```
 		formatString: #,0.00
 		displayFolder: Gráfico
-		lineageTag: fa5285e2-87a7-5395-8a1f-b1c3f9fdf809
+		lineageTag: 834694ab-8385-583a-9986-efb11d5f493f
 
-	measure 'Cor do Estado' = IF ( SELECTEDVALUE ( uf_ranking[uf] ) = SELECTEDVALUE ( dim_uf[uf], "BR" ), "#E8833A", "#3A4660" )
+	measure 'Cor da Região' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR escolhida = IF ( u = "BR", "Brasil", LOOKUPVALUE ( regiao_comparacao[regiao], regiao_comparacao[uf], u ) )
+			VAR r = SELECTEDVALUE ( regiao_comparacao[regiao] )
+			RETURN
+			    IF ( r = escolhida, "#E8833A", IF ( r = "Brasil", "#8B95A9", "#3A4660" ) )
+			```
 		displayFolder: Cores
-		lineageTag: 66e535f4-87f3-5d1e-a0b4-006298bed536
+		lineageTag: eaaf881e-496b-56af-90e0-2c6ce992f381
 
 	column componente
 		dataType: string

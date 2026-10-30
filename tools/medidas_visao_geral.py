@@ -354,14 +354,21 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Cor Variação Semana", "Cores", None,
          f'VAR d = [Variação Semana Posto]\nRETURN\n    IF ( d > 0, "{CORES["alta"]}", IF ( d < 0, "{CORES["baixa"]}", "{CORES["neutra"]}" ) )'),
         ("Impostos % do Preço", "Visão geral", '0% "do preço"', "DIVIDE ( [Impostos no Litro], [Preço no Posto] )"),
-        ("Posto na Semana", "Gráfico", REAIS, na_linha(f"AVERAGE ( {C}[preco_posto] )")),
-        ("Refinaria na Semana", "Gráfico", REAIS,
-         "// parte da refinaria dentro do litro vendido no posto\n" + na_linha(f"AVERAGE ( {C}[refinaria] )")),
-        ("Preço no Posto por Estado", "Gráfico", '#,0.00',
-         "VAR u = SELECTEDVALUE ( uf_ranking[uf] )\nVAR s = [Semana de Referência]\nRETURN\n"
-         f"    CALCULATE ( AVERAGE ( {C}[preco_posto] ), REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ),\n"
-         f"        {C}[uf] = u, {C}[semana] = s )"),
-        ("Cor do Estado", "Cores", None,
-         f'IF ( SELECTEDVALUE ( uf_ranking[uf] ) = SELECTEDVALUE ( dim_uf[uf], "BR" ), "{CORES["alta"]}", "#3A4660" )'),
+        ("Refinaria na Semana", "Gráfico", REAIS, na_linha(f"AVERAGE ( {C}[refinaria] )")),
+        ("Impostos na Semana", "Gráfico", REAIS, na_linha(IMPOSTOS)),
+        ("Outros na Semana", "Gráfico", REAIS, na_linha(f"AVERAGE ( {C}[outros] )")),
+        ("Preço por Região", "Gráfico", '#,0.00',
+         "// média dos postos pesquisados nos estados da região (ou do Brasil), na semana de referência\n"
+         "VAR r = SELECTEDVALUE ( regiao_comparacao[regiao] )\nVAR s = [Semana de Referência]\n"
+         'VAR ufs = IF ( r = "Brasil", ALL ( regiao_comparacao[uf] ), VALUES ( regiao_comparacao[uf] ) )\nRETURN\n'
+         "    CALCULATE (\n        DIVIDE (\n            SUMX ( fato_preco_uf_semana, fato_preco_uf_semana[preco_medio] "
+         "* fato_preco_uf_semana[coletas] ),\n            SUM ( fato_preco_uf_semana[coletas] )\n        ),\n"
+         "        REMOVEFILTERS ( dim_semana ),\n        REMOVEFILTERS ( dim_uf ),\n"
+         "        TREATAS ( ufs, fato_preco_uf_semana[uf] ),\n        fato_preco_uf_semana[semana] = s\n    )"),
+        ("Cor da Região", "Cores", None,
+         'VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )\n'
+         'VAR escolhida = IF ( u = "BR", "Brasil", LOOKUPVALUE ( regiao_comparacao[regiao], regiao_comparacao[uf], u ) )\n'
+         'VAR r = SELECTEDVALUE ( regiao_comparacao[regiao] )\nRETURN\n'
+         f'    IF ( r = escolhida, "{CORES["alta"]}", IF ( r = "Brasil", "#8B95A9", "#3A4660" ) )'),
     ]
     return {C: composicao, "componente": componente}

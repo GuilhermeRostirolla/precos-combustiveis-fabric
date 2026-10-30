@@ -2,114 +2,70 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "9786b6a50c65465b0486",
   "position": {
-    "x": 490,
-    "y": 74,
+    "x": 1126,
+    "y": 77,
     "z": 600,
-    "height": 26,
-    "width": 110,
+    "height": 20,
+    "width": 130,
     "tabOrder": 600
   },
   "visual": {
-    "visualType": "slicer",
+    "visualType": "multiRowCard",
     "query": {
       "queryState": {
         "Values": {
           "projections": [
             {
               "field": {
-                "Column": {
+                "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "semana_referencia"
+                      "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "rotulo"
+                  "Property": "Semana de Referência"
                 }
               },
-              "queryRef": "semana_referencia.rotulo",
-              "nativeQueryRef": "rotulo",
-              "active": true
+              "queryRef": "composicao_preco_semana.Semana de Referência",
+              "nativeQueryRef": "Semana de Referência"
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "semana_referencia"
-                  }
-                },
-                "Property": "rotulo"
-              }
-            },
-            "direction": "Descending"
-          }
-        ]
       }
     },
     "objects": {
-      "data": [
+      "dataLabels": [
         {
           "properties": {
-            "mode": {
+            "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "'Dropdown'"
+                  "Value": "10.0D"
                 }
               }
-            }
-          }
-        }
-      ],
-      "general": [
-        {
-          "properties": {
-            "outlineColor": {
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "color": {
               "solid": {
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#111A2B'"
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }
               }
-            },
-            "outlineWeight": {
-              "expr": {
-                "Literal": {
-                  "Value": "0.0D"
-                }
-              }
             }
           }
         }
       ],
-      "selection": [
-        {
-          "properties": {
-            "strictSingleSelect": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "singleSelect": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "header": [
+      "categoryLabels": [
         {
           "properties": {
             "show": {
@@ -122,32 +78,10 @@
           }
         }
       ],
-      "items": [
+      "cardTitle": [
         {
           "properties": {
-            "fontColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
-                    }
-                  }
-                }
-              }
-            },
-            "background": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#111A2B'"
-                    }
-                  }
-                }
-              }
-            },
-            "textSize": {
+            "fontSize": {
               "expr": {
                 "Literal": {
                   "Value": "10.0D"
@@ -157,10 +91,27 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "card": [
+        {
+          "properties": {
             "outline": {
               "expr": {
                 "Literal": {
@@ -168,12 +119,26 @@
                 }
               }
             },
-            "outlineColor": {
+            "barShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "cardPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
+                }
+              }
+            },
+            "cardBackground": {
               "solid": {
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#111A2B'"
+                      "Value": "'#090E1A'"
                     }
                   }
                 }

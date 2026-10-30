@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "4bfe490491b48002ef9c",
   "position": {
-    "x": 534,
-    "y": 152,
+    "x": 781,
+    "y": 150,
     "z": 1900,
-    "height": 36,
-    "width": 96,
+    "height": 40,
+    "width": 110,
     "tabOrder": 1900
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Variação 12 Meses Posto"
+                  "Property": "Impostos no Litro"
                 }
               },
-              "queryRef": "composicao_preco_semana.Variação 12 Meses Posto",
-              "nativeQueryRef": "Variação 12 Meses Posto"
+              "queryRef": "composicao_preco_semana.Impostos no Litro",
+              "nativeQueryRef": "Impostos no Litro"
             }
           ]
         }
@@ -40,7 +40,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "22.0D"
                 }
               }
             },
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Variação 12 Meses"
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }
@@ -89,7 +84,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "22.0D"
                 }
               }
             },
@@ -104,13 +99,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Variação 12 Meses"
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }
