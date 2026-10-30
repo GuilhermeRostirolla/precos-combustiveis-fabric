@@ -167,12 +167,14 @@ BEGIN
     GROUP BY w.semana, t.produto;
 
     -- Composição de cada estado, com a refinaria da região dele.
-    DROP TABLE IF EXISTS #composicao_uf;
-    SELECT x.semana, x.uf, x.produto, x.coletas, x.preco_posto, x.fracao_fossil,
+    DROP TABLE IF EXISTS gold.composicao_preco_semana;
+    CREATE TABLE gold.composicao_preco_semana AS
+    SELECT x.semana, CAST(x.uf AS varchar(2)) AS uf, x.produto, x.preco_posto, x.fracao_fossil,
            CAST(x.refinaria AS decimal(8,4)) AS refinaria,
            CAST(x.tributos_federais AS decimal(8,4)) AS tributos_federais,
            CAST(x.icms AS decimal(8,4)) AS icms,
-           CAST(x.preco_posto - x.refinaria - x.tributos_federais - x.icms AS decimal(8,4)) AS outros
+           CAST(x.preco_posto - x.refinaria - x.tributos_federais - x.icms AS decimal(8,4)) AS outros,
+           x.coletas
     FROM (
         SELECT p.semana, p.uf, p.produto, p.coletas, p.preco_posto, s.fracao_fossil, t.icms,
                -- a planilha da refinaria traz o tributo cobrado na semana dela (a anterior à do posto)
@@ -190,19 +192,19 @@ BEGIN
     -- O Brasil é a média dos estados, ponderada pelas coletas. A série "Brasil" da planilha de produtores pesa
     -- pelo volume vendido e dispara quando o Nordeste importa caro (maio/2026: R$ 5,26 no Brasil contra R$ 3,47 a
     -- R$ 3,64 no Sul, Sudeste e Centro-Oeste), enquanto a média dos postos é dominada pelo Sul e pelo Sudeste.
-    DROP TABLE IF EXISTS gold.composicao_preco_semana;
-    CREATE TABLE gold.composicao_preco_semana AS
-    SELECT semana, uf, produto, preco_posto, fracao_fossil, refinaria, tributos_federais, icms, outros
-    FROM #composicao_uf
-    UNION ALL
+    -- (o Warehouse do Fabric não deixa criar tabela a partir de temporária: a linha do Brasil entra depois)
+    INSERT INTO gold.composicao_preco_semana
+        (semana, uf, produto, preco_posto, fracao_fossil, refinaria, tributos_federais, icms, outros, coletas)
     SELECT semana, 'BR', produto,
            CAST(SUM(preco_posto * coletas) / SUM(coletas) AS decimal(8,4)),
            CAST(SUM(fracao_fossil * coletas) / SUM(coletas) AS decimal(8,4)),
            CAST(SUM(refinaria * coletas) / SUM(coletas) AS decimal(8,4)),
            CAST(SUM(tributos_federais * coletas) / SUM(coletas) AS decimal(8,4)),
            CAST(SUM(icms * coletas) / SUM(coletas) AS decimal(8,4)),
-           CAST(SUM(outros * coletas) / SUM(coletas) AS decimal(8,4))
-    FROM #composicao_uf
+           CAST(SUM(outros * coletas) / SUM(coletas) AS decimal(8,4)),
+           SUM(coletas)
+    FROM gold.composicao_preco_semana
+    WHERE uf <> 'BR'
     GROUP BY semana, produto;
 
     -- Semanas que podem ser escolhidas no relatório (sem relação com as tabelas: a página usa a escolhida
