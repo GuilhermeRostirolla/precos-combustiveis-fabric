@@ -15,7 +15,7 @@ Preço desta semana − preço de 4 semanas antes (28 dias): 6,49 − 6,57 = −
 ### Variação em 12 meses: +R$ 0,28 (+4,5%)
 Quanto o preço mudou em um ano.
 Preço desta semana − preço de 52 semanas antes (20/10/2025): 6,49 − 6,21 = +0,28; 6,49 ÷ 6,21 − 1 = +4,5%.
-É o mesmo total do gráfico "O que mudou em 12 meses": 0,28 − 0,52 + 0,52 = 0,28.
+É o mesmo total do gráfico "O que mudou em 12 meses": 0,24 − 0,52 + 0,56 = 0,28.
 
 ### Impostos no litro: R$ 1,63 (25% do preço)
 Quanto do litro é imposto.
@@ -30,20 +30,21 @@ ICMS + tributos federais por litro, nos valores fixos em R$ definidos por lei, c
 Se compensa abastecer com etanol.
 Preço médio do etanol hidratado ÷ preço médio da gasolina comum, no mesmo estado e semana. Abaixo de 70%, o etanol compensa (verde). A barra mostra o percentual e a marca ▲ indica os 70%.
 
-### Refinaria em 12 meses: +13,3% (Diesel S10 escolhido)
+### Refinaria em 12 meses: +13,9% (Diesel S10 escolhido)
 Quanto o preço da refinaria mudou em um ano.
 Preço da refinaria por litro de diesel A hoje ÷ o de 52 semanas antes − 1.
 
 ## Gráficos
 
-### Do que é feito o preço do litro (média de cada mês)
-As três partes empilhadas somam o preço médio no posto de cada mês, nos últimos 12 meses. Usar a média do mês evita os "dentes" de uma semana que a série da refinaria tem quando muda a proporção de importadores:
+### As três partes do preço do litro (média de cada mês)
+Uma linha para cada parte do preço, nos últimos 12 meses, com o nome escrito na ponta. Em linhas separadas (e não empilhadas) dá para ver na hora quem subiu e quem caiu. A média do mês evita os "dentes" de uma semana que a série da refinaria tem quando muda a proporção de importadores. Somadas, as três partes dão o preço médio no posto:
 - **Refinaria**: preço de produtores e importadores (planilha semanal da ANP) da semana anterior, menos os tributos federais cobrados naquela semana, vezes a parcela fóssil do litro (68% na gasolina E32, 85% no diesel B15). Mediana de 3 semanas, porque a série oscila quando muda a proporção de importadores.
+  Cada estado usa o preço da sua região; o Brasil é a média dos estados ponderada pelas coletas (a série "Brasil" da planilha dispara quando o Nordeste importa caro e não combina com a média dos postos).
 - **Impostos**: ICMS + tributos federais efetivamente cobrados.
 - **Etanol/biodiesel, frete e margens**: o que sobra (preço no posto − refinaria − impostos).
 
 ### O que mudou em 12 meses
-Variação de cada parte entre a semana de referência e a de 52 semanas antes, e na última coluna o resultado no posto. Gasolina, Brasil: refinaria +R$ 0,28, impostos −R$ 0,52, etanol/biodiesel, frete e margens +R$ 0,52; preço no posto +R$ 0,28.
+Variação de cada parte entre a semana de referência e a de 52 semanas antes, e na última coluna o resultado no posto. Gasolina, Brasil: refinaria +R$ 0,24, impostos −R$ 0,52, etanol/biodiesel, frete e margens +R$ 0,56; preço no posto +R$ 0,28.
 
 ### Diferença para a média do Brasil
 Preço médio de cada região (média dos postos pesquisados nos estados dela) menos o do Brasil, na semana de referência. Vermelho: mais caro que a média; verde: mais barato. Com um estado escolhido, ele aparece em laranja. Gasolina: Norte +R$ 0,42, Nordeste +R$ 0,24, Centro-Oeste −R$ 0,02, Sudeste −R$ 0,11, Sul −R$ 0,15; SP −R$ 0,14.
@@ -57,12 +58,12 @@ Conferência com a Síntese da semana de 20 a 26/09/2026:
 | | ANP | Projeto |
 |---|---|---|
 | Gasolina C no posto | R$ 6,55 | R$ 6,57 |
-| Gasolina: refinaria + tributos federais | R$ 2,41 | R$ 2,47 |
+| Gasolina: refinaria + tributos federais | R$ 2,41 | R$ 2,41 |
 | Gasolina: ICMS | R$ 1,57 | R$ 1,57 |
-| Gasolina: anidro + margens | R$ 2,57 | R$ 2,53 |
-| Diesel S10 no posto | R$ 7,33 | R$ 7,33 |
-| Diesel: refinaria + tributos federais | R$ 3,33 | R$ 3,33 |
-| Diesel: biodiesel + margens | R$ 2,82 | R$ 2,82 |
+| Gasolina: anidro + margens | R$ 2,57 | R$ 2,59 |
+| Diesel S10 no posto | R$ 7,33 | R$ 7,32 |
+| Diesel: refinaria + tributos federais | R$ 3,33 | R$ 3,40 |
+| Diesel: biodiesel + margens | R$ 2,82 | R$ 2,75 |
 
 Impostos de 2026 considerados (tabela `config.tributo`):
 - PIS/Cofins do diesel zerado de 12/03 a 31/12/2026; o do biodiesel, de 08/04 a 31/07/2026.

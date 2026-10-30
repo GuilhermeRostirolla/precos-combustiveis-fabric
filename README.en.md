@@ -15,12 +15,12 @@ Week of Oct 19, 2026, Brazil average, compared with the same week of 2025:
 | | Regular gasoline | S10 diesel |
 |---|---|---|
 | Pump price | R$ 6.21 → **R$ 6.49** (+R$ 0.28) | R$ 6.11 → **R$ 7.30** (+R$ 1.19) |
-| Refinery | +R$ 0.28 | +R$ 0.38 |
+| Refinery | +R$ 0.24 | +R$ 0.40 |
 | Taxes | −R$ 0.52 | −R$ 0.25 |
-| Ethanol/biodiesel, freight and margins | +R$ 0.52 | +R$ 1.06 |
+| Ethanol/biodiesel, freight and margins | +R$ 0.56 | +R$ 1.04 |
 
 - **The government cut taxes, and the price still went up.** Federal taxes on gasoline were reduced in September and zeroed in October 2026; a liter carried R$ 0.52 less in taxes, and the pump price still rose R$ 0.28.
-- **Most of the increase happens after the refinery.** For diesel, R$ 1.06 of the R$ 1.19 increase is in biodiesel, freight and margins. For gasoline, that part rose R$ 0.52, as much as the tax cut.
+- **Most of the increase happens after the refinery.** For diesel, R$ 1.04 of the R$ 1.19 increase is in biodiesel, freight and margins. For gasoline, that part rose R$ 0.56, more than the tax cut.
 - **The September tax cut did not reach the pump.** After Sep 10, gasoline stayed between R$ 6.56 and R$ 6.57 for three weeks.
 - **Regional differences:** gasoline costs R$ 6.91 in the North and R$ 6.34 in the South.
 
@@ -64,6 +64,8 @@ Same method as [ANP's Weekly Summary](https://www.gov.br/anp/pt-br/assuntos/prec
 
 The difference from the Summary is that **federal taxes are the ones actually charged**, computed day by day. The Summary always uses the full statutory rate, so during the 2026 cuts the cut shows up as a drop in the refinery price. The data proves it: when federal taxes on gasoline were zeroed (Oct 10, 2026), the producers and importers price fell R$ 0.28, almost the tax removed (R$ 0.26); and after Sep 10 the Summary shows gasoline A at R$ 2.56, while Petrobras was selling it at R$ 3.05 before taxes. Outside the cut periods, the numbers match the Summary (table in [docs/indicadores.md](docs/indicadores.md)).
 
+Brazil is the average of the states, weighted by collections, and each state uses its region's refinery price. The spreadsheet's "Brazil" series is weighted by volume sold and spikes when the Northeast imports at high prices (May 2026: R$ 5.26 versus R$ 3.47 to R$ 3.64 in the South, Southeast and Center-West), while the station average is dominated by the South and Southeast.
+
 ## Complementary analysis: refinery-to-pump pass-through in RS
 
 The warehouse also measures, price change by price change, how much of a refinery change reaches gas stations in Rio Grande do Sul. Since January 2023 there were 31 refinery price changes in the South region: for gasoline, increases reached the pump in full within a week, while for cuts less than 40% got there in two weeks.
@@ -86,7 +88,7 @@ The same analysis runs for each RS city with at least 5 surveyed stations in the
 
 ## Report
 
-One page, dark theme, no explanatory text: five cards (pump price, change over 4 weeks and 12 months, taxes per liter and ethanol ÷ gasoline, which becomes the refinery change when diesel is selected), the monthly price breakdown, what changed in each part over 12 months (ending with the pump price) and each region's difference from the Brazil average, with the selected state highlighted. Filters for fuel (regular gasoline or S10 diesel) and state.
+One page, dark theme, no explanatory text: five cards (pump price, change over 4 weeks and 12 months, taxes per liter and ethanol ÷ gasoline, which becomes the refinery change when diesel is selected), the three parts of the price month by month, as separate lines, what changed in each part over 12 months (ending with the pump price) and each region's difference from the Brazil average, with the selected state highlighted. Filters for fuel (regular gasoline or S10 diesel) and state.
 
 ## How to run
 

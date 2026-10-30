@@ -15,12 +15,12 @@ Semana de 19/10/2026, média do Brasil, comparada com a mesma semana de 2025:
 | | Gasolina comum | Diesel S10 |
 |---|---|---|
 | Preço no posto | R$ 6,21 → **R$ 6,49** (+R$ 0,28) | R$ 6,11 → **R$ 7,30** (+R$ 1,19) |
-| Refinaria | +R$ 0,28 | +R$ 0,38 |
+| Refinaria | +R$ 0,24 | +R$ 0,40 |
 | Impostos | −R$ 0,52 | −R$ 0,25 |
-| Etanol/biodiesel, frete e margens | +R$ 0,52 | +R$ 1,06 |
+| Etanol/biodiesel, frete e margens | +R$ 0,56 | +R$ 1,04 |
 
 - **O governo cortou impostos, mas o preço subiu mesmo assim.** Na gasolina, os tributos federais foram reduzidos em setembro e zerados em outubro de 2026; o litro pagou R$ 0,52 a menos de imposto, e o preço no posto ainda subiu R$ 0,28.
-- **A maior parte da alta está depois da refinaria.** No diesel, R$ 1,06 dos R$ 1,19 de aumento estão em biodiesel, frete e margens. Na gasolina, essa parte subiu R$ 0,52, tanto quanto o corte de impostos.
+- **A maior parte da alta está depois da refinaria.** No diesel, R$ 1,04 dos R$ 1,19 de aumento estão em biodiesel, frete e margens. Na gasolina, essa parte subiu R$ 0,56, mais que o corte de impostos.
 - **O corte de setembro não chegou à bomba.** Depois de 10/09, a gasolina continuou entre R$ 6,56 e R$ 6,57 por três semanas.
 - **Diferenças regionais:** a gasolina custa R$ 6,91 no Norte e R$ 6,34 no Sul.
 
@@ -64,6 +64,8 @@ Mesmo método da [Síntese Semanal da ANP](https://www.gov.br/anp/pt-br/assuntos
 
 A diferença em relação à Síntese é que os **tributos federais são os efetivamente cobrados**, calculados dia a dia. A Síntese usa sempre a alíquota cheia, então, durante os cortes de 2026, o corte aparece como queda do preço da refinaria. A prova está nos dados: quando os tributos da gasolina foram zerados (10/10/2026), o preço de produtores e importadores caiu R$ 0,28, quase o imposto que saiu (R$ 0,26); e, depois de 10/09, a Síntese mostra a gasolina A a R$ 2,56, enquanto a Petrobras a vendia a R$ 3,05 sem tributos. Fora dos períodos de corte, os números batem com a Síntese (tabela em [docs/indicadores.md](docs/indicadores.md)).
 
+O Brasil é a média dos estados, ponderada pelas coletas, e cada estado usa a refinaria da sua região. A série "Brasil" da planilha de produtores pesa pelo volume vendido e dispara quando o Nordeste importa caro (maio/2026: R$ 5,26 contra R$ 3,47 a R$ 3,64 no Sul, Sudeste e Centro-Oeste), enquanto a média dos postos é dominada pelo Sul e pelo Sudeste.
+
 ## Análise complementar: repasse da refinaria à bomba no RS
 
 O warehouse também mede, reajuste a reajuste, quanto da mudança na refinaria chega aos postos do Rio Grande do Sul. Desde janeiro de 2023 foram 31 reajustes na refinaria da região Sul: na gasolina, as altas chegaram inteiras ao posto em uma semana, e nas baixas menos de 40% chegou em duas semanas.
@@ -86,7 +88,7 @@ A mesma análise roda para cada município do RS com pelo menos 5 postos pesquis
 
 ## Relatório
 
-Uma página, em tema escuro, sem textos de apoio: cinco cartões (preço no posto, variação em 4 semanas e em 12 meses, impostos no litro e etanol ÷ gasolina, que vira a variação da refinaria quando o diesel é escolhido), a composição do preço mês a mês, o que mudou em cada parte em 12 meses (com o resultado no posto) e a diferença de cada região para a média do Brasil, com o estado escolhido em destaque. Filtros de combustível (gasolina comum ou diesel S10) e de estado.
+Uma página, em tema escuro, sem textos de apoio: cinco cartões (preço no posto, variação em 4 semanas e em 12 meses, impostos no litro e etanol ÷ gasolina, que vira a variação da refinaria quando o diesel é escolhido), as três partes do preço mês a mês, em linhas separadas, o que mudou em cada parte em 12 meses (com o resultado no posto) e a diferença de cada região para a média do Brasil, com o estado escolhido em destaque. Filtros de combustível (gasolina comum ou diesel S10) e de estado.
 
 ## Como rodar
 
