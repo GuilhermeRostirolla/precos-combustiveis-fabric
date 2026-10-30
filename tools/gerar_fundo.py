@@ -49,7 +49,11 @@ def html() -> str:
     g = L.GRAFICO
     partes += [caixa(g["x"], g["y"], g["w"], g["h"]),
                texto(g["titulo"], g["x"] + 16, g["y"] + 15, 14, 600, C["texto"]),
-               texto(g["subtitulo"], g["x"] + 16, g["y"] + 35, 12, 400, C["suave"])]
+               texto(g["subtitulo"], g["x"] + 16, g["y"] + 35, 12, 400, C["suave"]),
+               caixa(L.PONTE["x"], L.PONTE["y"], L.PONTE["w"], L.PONTE["h"]),
+               texto(L.PONTE["titulo"], L.PONTE["x"] + 16, L.PONTE["y"] + 15, 14, 600, C["texto"]),
+               caixa(L.CONCLUSAO["x"], L.CONCLUSAO["y"], L.CONCLUSAO["w"], L.CONCLUSAO["h"]),
+               texto(L.CONCLUSAO["titulo"], L.CONCLUSAO["x"] + 16, L.CONCLUSAO["y"] + 15, 14, 600, C["texto"])]
     return ('<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0}'
             f'body{{width:1280px;height:720px;background:{C["pagina"]};position:relative;'
             'font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}</style></head><body>'

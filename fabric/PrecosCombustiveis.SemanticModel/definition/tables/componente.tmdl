@@ -2,6 +2,18 @@ table componente
 	lineageTag: bf49bf38-cc4a-5ef8-a0b3-83168b6e86f5
 	sourceLineageTag: [gold].[componente]
 
+	measure 'Variação 12 Meses do Componente' = ```
+			SWITCH (
+			    SELECTEDVALUE ( componente[componente] ),
+			    "Refinaria", [Δ12 Refinaria],
+			    "Impostos", [Δ12 Impostos],
+			    [Δ12 Outros]
+			)
+			```
+		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		displayFolder: Ponte
+		lineageTag: 8f7b9ca7-abde-595b-a84b-87d0b2ec9edd
+
 	measure 'Variação do Componente' = ```
 			SWITCH (
 			    SELECTEDVALUE ( componente[componente] ),

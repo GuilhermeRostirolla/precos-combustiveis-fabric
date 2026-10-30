@@ -291,6 +291,25 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo(eixo), "direction": "Ascending"}]}},
             "objects": objetos})
 
+    def cascata(self, x, y, w, h, categoria, medida):
+        """Gráfico em cascata: cada parte que subiu (laranja) ou caiu (azul) e o total no fim."""
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["texto"]),
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False)}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
+            "labels": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "color": cor(COR["texto"]),
+                                       "fontFamily": lit(FONTE_FORTE)}}],
+            "legend": [{"properties": {"show": lit(False)}}],
+            "sentimentColors": [{"properties": {"increaseFill": cor(COR["alta"]), "decreaseFill": cor(COR["baixa"]),
+                                                "totalFill": cor(COR["suave"])}}],
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "waterfallChart",
+            "query": {"queryState": {"Category": {"projections": [projecao(categoria, ativo=True)]},
+                                     "Y": {"projections": campos([medida])}},
+                      "sortDefinition": {"sort": [{"field": campo(categoria), "direction": "Ascending"}]}},
+            "objects": objetos})
+
     def interacao(self, origem, destino, tipo="DataFilter"):
         self.interacoes.append({"source": origem, "target": destino, "type": tipo})
 
@@ -339,6 +358,14 @@ def visao_geral() -> Pagina:
     p.colunas_lado_a_lado(g["x"] + 12, g["y"] + 54, g["w"] - 24, g["h"] - 62, "dim_semana.mes_rotulo",
                           [("Variação Mensal Posto", "Posto"), ("Variação Mensal Refinaria", "Refinaria")],
                           [COR["posto"], COR["refinaria"]], rotulos_em="Variação Mensal Posto")
+    # por que o preço mudou em 12 meses: ponte de preço e conclusão em texto
+    b, c = L.PONTE, L.CONCLUSAO
+    p.texto_dinamico("Texto Ponte De Para", b["x"] + 12, b["y"] + 34, b["w"] - 24, 20, 9.0, cor_texto=COR["suave"])
+    p.cascata(b["x"] + 12, b["y"] + 56, b["w"] - 24, b["h"] - 62, "componente.componente",
+              ("Variação 12 Meses do Componente", "Variação no litro"))
+    p.texto_dinamico("Conclusão 12 Meses", c["x"] + 12, c["y"] + 40, c["w"] - 24, 30, 13.0,
+                     medida_cor="Cor Conclusão 12 Meses", forte=True)
+    p.texto_longo("Detalhe 12 Meses", c["x"] + 12, c["y"] + 72, c["w"] - 24, c["h"] - 80, 9.0, COR["suave"])
     return p
 
 

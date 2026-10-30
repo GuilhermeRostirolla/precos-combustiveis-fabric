@@ -471,6 +471,251 @@ table composicao_preco_semana
 		displayFolder: Visão geral
 		lineageTag: 8ac1d2f4-a2b9-5fac-a236-c49eac541787
 
+	measure 'Posto 12 Meses Antes' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência] - 364
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( composicao_preco_semana[preco_posto] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] = s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Ponte
+		lineageTag: 0fa26d12-75de-5f3b-a1d7-6106bdf5e118
+
+	measure 'Refinaria 12 Meses Antes' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência] - 364
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( composicao_preco_semana[refinaria] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] = s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Ponte
+		lineageTag: 7789b41d-0409-594e-887d-ac1a584c2137
+
+	measure 'Impostos 12 Meses Antes' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência] - 364
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( composicao_preco_semana[tributos_federais] ) + AVERAGE ( composicao_preco_semana[icms] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] = s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Ponte
+		lineageTag: 510024a2-1a85-55f2-92e2-df9b7f18c2b4
+
+	measure 'Outros 12 Meses Antes' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência] - 364
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( composicao_preco_semana[outros] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] = s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Ponte
+		lineageTag: f364438e-0f03-5626-b5f4-7ae0fcca6d8a
+
+	measure 'Posto Hoje' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência] - 0
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( composicao_preco_semana[preco_posto] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] = s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Ponte
+		lineageTag: a8d73dd0-18f6-5796-8f34-35057b43816e
+
+	measure 'Refinaria Hoje' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência] - 0
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( composicao_preco_semana[refinaria] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] = s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Ponte
+		lineageTag: 4d6fbffc-7507-5062-bdfa-bef515814425
+
+	measure 'Impostos Hoje' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência] - 0
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( composicao_preco_semana[tributos_federais] ) + AVERAGE ( composicao_preco_semana[icms] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] = s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Ponte
+		lineageTag: 017b5861-375c-5eaf-a058-5ad27f9140a3
+
+	measure 'Outros Hoje' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência] - 0
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( composicao_preco_semana[outros] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] = s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Ponte
+		lineageTag: 9fab12d0-19a1-5646-bfa1-0a695ec1e1d1
+
+	measure 'Δ12 Posto' = ```
+			VAR a = [Posto Hoje]
+			VAR b = [Posto 12 Meses Antes]
+			RETURN
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
+			```
+		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		displayFolder: Ponte
+		lineageTag: 8b247713-5584-5c4f-8fbd-ffb08d35bf25
+
+	measure 'Δ12 Refinaria' = ```
+			VAR a = [Refinaria Hoje]
+			VAR b = [Refinaria 12 Meses Antes]
+			RETURN
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
+			```
+		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		displayFolder: Ponte
+		lineageTag: 2a3df33c-a7db-5989-9e78-9114bd900aa9
+
+	measure 'Δ12 Impostos' = ```
+			VAR a = [Impostos Hoje]
+			VAR b = [Impostos 12 Meses Antes]
+			RETURN
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
+			```
+		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		displayFolder: Ponte
+		lineageTag: 93f4f8ed-a30d-5bf7-a24e-e2016a2eea6c
+
+	measure 'Δ12 Outros' = ```
+			VAR a = [Outros Hoje]
+			VAR b = [Outros 12 Meses Antes]
+			RETURN
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
+			```
+		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		displayFolder: Ponte
+		lineageTag: 4a39d5cb-6a5c-5e3f-b6bc-b78a7889402d
+
+	measure 'Texto Ponte De Para' = ```
+			VAR s = [Semana de Referência]
+			RETURN
+			    IF (
+			        ISBLANK ( [Δ12 Posto] ),
+			        "",
+			        "De R$ " & FORMAT ( [Posto 12 Meses Antes], "0.00" ) & " para R$ " & FORMAT ( [Posto Hoje], "0.00" )
+			            & " por litro (" & FORMAT ( s - 364, "dd/MM/yy" ) & " a " & FORMAT ( s, "dd/MM/yy" ) & ")"
+			    )
+			```
+		displayFolder: Ponte
+		lineageTag: b9296b49-8c83-5dce-8800-80e83102df94
+
+	measure 'Conclusão 12 Meses' = ```
+			VAR d = [Δ12 Posto]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( d ), "",
+			        d >= 0.02, "Subiu R$ " & FORMAT ( d, "0.00" ) & " por litro em 12 meses.",
+			        d <= -0.02, "Caiu R$ " & FORMAT ( -d, "0.00" ) & " por litro em 12 meses.",
+			        "Ficou praticamente estável em 12 meses."
+			    )
+			```
+		displayFolder: Ponte
+		lineageTag: d366c537-caa6-58fd-af0a-5edd554ada54
+
+	measure 'Cor Conclusão 12 Meses' = ```
+			VAR d = [Δ12 Posto]
+			RETURN
+			    IF ( d >= 0.02, "#E8833A", IF ( d <= -0.02, "#3BA3D9", "#8B95A9" ) )
+			```
+		displayFolder: Cores
+		lineageTag: 15f0767d-4e35-52b7-80d2-62451ec88f98
+
+	measure 'Detalhe 12 Meses' = ```
+			VAR d = [Δ12 Posto]
+			VAR r = [Δ12 Refinaria]
+			VAR i = [Δ12 Impostos]
+			VAR o = [Δ12 Outros]
+			VAR s = IF ( d < 0, -1, 1 )
+			VAR principal =
+			    SWITCH (
+			        TRUE (),
+			        o * s >= r * s && o * s >= i * s, "de etanol/biodiesel, frete e margens",
+			        r * s >= i * s, "da refinaria",
+			        "dos impostos"
+			    )
+			VAR valor = SWITCH ( principal, "da refinaria", r, "dos impostos", i, o )
+			VAR refinaria =
+			    SWITCH (
+			        TRUE (),
+			        r <= -0.01, "A refinaria baixou R$ " & FORMAT ( -r, "0.00" ),
+			        r >= 0.01, "A refinaria subiu R$ " & FORMAT ( r, "0.00" ),
+			        "A refinaria ficou estável"
+			    )
+			VAR p = SELECTEDVALUE ( dim_produto[produto], "GASOLINA" )
+			VAR ref = [Semana de Referência]
+			VAR eventos =
+			    CONCATENATEX (
+			        TOPN ( 3, FILTER ( evento, evento[data] > ref - 364 && evento[data] <= ref
+			            && ( evento[produto] = p || evento[produto] = "TODOS" ) ), evento[data], DESC ),
+			        FORMAT ( evento[data], "mmm/yy" ) & ": " & evento[descricao],
+			        " · ",
+			        evento[data], DESC
+			    )
+			RETURN
+			    IF (
+			        ISBLANK ( d ),
+			        "",
+			        refinaria & ". " & IF ( d >= 0, "O aumento", "A queda" ) & " veio principalmente " & principal
+			            & " (" & IF ( valor < 0, "-", "+" ) & "R$ " & FORMAT ( ABS ( valor ), "0.00" ) & ")." & IF ( eventos <> "", " No período: " & eventos & "." )
+			    )
+			```
+		displayFolder: Ponte
+		lineageTag: 9823af8b-2011-5469-affb-0b30908d6c09
+
 	measure 'Resto Barra Repasse' = 1 - [Barra Repasse 4 Semanas]
 		formatString: 0%
 		displayFolder: Visão geral

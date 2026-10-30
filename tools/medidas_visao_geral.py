@@ -91,6 +91,10 @@ def delta(componente: str, expr: str) -> list[tuple]:
     ]
 
 
+PARTES = [("Posto", f"AVERAGE ( {C}[preco_posto] )"), ("Refinaria", f"AVERAGE ( {C}[refinaria] )"),
+          ("Impostos", IMPOSTOS), ("Outros", f"AVERAGE ( {C}[outros] )")]
+
+
 def medidas_visao_geral() -> dict[str, list[tuple]]:
     composicao = [
         ("Semana de Referência", "Visão geral", "dd/MM/yyyy",
@@ -199,6 +203,40 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          "// barra de progresso feita de traços (o trilho está na imagem de fundo)\n"
          'REPT ( "█", ROUND ( [Barra Repasse 4 Semanas] * 30, 0 ) )'),
         ("Texto Barra Etanol", "Visão geral", None, 'REPT ( "█", ROUND ( COALESCE ( [Barra Etanol], 0 ) * 30, 0 ) )'),
+        # ponte de preço: o que mudou em cada parte do litro em 12 meses
+        *[(f"{nome} 12 Meses Antes", "Ponte", REAIS, na_semana(expr, 364)) for nome, expr in PARTES],
+        *[(f"{nome} Hoje", "Ponte", REAIS, na_semana(expr)) for nome, expr in PARTES],
+        *[(f"Δ12 {nome}", "Ponte", VARIACAO_REAIS,
+           f"VAR a = [{nome} Hoje]\nVAR b = [{nome} 12 Meses Antes]\nRETURN\n"
+           "    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )") for nome, _ in PARTES],
+        ("Texto Ponte De Para", "Ponte", None,
+         "VAR s = [Semana de Referência]\nRETURN\n    IF (\n        ISBLANK ( [Δ12 Posto] ),\n        \"\",\n"
+         '        "De R$ " & FORMAT ( [Posto 12 Meses Antes], "0.00" ) & " para R$ " & FORMAT ( [Posto Hoje], "0.00" )\n'
+         '            & " por litro (" & FORMAT ( s - 364, "dd/MM/yy" ) & " a " & FORMAT ( s, "dd/MM/yy" ) & ")"\n    )'),
+        ("Conclusão 12 Meses", "Ponte", None,
+         "VAR d = [Δ12 Posto]\nRETURN\n    SWITCH (\n        TRUE (),\n        ISBLANK ( d ), \"\",\n"
+         f"        d >= 0.02, \"Subiu R$ \" & FORMAT ( d, \"0.00\" ) & \" por litro em 12 meses.\",\n"
+         f"        d <= -0.02, \"Caiu R$ \" & FORMAT ( -d, \"0.00\" ) & \" por litro em 12 meses.\",\n"
+         "        \"Ficou praticamente estável em 12 meses.\"\n    )"),
+        ("Cor Conclusão 12 Meses", "Cores", None,
+         f'VAR d = [Δ12 Posto]\nRETURN\n    IF ( d >= 0.02, "{CORES["alta"]}", IF ( d <= -0.02, "{CORES["baixa"]}", "{CORES["neutra"]}" ) )'),
+        ("Detalhe 12 Meses", "Ponte", None,
+         "VAR d = [Δ12 Posto]\nVAR r = [Δ12 Refinaria]\nVAR i = [Δ12 Impostos]\nVAR o = [Δ12 Outros]\n"
+         "VAR s = IF ( d < 0, -1, 1 )\n"
+         "VAR principal =\n    SWITCH (\n        TRUE (),\n        o * s >= r * s && o * s >= i * s, \"de etanol/biodiesel, frete e margens\",\n"
+         "        r * s >= i * s, \"da refinaria\",\n        \"dos impostos\"\n    )\n"
+         "VAR valor = SWITCH ( principal, \"da refinaria\", r, \"dos impostos\", i, o )\n"
+         "VAR refinaria =\n    SWITCH (\n        TRUE (),\n"
+         "        r <= -0.01, \"A refinaria baixou R$ \" & FORMAT ( -r, \"0.00\" ),\n"
+         "        r >= 0.01, \"A refinaria subiu R$ \" & FORMAT ( r, \"0.00\" ),\n"
+         "        \"A refinaria ficou estável\"\n    )\n"
+         'VAR p = SELECTEDVALUE ( dim_produto[produto], "GASOLINA" )\nVAR ref = [Semana de Referência]\n'
+         "VAR eventos =\n    CONCATENATEX (\n        TOPN ( 3, FILTER ( evento, evento[data] > ref - 364 && evento[data] <= ref\n"
+         '            && ( evento[produto] = p || evento[produto] = "TODOS" ) ), evento[data], DESC ),\n'
+         '        FORMAT ( evento[data], "mmm/yy" ) & ": " & evento[descricao],\n        " · ",\n        evento[data], DESC\n    )\n'
+         "RETURN\n    IF (\n        ISBLANK ( d ),\n        \"\",\n"
+         "        refinaria & \". \" & IF ( d >= 0, \"O aumento\", \"A queda\" ) & \" veio principalmente \" & principal\n"
+         f"            & \" (\" & {com_sinal('valor')} & \").\" & IF ( eventos <> \"\", \" No período: \" & eventos & \".\" )\n    )"),
         ("Resto Barra Repasse", "Visão geral", "0%", "1 - [Barra Repasse 4 Semanas]"),
         ("Resto Barra Etanol", "Visão geral", "0%", "1 - COALESCE ( [Barra Etanol], 0 )"),
         ("Variação Mensal Posto", "Gráfico", "+0.0%;-0.0%;0.0%", variacao_mensal(f"AVERAGE ( {C}[preco_posto] )")),
@@ -245,6 +283,9 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          '        IF ( eventos <> "", eventos & ". " & partes, partes )\n    )'),
     ]
     componente = [
+        ("Variação 12 Meses do Componente", "Ponte", VARIACAO_REAIS,
+         "SWITCH (\n    SELECTEDVALUE ( componente[componente] ),\n    \"Refinaria\", [Δ12 Refinaria],\n"
+         "    \"Impostos\", [Δ12 Impostos],\n    [Δ12 Outros]\n)"),
         ("Variação do Componente", "Por que mudou", VARIACAO_REAIS,
          "SWITCH (\n    SELECTEDVALUE ( componente[componente] ),\n    \"Refinaria\", [Δ Refinaria],\n"
          "    \"Impostos\", [Δ Impostos],\n    [Δ Outros]\n)"),
