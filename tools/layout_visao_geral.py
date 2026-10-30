@@ -13,15 +13,15 @@ TITULO = "Preço dos combustíveis no Brasil"
 SUBTITULO = "Quanto custa hoje, quanto mudou e quanto da refinaria chega ao posto"
 
 # filtros
-COMBUSTIVEL = {"x": 28, "y": 91, "w": 214, "h": 30}
-ESTADO = {"x": 252, "y": 91, "w": 150, "h": 30, "rotulo": "Estado", "rotulo_w": 54}
-SEMANA = {"x": 412, "y": 91, "w": 176, "h": 30, "rotulo": "Semana", "rotulo_w": 62}
+COMBUSTIVEL = {"x": 28, "y": 91, "w": 230, "h": 30, "rotulo": "Combustível", "rotulo_w": 88}
+ESTADO = {"x": 268, "y": 91, "w": 150, "h": 30, "rotulo": "Estado", "rotulo_w": 54}
+SEMANA = {"x": 428, "y": 91, "w": 176, "h": 30, "rotulo": "Semana", "rotulo_w": 62}
 
 # cartões
 CARTAO_Y, CARTAO_W, CARTAO_H, CARTAO_GAP = 138, 235, 150, 12
 CARTOES = ["Preço médio no posto", "Variação em 12 meses", "Diferença posto − refinaria",
            "Refinaria nas últimas 4 semanas", "Etanol ÷ gasolina"]
-BARRA_Y, BARRA_H = 82, 8          # trilho das barras (relativo ao cartão)
+BARRA_Y, BARRA_H = 80, 12         # barras de progresso (relativo ao cartão)
 BARRA_X, BARRA_W = 16, 203
 SUFIXO_LITRO_X = 128              # "/litro" depois de "R$ 0,00" (largura fixa: um dígito antes da vírgula)
 

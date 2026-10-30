@@ -10,7 +10,7 @@
     "tabOrder": 1400
   },
   "visual": {
-    "visualType": "clusteredBarChart",
+    "visualType": "hundredPercentStackedBarChart",
     "query": {
       "queryState": {
         "Y": {
@@ -28,6 +28,20 @@
               },
               "queryRef": "composicao_preco_semana.Barra Repasse 4 Semanas",
               "nativeQueryRef": "Barra Repasse 4 Semanas"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "composicao_preco_semana"
+                    }
+                  },
+                  "Property": "Resto Barra Repasse"
+                }
+              },
+              "queryRef": "composicao_preco_semana.Resto Barra Repasse",
+              "nativeQueryRef": "Resto Barra Repasse"
             }
           ]
         }
@@ -54,20 +68,6 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
-                }
-              }
-            },
-            "start": {
-              "expr": {
-                "Literal": {
-                  "Value": "0.0D"
-                }
-              }
-            },
-            "end": {
-              "expr": {
-                "Literal": {
-                  "Value": "1.0D"
                 }
               }
             },
@@ -123,13 +123,25 @@
             }
           },
           "selector": {
-            "data": [
-              {
-                "dataViewWildcard": {
-                  "matchingOption": 1
+            "metadata": "composicao_preco_semana.Barra Repasse 4 Semanas"
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1F2A40'"
+                    }
+                  }
                 }
               }
-            ]
+            }
+          },
+          "selector": {
+            "metadata": "composicao_preco_semana.Resto Barra Repasse"
           }
         }
       ],

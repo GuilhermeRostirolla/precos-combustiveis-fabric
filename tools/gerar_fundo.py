@@ -29,8 +29,7 @@ def texto(t, x, y, tamanho, peso, cor):
 def html() -> str:
     partes = [texto(L.TITULO, 28, 24, 26, 700, C["texto"]), texto(L.SUBTITULO, 28, 59, 13, 400, C["suave"])]
     # filtros
-    partes.append(caixa(L.COMBUSTIVEL["x"], L.COMBUSTIVEL["y"], L.COMBUSTIVEL["w"], L.COMBUSTIVEL["h"], raio=8))
-    for f in (L.ESTADO, L.SEMANA):
+    for f in (L.COMBUSTIVEL, L.ESTADO, L.SEMANA):
         partes.append(caixa(f["x"], f["y"], f["w"], f["h"], raio=8))
         partes.append(texto(f["rotulo"], f["x"] + 12, f["y"] + 8, 12, 500, C["suave"]))
     # cartões
@@ -42,9 +41,6 @@ def html() -> str:
         if i == 1:
             partes += [texto("no posto", x + 16, y + 76, 11, 400, C["suave"]),
                        texto("na refinaria", x + 112, y + 76, 11, 400, C["suave"])]
-        if i in (3, 4):
-            partes.append(caixa(x + L.BARRA_X, y + L.BARRA_Y, L.BARRA_W, L.BARRA_H, fundo=C["trilho"],
-                                borda=False, raio=4))
         if i == 4:
             marca = x + L.BARRA_X + round(0.7 * L.BARRA_W)
             partes.append(f'<div style="position:absolute;left:{marca}px;top:{y + L.BARRA_Y - 4}px;width:2px;'

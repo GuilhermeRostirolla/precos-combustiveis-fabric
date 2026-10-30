@@ -10,7 +10,7 @@
     "tabOrder": 1700
   },
   "visual": {
-    "visualType": "clusteredBarChart",
+    "visualType": "hundredPercentStackedBarChart",
     "query": {
       "queryState": {
         "Y": {
@@ -28,6 +28,20 @@
               },
               "queryRef": "composicao_preco_semana.Barra Etanol",
               "nativeQueryRef": "Barra Etanol"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "composicao_preco_semana"
+                    }
+                  },
+                  "Property": "Resto Barra Etanol"
+                }
+              },
+              "queryRef": "composicao_preco_semana.Resto Barra Etanol",
+              "nativeQueryRef": "Resto Barra Etanol"
             }
           ]
         }
@@ -54,20 +68,6 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
-                }
-              }
-            },
-            "start": {
-              "expr": {
-                "Literal": {
-                  "Value": "0.0D"
-                }
-              }
-            },
-            "end": {
-              "expr": {
-                "Literal": {
-                  "Value": "1.0D"
                 }
               }
             },
@@ -114,13 +114,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Etanol"
+                    "Literal": {
+                      "Value": "'#4CC38A'"
                     }
                   }
                 }
@@ -128,13 +123,25 @@
             }
           },
           "selector": {
-            "data": [
-              {
-                "dataViewWildcard": {
-                  "matchingOption": 1
+            "metadata": "composicao_preco_semana.Barra Etanol"
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1F2A40'"
+                    }
+                  }
                 }
               }
-            ]
+            }
+          },
+          "selector": {
+            "metadata": "composicao_preco_semana.Resto Barra Etanol"
           }
         }
       ],

@@ -238,21 +238,20 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo(coluna), "direction": "Ascending"}]}},
             "objects": objetos}, filtros)
 
-    def barra(self, medida, x, y, w, h, medida_cor=None, cor_fixa=COR["baixa"]):
-        """Barra de progresso de 0 a 100% (o trilho está na imagem de fundo)."""
+    def barra(self, medida, resto, x, y, w, h, cor_barra):
+        """Barra de progresso: parte preenchida e o restante (trilho), empilhadas em 100%."""
         objetos = {
             "categoryAxis": [{"properties": {"show": lit(False)}}],
-            "valueAxis": [{"properties": {"show": lit(False), "start": lit(0.0), "end": lit(1.0),
-                                          "gridlineShow": lit(False)}}],
+            "valueAxis": [{"properties": {"show": lit(False), "gridlineShow": lit(False)}}],
             "labels": [{"properties": {"show": lit(False)}}],
             "legend": [{"properties": {"show": lit(False)}}],
-            "dataPoint": [{"properties": {"fill": cor_da_medida(medida_cor) if medida_cor else cor(cor_fixa)},
-                           "selector": {"data": [{"dataViewWildcard": {"matchingOption": 1}}]}}],
+            "dataPoint": [{"properties": {"fill": cor(cor_barra)}, "selector": {"metadata": projecao(medida)["queryRef"]}},
+                          {"properties": {"fill": cor(COR["trilho"])}, "selector": {"metadata": projecao(resto)["queryRef"]}}],
             "layout": [{"properties": {"innerPadding": lit(0.0)}}],
         }
         return self._add(x, y, w, h, {
-            "visualType": "clusteredBarChart",
-            "query": {"queryState": {"Y": {"projections": campos([medida])}}},
+            "visualType": "hundredPercentStackedBarChart",
+            "query": {"queryState": {"Y": {"projections": campos([medida, resto])}}},
             "objects": objetos})
 
     def colunas_lado_a_lado(self, x, y, w, h, eixo, medidas, cores, rotulos_em=None):
@@ -299,10 +298,9 @@ def visao_geral() -> Pagina:
     p.texto_dinamico("Texto Dados Até a Semana", 1068, 22, 190, 18, 8.0, cor_texto=COR["nota"], fundo=COR["pagina"])
     p.texto_dinamico("Texto Postos e Fonte", 948, 39, 310, 18, 8.0, cor_texto=COR["nota"], fundo=COR["pagina"])
     # filtros
-    c = L.COMBUSTIVEL
-    p.botoes("dim_produto.nome", c["x"], c["y"], c["w"], c["h"], padrao="Gasolina comum",
-             filtros=[("dim_produto.produto", ["GASOLINA", "DIESEL S10"])])
-    for f, coluna, extra in [(L.ESTADO, "dim_uf.estado", {"padrao": "Brasil"}),
+    for f, coluna, extra in [(L.COMBUSTIVEL, "dim_produto.nome",
+                              {"padrao": "Gasolina comum", "filtros": [("dim_produto.produto", ["GASOLINA", "DIESEL S10"])]}),
+                             (L.ESTADO, "dim_uf.estado", {"padrao": "Brasil"}),
                              (L.SEMANA, "semana_referencia.rotulo", {"obrigatorio": False, "decrescente": True})]:
         p.lista(coluna, f["x"] + f["rotulo_w"], f["y"] + 2, f["w"] - f["rotulo_w"] - 4, f["h"] - 4, **extra)
     # cartões
@@ -320,15 +318,14 @@ def visao_geral() -> Pagina:
     p.texto_dinamico("Diferença Posto Refinaria", x + 12, y + 34, 110, 40, 22.0, forte=True)
     p.texto_dinamico("Apoio Diferença Refinaria", x + 12, y + 98, 211, 20, 8.5, cor_texto=COR["suave"])
     p.texto_dinamico("Apoio Diferença Média", x + 12, y + 116, 211, 20, 8.5, cor_texto=COR["suave"])
-    for i, (valor, cor_valor, barra, cor_barra, apoio) in enumerate([
-        ("Variação Refinaria 4 Semanas", "Cor Refinaria 4 Semanas", "Barra Repasse 4 Semanas", None,
-         "Apoio Repasse 4 Semanas"),
-        ("Etanol ÷ Gasolina", "Cor Etanol", "Barra Etanol", "Cor Etanol", "Apoio Etanol"),
+    for i, (valor, cor_valor, barra, resto, cor_barra, apoio) in enumerate([
+        ("Variação Refinaria 4 Semanas", "Cor Refinaria 4 Semanas", "Barra Repasse 4 Semanas", "Resto Barra Repasse",
+         COR["baixa"], "Apoio Repasse 4 Semanas"),
+        ("Etanol ÷ Gasolina", "Cor Etanol", "Barra Etanol", "Resto Barra Etanol", COR["etanol"], "Apoio Etanol"),
     ], start=3):
         x = L.cartao_x(i)
         p.texto_dinamico(valor, x + 12, y + 34, 211, 40, 22.0, medida_cor=cor_valor, forte=True)
-        p.barra(barra, x + L.BARRA_X, y + L.BARRA_Y - 2, L.BARRA_W, L.BARRA_H + 4,
-                medida_cor=cor_barra, cor_fixa=COR["baixa"])
+        p.barra(barra, resto, x + L.BARRA_X, y + L.BARRA_Y, L.BARRA_W, L.BARRA_H, cor_barra)
         p.texto_dinamico(apoio, x + 12, y + 114, 211, 24, 8.5, cor_texto=COR["suave"])
     # o que aconteceu com o preço, mês a mês
     g = L.GRAFICO

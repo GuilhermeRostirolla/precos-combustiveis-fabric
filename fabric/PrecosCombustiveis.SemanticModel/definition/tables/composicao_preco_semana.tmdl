@@ -460,6 +460,16 @@ table composicao_preco_semana
 		displayFolder: Visão geral
 		lineageTag: ba9fa78a-31a1-5882-9200-ccd90b2cafbd
 
+	measure 'Resto Barra Repasse' = 1 - [Barra Repasse 4 Semanas]
+		formatString: 0%
+		displayFolder: Visão geral
+		lineageTag: f6100285-cca1-580c-a53c-b98c35a930a6
+
+	measure 'Resto Barra Etanol' = 1 - COALESCE ( [Barra Etanol], 0 )
+		formatString: 0%
+		displayFolder: Visão geral
+		lineageTag: 1c4598fc-d992-5c1c-b669-ffe732276b74
+
 	measure 'Variação Mensal Posto' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR ref = [Semana de Referência]

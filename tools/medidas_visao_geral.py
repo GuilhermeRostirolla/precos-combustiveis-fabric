@@ -195,6 +195,8 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          'IF ( ISBLANK ( [Repasse 4 Semanas] ), "A refinaria quase não mudou", '
          '"Já chegou ao posto: " & FORMAT ( [Repasse 4 Semanas], "0%" ) )'),
         ("Barra Etanol", "Visão geral", "0%", "MAX ( 0, MIN ( 1, [Etanol ÷ Gasolina] ) )"),
+        ("Resto Barra Repasse", "Visão geral", "0%", "1 - [Barra Repasse 4 Semanas]"),
+        ("Resto Barra Etanol", "Visão geral", "0%", "1 - COALESCE ( [Barra Etanol], 0 )"),
         ("Variação Mensal Posto", "Gráfico", "+0.0%;-0.0%;0.0%", variacao_mensal(f"AVERAGE ( {C}[preco_posto] )")),
         ("Variação Mensal Refinaria", "Gráfico", "+0.0%;-0.0%;0.0%", variacao_mensal(LITRO_A)),
         # gráfico: do que é feito o preço, mês a mês
