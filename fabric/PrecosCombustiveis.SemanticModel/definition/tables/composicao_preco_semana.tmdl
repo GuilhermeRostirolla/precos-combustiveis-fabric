@@ -384,6 +384,112 @@ table composicao_preco_semana
 		displayFolder: Cores
 		lineageTag: 6ce92eba-aaac-5811-852c-7cc679267355
 
+	measure 'Texto Dados Até' = "Dados até a semana de " & FORMAT ( [Semana de Referência], "dd/MM/yyyy" )
+		displayFolder: Visão geral
+		lineageTag: 3658ecc3-8a68-5cc1-a8f3-a3ed3e16d986
+
+	measure 'Texto Postos e Fonte' = FORMAT ( [Postos Pesquisados], "#,0" ) & " postos pesquisados em " & FORMAT ( [Municípios Pesquisados], "#,0" ) & " municípios · Fonte: ANP"
+		displayFolder: Visão geral
+		lineageTag: 79974fe0-746f-55ea-a084-f7600d68190d
+
+	measure 'Cor Variação 12 Meses Refinaria' = IF ( [Variação 12 Meses Refinaria] >= 0, "#E8833A", "#3BA3D9" )
+		displayFolder: Cores
+		lineageTag: 253f64a6-6500-567e-a1d7-e3cb23669290
+
+	measure 'Cor Apoio Preço no Posto' = ```
+			VAR d = [Preço no Posto] - [Preço no Posto Semana Anterior]
+			RETURN
+			    IF ( d > 0.005, "#E8833A", IF ( d < -0.005, "#3BA3D9", "#8B95A9" ) )
+			```
+		displayFolder: Cores
+		lineageTag: 3111f334-959f-5ebd-9689-3dc645f96aff
+
+	measure 'Posto x Refinaria 12 Meses' = ```
+			VAR p = [Variação 12 Meses Posto]
+			VAR r = [Variação 12 Meses Refinaria]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( p ) || ISBLANK ( r ), "",
+			        p >= 0 && r < 0, "Posto subiu enquanto a refinaria caiu",
+			        p < 0 && r >= 0, "Posto caiu enquanto a refinaria subiu",
+			        p >= 0, IF ( p > r, "Posto subiu mais que a refinaria", "Posto subiu menos que a refinaria" ),
+			        IF ( p < r, "Posto caiu mais que a refinaria", "Posto caiu menos que a refinaria" )
+			    )
+			```
+		displayFolder: Visão geral
+		lineageTag: 314d8363-2ed1-53a8-80bc-1f6f43f62309
+
+	measure 'Apoio Diferença Refinaria' = IF ( ISBLANK ( [Refinaria no Litro do Posto] ), "", "Refinaria: R$ " & FORMAT ( [Refinaria no Litro do Posto], "0.00" ) & " no litro" )
+		displayFolder: Visão geral
+		lineageTag: a26e60c7-69bf-5e55-ab5f-d94c4ecd7cfe
+
+	measure 'Apoio Diferença Média' = ```
+			VAR d = [Diferença Posto Refinaria]
+			VAR m = [Diferença Média 12 Meses]
+			RETURN
+			    IF ( ISBLANK ( m ), "", IF ( d >= m, "Acima", "Abaixo" ) & " da média de 12 meses (R$ " & FORMAT ( m, "0.00" ) & ")" )
+			```
+		displayFolder: Visão geral
+		lineageTag: 49ebad03-edf8-5e63-8f68-2ce0eb96b651
+
+	measure 'Repasse 4 Semanas' = ```
+			// quanto da mudança da refinaria (no litro do posto) apareceu no posto em 4 semanas
+			VAR r = [Refinaria no Litro do Posto] - [Refinaria no Litro 4 Semanas Antes]
+			VAR p = [Preço no Posto] - [Preço no Posto 4 Semanas Antes]
+			RETURN
+			    IF ( ABS ( r ) >= 0.02, MAX ( 0, MIN ( 1, DIVIDE ( p, r ) ) ) )
+			```
+		formatString: 0%
+		displayFolder: Visão geral
+		lineageTag: 1985af16-ac2e-5c4a-b19e-0c1f50f0b70d
+
+	measure 'Barra Repasse 4 Semanas' = COALESCE ( [Repasse 4 Semanas], 0 )
+		formatString: 0%
+		displayFolder: Visão geral
+		lineageTag: e66a5288-6ddb-545f-ab59-b26038e01eff
+
+	measure 'Apoio Repasse 4 Semanas' = IF ( ISBLANK ( [Repasse 4 Semanas] ), "A refinaria quase não mudou", "Já chegou ao posto: " & FORMAT ( [Repasse 4 Semanas], "0%" ) )
+		displayFolder: Visão geral
+		lineageTag: 48e2fd41-9c6c-5c81-8d2d-674da0e8b5d1
+
+	measure 'Barra Etanol' = MAX ( 0, MIN ( 1, [Etanol ÷ Gasolina] ) )
+		formatString: 0%
+		displayFolder: Visão geral
+		lineageTag: ba9fa78a-31a1-5882-9200-ccd90b2cafbd
+
+	measure 'Variação Mensal Posto' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR ref = [Semana de Referência]
+			VAR inicio = DATE ( YEAR ( ref ), MONTH ( ref ) - 11, 1 )
+			VAR m = MAX ( dim_semana[mes_inicio] )
+			VAR atual = CALCULATE ( AVERAGE ( composicao_preco_semana[preco_posto] ), REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u,
+			    composicao_preco_semana[semana] >= m, composicao_preco_semana[semana] <= EOMONTH ( m, 0 ), composicao_preco_semana[semana] <= ref )
+			VAR antes = CALCULATE ( AVERAGE ( composicao_preco_semana[preco_posto] ), REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u,
+			    composicao_preco_semana[semana] >= EDATE ( m, -1 ), composicao_preco_semana[semana] < m )
+			RETURN
+			    IF ( m >= inicio && m <= ref && NOT ISBLANK ( atual ) && NOT ISBLANK ( antes ), atual / antes - 1 )
+			```
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Gráfico
+		lineageTag: 91f1c2d0-efd0-5ad8-857f-ac0ad396a316
+
+	measure 'Variação Mensal Refinaria' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR ref = [Semana de Referência]
+			VAR inicio = DATE ( YEAR ( ref ), MONTH ( ref ) - 11, 1 )
+			VAR m = MAX ( dim_semana[mes_inicio] )
+			VAR atual = CALCULATE ( AVERAGEX ( composicao_preco_semana, composicao_preco_semana[refinaria] / composicao_preco_semana[fracao_fossil] ), REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u,
+			    composicao_preco_semana[semana] >= m, composicao_preco_semana[semana] <= EOMONTH ( m, 0 ), composicao_preco_semana[semana] <= ref )
+			VAR antes = CALCULATE ( AVERAGEX ( composicao_preco_semana, composicao_preco_semana[refinaria] / composicao_preco_semana[fracao_fossil] ), REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u,
+			    composicao_preco_semana[semana] >= EDATE ( m, -1 ), composicao_preco_semana[semana] < m )
+			RETURN
+			    IF ( m >= inicio && m <= ref && NOT ISBLANK ( atual ) && NOT ISBLANK ( antes ), atual / antes - 1 )
+			```
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Gráfico
+		lineageTag: 69f19b8f-4098-5fdc-8517-7349a79d92a7
+
 	measure 'Refinaria no Mês' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR ref = [Semana de Referência]

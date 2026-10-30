@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "6b442fe164a6d4cff8ed",
   "position": {
-    "x": 876,
-    "y": 358,
+    "x": 781,
+    "y": 252,
     "z": 1500,
-    "height": 22,
-    "width": 364,
+    "height": 24,
+    "width": 211,
     "tabOrder": 1500
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Texto De Para"
+                  "Property": "Apoio Repasse 4 Semanas"
                 }
               },
-              "queryRef": "composicao_preco_semana.Texto De Para",
-              "nativeQueryRef": "Texto De Para"
+              "queryRef": "composicao_preco_semana.Apoio Repasse 4 Semanas",
+              "nativeQueryRef": "Apoio Repasse 4 Semanas"
             }
           ]
         }
@@ -40,7 +40,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "8.5D"
                 }
               }
             },
@@ -84,7 +84,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "8.5D"
                 }
               }
             },

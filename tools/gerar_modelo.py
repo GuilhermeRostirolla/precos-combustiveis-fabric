@@ -27,7 +27,7 @@ TABELAS = {
     "composicao_preco_semana": [("semana", "date"), ("uf", "string"), ("produto", "string"), ("preco_posto", "dec"),
                                 ("fracao_fossil", "dec"), ("refinaria", "dec"), ("tributos_federais", "dec"),
                                 ("icms", "dec"), ("outros", "dec")],
-    "dim_produto": [("produto", "string"), ("tem_preco_refinaria", "bool")],
+    "dim_produto": [("produto", "string"), ("tem_preco_refinaria", "bool"), ("nome", "string"), ("ordem", "int")],
     "fato_preco_uf_semana": [("semana", "date"), ("uf", "string"), ("produto", "string"), ("preco_medio", "dec"),
                              ("coletas", "int"), ("postos", "int"), ("municipios", "int")],
     "fato_preco_municipio_semana": [("semana", "date"), ("uf", "string"), ("municipio", "string"),
@@ -113,7 +113,7 @@ OCULTAS = {
     "dim_uf": {"ordem"},
     "componente": {"ordem"},
 }
-ORDENAR_POR = {("dim_semana", "rotulo"): "semana", ("dim_semana", "mes_rotulo"): "mes_inicio",
+ORDENAR_POR = {("dim_produto", "nome"): "ordem", ("dim_semana", "rotulo"): "semana", ("dim_semana", "mes_rotulo"): "mes_inicio",
                ("dim_uf", "estado"): "ordem", ("semana_referencia", "rotulo"): "semana",
                ("componente", "componente"): "ordem"}
 

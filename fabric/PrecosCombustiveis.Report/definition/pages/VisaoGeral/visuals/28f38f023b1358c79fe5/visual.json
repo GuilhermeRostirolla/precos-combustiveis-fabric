@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "28f38f023b1358c79fe5",
   "position": {
-    "x": 656.0,
-    "y": 170,
+    "x": 383,
+    "y": 174,
     "z": 800,
-    "height": 40,
-    "width": 277.0,
+    "height": 36,
+    "width": 115,
     "tabOrder": 800
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Diferença Posto Refinaria"
+                  "Property": "Variação 12 Meses Refinaria"
                 }
               },
-              "queryRef": "composicao_preco_semana.Diferença Posto Refinaria",
-              "nativeQueryRef": "Diferença Posto Refinaria"
+              "queryRef": "composicao_preco_semana.Variação 12 Meses Refinaria",
+              "nativeQueryRef": "Variação 12 Meses Refinaria"
             }
           ]
         }
@@ -55,8 +55,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Variação 12 Meses Refinaria"
                     }
                   }
                 }
@@ -99,8 +104,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Variação 12 Meses Refinaria"
                     }
                   }
                 }

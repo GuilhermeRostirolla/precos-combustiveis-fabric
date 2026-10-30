@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a1d9b31180b2a5f6f493",
   "position": {
-    "x": 656.0,
-    "y": 204,
+    "x": 287,
+    "y": 252,
     "z": 900,
-    "height": 26,
-    "width": 277.0,
+    "height": 24,
+    "width": 211,
     "tabOrder": 900
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Apoio Diferença"
+                  "Property": "Posto x Refinaria 12 Meses"
                 }
               },
-              "queryRef": "composicao_preco_semana.Apoio Diferença",
-              "nativeQueryRef": "Apoio Diferença"
+              "queryRef": "composicao_preco_semana.Posto x Refinaria 12 Meses",
+              "nativeQueryRef": "Posto x Refinaria 12 Meses"
             }
           ]
         }
@@ -40,7 +40,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "8.5D"
                 }
               }
             },
@@ -84,7 +84,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "8.5D"
                 }
               }
             },

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "f18f2dc04d416501e6c5",
   "position": {
-    "x": 38.0,
-    "y": 204,
+    "x": 40,
+    "y": 172,
     "z": 500,
-    "height": 26,
-    "width": 277.0,
+    "height": 40,
+    "width": 120,
     "tabOrder": 500
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Apoio Preço no Posto"
+                  "Property": "Preço no Posto"
                 }
               },
-              "queryRef": "composicao_preco_semana.Apoio Preço no Posto",
-              "nativeQueryRef": "Apoio Preço no Posto"
+              "queryRef": "composicao_preco_semana.Preço no Posto",
+              "nativeQueryRef": "Preço no Posto"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -56,7 +56,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#8B95A9'"
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }
@@ -84,14 +84,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -100,7 +100,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#8B95A9'"
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }

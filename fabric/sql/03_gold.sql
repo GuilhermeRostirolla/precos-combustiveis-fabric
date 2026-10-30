@@ -87,7 +87,11 @@ BEGIN
     DROP TABLE IF EXISTS gold.dim_produto;
     CREATE TABLE gold.dim_produto AS
     SELECT DISTINCT r.produto,
-           CASE WHEN c.produto IS NULL THEN CAST(0 AS bit) ELSE CAST(1 AS bit) END AS tem_preco_refinaria
+           CASE WHEN c.produto IS NULL THEN CAST(0 AS bit) ELSE CAST(1 AS bit) END AS tem_preco_refinaria,
+           CASE r.produto WHEN 'GASOLINA' THEN 'Gasolina comum' WHEN 'DIESEL S10' THEN 'Diesel S10'
+                          WHEN 'GASOLINA ADITIVADA' THEN 'Gasolina aditivada' WHEN 'ETANOL' THEN 'Etanol'
+                          WHEN 'DIESEL' THEN 'Diesel S500' ELSE r.produto END AS nome,
+           CASE r.produto WHEN 'GASOLINA' THEN 1 WHEN 'DIESEL S10' THEN 2 ELSE 9 END AS ordem
     FROM silver.preco_revenda AS r
     LEFT JOIN config.produto AS c ON c.produto = r.produto;
 

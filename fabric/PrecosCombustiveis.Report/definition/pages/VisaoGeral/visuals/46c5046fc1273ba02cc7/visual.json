@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "46c5046fc1273ba02cc7",
   "position": {
-    "x": 965.0,
-    "y": 170,
+    "x": 534,
+    "y": 172,
     "z": 1000,
     "height": 40,
-    "width": 277.0,
+    "width": 120,
     "tabOrder": 1000
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Postos Pesquisados"
+                  "Property": "Diferença Posto Refinaria"
                 }
               },
-              "queryRef": "composicao_preco_semana.Postos Pesquisados",
-              "nativeQueryRef": "Postos Pesquisados"
+              "queryRef": "composicao_preco_semana.Diferença Posto Refinaria",
+              "nativeQueryRef": "Diferença Posto Refinaria"
             }
           ]
         }
@@ -40,7 +40,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "22.0D"
                 }
               }
             },
@@ -84,7 +84,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "22.0D"
                 }
               }
             },

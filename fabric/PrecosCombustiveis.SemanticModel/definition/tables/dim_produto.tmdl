@@ -21,6 +21,26 @@ table dim_produto
 
 		annotation SummarizationSetBy = Automatic
 
+	column nome
+		dataType: string
+		lineageTag: 4410fab0-694a-5f37-a447-e74ae0cd97cf
+		sourceLineageTag: nome
+		summarizeBy: none
+		sourceColumn: nome
+		sortByColumn: ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	column ordem
+		dataType: int64
+		formatString: #,0
+		lineageTag: 885bf499-654a-5e4f-877d-58e58b428574
+		sourceLineageTag: ordem
+		summarizeBy: none
+		sourceColumn: ordem
+
+		annotation SummarizationSetBy = Automatic
+
 	partition dim_produto = entity
 		mode: directLake
 		source

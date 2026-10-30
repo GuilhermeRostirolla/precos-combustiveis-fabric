@@ -70,6 +70,17 @@ def postos(coluna: str) -> str:
             '        FILTER ( ALL ( fato_preco_uf_semana[uf] ), u = "BR" || fato_preco_uf_semana[uf] = u )\n    )')
 
 
+def variacao_mensal(expr: str) -> str:
+    """Variação da média do mês no eixo contra a do mês anterior, só nos 12 meses até a semana de referência."""
+    return (f"{UF}\nVAR ref = [Semana de Referência]\nVAR inicio = DATE ( YEAR ( ref ), MONTH ( ref ) - 11, 1 )\n"
+            "VAR m = MAX ( dim_semana[mes_inicio] )\n"
+            f"VAR atual = CALCULATE ( {expr}, REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), {C}[uf] = u,\n"
+            f"    {C}[semana] >= m, {C}[semana] <= EOMONTH ( m, 0 ), {C}[semana] <= ref )\n"
+            f"VAR antes = CALCULATE ( {expr}, REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), {C}[uf] = u,\n"
+            f"    {C}[semana] >= EDATE ( m, -1 ), {C}[semana] < m )\n"
+            "RETURN\n    IF ( m >= inicio && m <= ref && NOT ISBLANK ( atual ) && NOT ISBLANK ( antes ), atual / antes - 1 )")
+
+
 def delta(componente: str, expr: str) -> list[tuple]:
     return [
         (f"{componente} Mês Explicado", "Por que mudou", REAIS, no_mes(expr)),
@@ -149,6 +160,43 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Cor Refinaria 4 Semanas", "Cores", None,
          f'IF ( [Variação Refinaria 4 Semanas] >= 0, "{CORES["alta"]}", "{CORES["baixa"]}" )'),
         ("Cor Etanol", "Cores", None, f'IF ( [Etanol ÷ Gasolina] < 0.7, "{CORES["etanol"]}", "{CORES["alta"]}" )'),
+        # desenho "o que aconteceu com o preço"
+        ("Texto Dados Até", "Visão geral", None,
+         '"Dados até a semana de " & FORMAT ( [Semana de Referência], "dd/MM/yyyy" )'),
+        ("Texto Postos e Fonte", "Visão geral", None,
+         'FORMAT ( [Postos Pesquisados], "#,0" ) & " postos pesquisados em " & FORMAT ( [Municípios Pesquisados], "#,0" ) '
+         '& " municípios · Fonte: ANP"'),
+        ("Cor Variação 12 Meses Refinaria", "Cores", None,
+         f'IF ( [Variação 12 Meses Refinaria] >= 0, "{CORES["alta"]}", "{CORES["baixa"]}" )'),
+        ("Cor Apoio Preço no Posto", "Cores", None,
+         "VAR d = [Preço no Posto] - [Preço no Posto Semana Anterior]\nRETURN\n"
+         f'    IF ( d > 0.005, "{CORES["alta"]}", IF ( d < -0.005, "{CORES["baixa"]}", "{CORES["neutra"]}" ) )'),
+        ("Posto x Refinaria 12 Meses", "Visão geral", None,
+         "VAR p = [Variação 12 Meses Posto]\nVAR r = [Variação 12 Meses Refinaria]\nRETURN\n"
+         "    SWITCH (\n        TRUE (),\n        ISBLANK ( p ) || ISBLANK ( r ), \"\",\n"
+         "        p >= 0 && r < 0, \"Posto subiu enquanto a refinaria caiu\",\n"
+         "        p < 0 && r >= 0, \"Posto caiu enquanto a refinaria subiu\",\n"
+         "        p >= 0, IF ( p > r, \"Posto subiu mais que a refinaria\", \"Posto subiu menos que a refinaria\" ),\n"
+         "        IF ( p < r, \"Posto caiu mais que a refinaria\", \"Posto caiu menos que a refinaria\" )\n    )"),
+        ("Apoio Diferença Refinaria", "Visão geral", None,
+         'IF ( ISBLANK ( [Refinaria no Litro do Posto] ), "", "Refinaria: R$ " '
+         '& FORMAT ( [Refinaria no Litro do Posto], "0.00" ) & " no litro" )'),
+        ("Apoio Diferença Média", "Visão geral", None,
+         "VAR d = [Diferença Posto Refinaria]\nVAR m = [Diferença Média 12 Meses]\nRETURN\n"
+         '    IF ( ISBLANK ( m ), "", IF ( d >= m, "Acima", "Abaixo" ) & " da média de 12 meses (R$ " '
+         '& FORMAT ( m, "0.00" ) & ")" )'),
+        ("Repasse 4 Semanas", "Visão geral", "0%",
+         "// quanto da mudança da refinaria (no litro do posto) apareceu no posto em 4 semanas\n"
+         "VAR r = [Refinaria no Litro do Posto] - [Refinaria no Litro 4 Semanas Antes]\n"
+         "VAR p = [Preço no Posto] - [Preço no Posto 4 Semanas Antes]\nRETURN\n"
+         "    IF ( ABS ( r ) >= 0.02, MAX ( 0, MIN ( 1, DIVIDE ( p, r ) ) ) )"),
+        ("Barra Repasse 4 Semanas", "Visão geral", "0%", "COALESCE ( [Repasse 4 Semanas], 0 )"),
+        ("Apoio Repasse 4 Semanas", "Visão geral", None,
+         'IF ( ISBLANK ( [Repasse 4 Semanas] ), "A refinaria quase não mudou", '
+         '"Já chegou ao posto: " & FORMAT ( [Repasse 4 Semanas], "0%" ) )'),
+        ("Barra Etanol", "Visão geral", "0%", "MAX ( 0, MIN ( 1, [Etanol ÷ Gasolina] ) )"),
+        ("Variação Mensal Posto", "Gráfico", "+0.0%;-0.0%;0.0%", variacao_mensal(f"AVERAGE ( {C}[preco_posto] )")),
+        ("Variação Mensal Refinaria", "Gráfico", "+0.0%;-0.0%;0.0%", variacao_mensal(LITRO_A)),
         # gráfico: do que é feito o preço, mês a mês
         ("Refinaria no Mês", "Gráfico", REAIS, no_grafico(f"AVERAGE ( {C}[refinaria] )")),
         ("Impostos no Mês", "Gráfico", REAIS, no_grafico(IMPOSTOS)),

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "1e99f972c36c2ff70ac3",
   "position": {
-    "x": 510,
-    "y": 91,
+    "x": 30,
+    "y": 93,
     "z": 200,
-    "height": 30,
-    "width": 132,
+    "height": 26,
+    "width": 210,
     "tabOrder": 200
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "semana_referencia"
+                      "Entity": "dim_produto"
                     }
                   },
-                  "Property": "rotulo"
+                  "Property": "nome"
                 }
               },
-              "queryRef": "semana_referencia.rotulo",
-              "nativeQueryRef": "rotulo",
+              "queryRef": "dim_produto.nome",
+              "nativeQueryRef": "nome",
               "active": true
             }
           ]
@@ -40,13 +40,13 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "semana_referencia"
+                    "Entity": "dim_produto"
                   }
                 },
-                "Property": "rotulo"
+                "Property": "nome"
               }
             },
-            "direction": "Descending"
+            "direction": "Ascending"
           }
         ]
       }
@@ -58,8 +58,62 @@
             "mode": {
               "expr": {
                 "Literal": {
-                  "Value": "'Dropdown'"
+                  "Value": "'Basic'"
                 }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "orientation": {
+              "expr": {
+                "Literal": {
+                  "Value": "1.0D"
+                }
+              }
+            },
+            "filter": {
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "t",
+                    "Entity": "dim_produto",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "t"
+                                }
+                              },
+                              "Property": "nome"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'Gasolina comum'"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                ]
               }
             }
           }
@@ -69,13 +123,6 @@
         {
           "properties": {
             "strictSingleSelect": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "singleSelect": {
               "expr": {
                 "Literal": {
                   "Value": "true"
@@ -106,7 +153,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E6EAF2'"
+                      "Value": "'#8B95A9'"
                     }
                   }
                 }
@@ -126,14 +173,14 @@
             "textSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10.0D"
+                  "Value": "9.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -250,5 +297,70 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "f6ff2147cb93285ea153",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_produto"
+              }
+            },
+            "Property": "produto"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "dim_produto",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "t"
+                          }
+                        },
+                        "Property": "produto"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'GASOLINA'"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'DIESEL S10'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

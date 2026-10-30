@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "9786b6a50c65465b0486",
   "position": {
-    "x": 347.0,
-    "y": 170,
+    "x": 40,
+    "y": 252,
     "z": 600,
-    "height": 40,
-    "width": 277.0,
+    "height": 24,
+    "width": 211,
     "tabOrder": 600
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Refinaria no Litro do Posto"
+                  "Property": "Apoio Preço no Posto"
                 }
               },
-              "queryRef": "composicao_preco_semana.Refinaria no Litro do Posto",
-              "nativeQueryRef": "Refinaria no Litro do Posto"
+              "queryRef": "composicao_preco_semana.Apoio Preço no Posto",
+              "nativeQueryRef": "Apoio Preço no Posto"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "8.5D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -55,8 +55,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Apoio Preço no Posto"
                     }
                   }
                 }
@@ -84,14 +89,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "8.5D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -99,8 +104,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Apoio Preço no Posto"
                     }
                   }
                 }

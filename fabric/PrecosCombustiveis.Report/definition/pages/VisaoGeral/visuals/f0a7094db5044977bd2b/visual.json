@@ -2,15 +2,15 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "f0a7094db5044977bd2b",
   "position": {
-    "x": 888,
-    "y": 594,
+    "x": 1028,
+    "y": 252,
     "z": 1800,
-    "height": 82,
-    "width": 340,
+    "height": 24,
+    "width": 211,
     "tabOrder": 1800
   },
   "visual": {
-    "visualType": "card",
+    "visualType": "multiRowCard",
     "query": {
       "queryState": {
         "Values": {
@@ -23,24 +23,24 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Conclusão Detalhe"
+                  "Property": "Apoio Etanol"
                 }
               },
-              "queryRef": "composicao_preco_semana.Conclusão Detalhe",
-              "nativeQueryRef": "Conclusão Detalhe"
+              "queryRef": "composicao_preco_semana.Apoio Etanol",
+              "nativeQueryRef": "Apoio Etanol"
             }
           ]
         }
       }
     },
     "objects": {
-      "labels": [
+      "dataLabels": [
         {
           "properties": {
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "8.5D"
                 }
               }
             },
@@ -78,13 +78,69 @@
           }
         }
       ],
-      "wordWrap": [
+      "cardTitle": [
         {
           "properties": {
-            "show": {
+            "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "8.5D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#8B95A9'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "card": [
+        {
+          "properties": {
+            "outline": {
+              "expr": {
+                "Literal": {
+                  "Value": "'None'"
+                }
+              }
+            },
+            "barShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "cardPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
+                }
+              }
+            },
+            "cardBackground": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#111A2B'"
+                    }
+                  }
                 }
               }
             }

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a965f96a3d1f0d3da872",
   "position": {
-    "x": 876,
-    "y": 260,
+    "x": 781,
+    "y": 172,
     "z": 1300,
-    "height": 26,
-    "width": 364,
+    "height": 40,
+    "width": 211,
     "tabOrder": 1300
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Título Por Que Mudou"
+                  "Property": "Variação Refinaria 4 Semanas"
                 }
               },
-              "queryRef": "composicao_preco_semana.Título Por Que Mudou",
-              "nativeQueryRef": "Título Por Que Mudou"
+              "queryRef": "composicao_preco_semana.Variação Refinaria 4 Semanas",
+              "nativeQueryRef": "Variação Refinaria 4 Semanas"
             }
           ]
         }
@@ -40,7 +40,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "22.0D"
                 }
               }
             },
@@ -55,8 +55,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Refinaria 4 Semanas"
                     }
                   }
                 }
@@ -84,7 +89,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "22.0D"
                 }
               }
             },
@@ -99,8 +104,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Refinaria 4 Semanas"
                     }
                   }
                 }
