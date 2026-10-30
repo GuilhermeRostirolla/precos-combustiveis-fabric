@@ -291,6 +291,27 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo(eixo), "direction": "Ascending"}]}},
             "objects": objetos})
 
+    def barras_agrupadas(self, x, y, w, h, categoria, medidas, cores):
+        pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
+                  for m, c in zip([m[0] for m in medidas], cores, strict=True)]
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["texto"]),
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                             "maxMarginFactor": lit(40)}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
+            "labels": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "color": cor(COR["suave"]),
+                                       "fontFamily": lit(FONTE_FORTE)}}],
+            "legend": [{"properties": {"show": lit(True), "position": lit("TopRight"), "showTitle": lit(False),
+                                       "fontSize": lit(8.5), "labelColor": cor(COR["suave"]), "fontFamily": lit(FONTE)}}],
+            "dataPoint": pontos,
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "clusteredBarChart",
+            "query": {"queryState": {"Category": {"projections": [projecao(categoria, ativo=True)]},
+                                     "Y": {"projections": campos(medidas)}},
+                      "sortDefinition": {"sort": [{"field": campo(categoria), "direction": "Ascending"}]}},
+            "objects": objetos})
+
     def cascata(self, x, y, w, h, categoria, medida):
         """Gráfico em cascata: cada parte que subiu (laranja) ou caiu (azul) e o total no fim."""
         objetos = {
@@ -332,51 +353,44 @@ def visao_geral() -> Pagina:
     # cartões
     y = L.CARTAO_Y
     x = L.cartao_x(0)
-    p.texto_dinamico("Preço no Posto", x + 12, y + 34, 110, 40, 22.0, forte=True)
-    p.texto_dinamico("Apoio Preço no Posto", x + 12, y + 114, 211, 24, 8.5, medida_cor="Cor Apoio Preço no Posto")
+    p.texto_dinamico("Preço no Posto", x + 12, y + 28, 110, 38, 22.0, forte=True)
+    p.texto_dinamico("Apoio Preço no Posto", x + 12, y + 82, 211, 24, 8.5, medida_cor="Cor Apoio Preço no Posto")
     x = L.cartao_x(1)
-    p.texto_dinamico("Variação 12 Meses Posto", x + 12, y + 36, 96, 36, 20.0, medida_cor="Cor Variação 12 Meses",
+    p.texto_dinamico("Variação 12 Meses Posto", x + 12, y + 28, 96, 36, 20.0, medida_cor="Cor Variação 12 Meses",
                      forte=True)
-    p.texto_dinamico("Variação 12 Meses Refinaria", x + 108, y + 36, 115, 36, 20.0,
+    p.texto_dinamico("Variação 12 Meses Refinaria", x + 108, y + 28, 115, 36, 20.0,
                      medida_cor="Cor Variação 12 Meses Refinaria", forte=True)
-    p.texto_dinamico("Posto x Refinaria 12 Meses", x + 12, y + 114, 211, 24, 8.5, cor_texto=COR["suave"])
+    p.texto_dinamico("Posto x Refinaria 12 Meses", x + 12, y + 84, 211, 22, 8.5, cor_texto=COR["suave"])
     x = L.cartao_x(2)
-    p.texto_dinamico("Diferença Posto Refinaria", x + 12, y + 34, 110, 40, 22.0, forte=True)
-    p.texto_dinamico("Apoio Diferença Refinaria", x + 12, y + 98, 211, 20, 8.5, cor_texto=COR["suave"])
-    p.texto_dinamico("Apoio Diferença Média", x + 12, y + 116, 211, 20, 8.5, cor_texto=COR["suave"])
+    p.texto_dinamico("Diferença Posto Refinaria", x + 12, y + 28, 110, 38, 22.0, forte=True)
+    p.texto_dinamico("Apoio Diferença Refinaria", x + 12, y + 66, 211, 20, 8.5, cor_texto=COR["suave"])
+    p.texto_dinamico("Apoio Diferença Média", x + 12, y + 84, 211, 20, 8.5, cor_texto=COR["suave"])
     for i, (valor, cor_valor, barra, resto, cor_barra, apoio) in enumerate([
         ("Variação Refinaria 4 Semanas", "Cor Refinaria 4 Semanas", "Barra Repasse 4 Semanas", "Resto Barra Repasse",
          COR["baixa"], "Apoio Repasse 4 Semanas"),
         ("Etanol ÷ Gasolina", "Cor Etanol", "Barra Etanol", "Resto Barra Etanol", COR["etanol"], "Apoio Etanol"),
     ], start=3):
         x = L.cartao_x(i)
-        p.texto_dinamico(valor, x + 12, y + 34, 211, 40, 22.0, medida_cor=cor_valor, forte=True)
+        p.texto_dinamico(valor, x + 12, y + 28, 211, 38, 22.0, medida_cor=cor_valor, forte=True)
         # a barra é um texto de blocos "█" sobre um fundo da cor do trilho (o Power BI não desenha gráficos tão baixos)
         p.texto_dinamico(barra.replace("Barra", "Texto Barra").replace(" 4 Semanas", ""), x + L.BARRA_X,
                          y + L.BARRA_Y - 3, L.BARRA_W, 14, 7.0, cor_texto=cor_barra, fundo=COR["trilho"])
-        p.texto_dinamico(apoio, x + 12, y + 114, 211, 24, 8.5, cor_texto=COR["suave"])
+        p.texto_dinamico(apoio, x + 12, y + 84, 211, 22, 8.5, cor_texto=COR["suave"])
     # o que aconteceu com o preço, mês a mês
     g = L.GRAFICO
     p.colunas_lado_a_lado(g["x"] + 12, g["y"] + 54, g["w"] - 24, g["h"] - 62, "dim_semana.mes_rotulo",
                           [("Variação Mensal Posto", "Posto"), ("Variação Mensal Refinaria", "Refinaria")],
                           [COR["posto"], COR["refinaria"]], rotulos_em="Variação Mensal Posto")
-    # por que o preço mudou em 12 meses: frase no topo e a conta em blocos
+    # por que o preço mudou em 12 meses: frase no topo e dois gráficos de barras
     b = L.PONTE
-    p.texto_dinamico("Manchete 12 Meses", b["x"] + 12, b["y"] + 38, b["w"] - 24, 30, 13.0,
+    p.texto_dinamico("Manchete 12 Meses", b["x"] + 12, b["y"] + 36, b["w"] - 24, 28, 12.0,
                      medida_cor="Cor Conclusão 12 Meses", forte=True)
-    caixa = "#0D1424"
-    for i, (valor, cor_valor, legenda, cor_legenda) in enumerate([
-        ("Texto Preço 12 Meses Antes", None, "Data 12 Meses Antes", None),
-        ("Texto Δ12 Refinaria", "Cor Δ12 Refinaria", "Legenda Δ12 Refinaria", "Cor Δ12 Refinaria"),
-        ("Texto Δ12 Impostos", "Cor Δ12 Impostos", "Legenda Δ12 Impostos", "Cor Δ12 Impostos"),
-        ("Texto Δ12 Outros", "Cor Δ12 Outros", "Legenda Δ12 Outros", "Cor Δ12 Outros"),
-        ("Texto Preço Hoje", None, "Data Hoje", None),
-    ]):
-        x = L.bloco_x(i)
-        p.texto_dinamico(valor, x + 10, L.BLOCO_Y + 30, L.BLOCO_W - 20, 36, 20.0, medida_cor=cor_valor, forte=True,
-                         fundo=caixa)
-        p.texto_dinamico(legenda, x + 10, L.BLOCO_Y + 66, L.BLOCO_W - 20, 22, 8.5, cor_texto=COR["suave"],
-                         medida_cor=cor_legenda, fundo=caixa)
+    e, d = L.BARRAS_ESQ, L.BARRAS_DIR
+    p.barras_coloridas(e["x"], L.BARRAS_Y + 14, e["w"], L.BARRAS_H - 14, "componente.componente",
+                       "Variação 12 Meses do Componente", "Cor Variação 12 Meses do Componente")
+    p.barras_agrupadas(d["x"], L.BARRAS_Y + 14, d["w"], L.BARRAS_H - 14, "componente.componente",
+                       [("Componente Há 12 Meses", "Há 12 meses"), ("Componente Hoje", "Hoje")],
+                       [COR["apagado"], COR["texto"]])
     return p
 
 

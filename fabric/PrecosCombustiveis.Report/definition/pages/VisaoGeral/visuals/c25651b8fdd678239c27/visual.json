@@ -2,18 +2,37 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "c25651b8fdd678239c27",
   "position": {
-    "x": 54.0,
-    "y": 656,
+    "x": 656,
+    "y": 560,
     "z": 2200,
-    "height": 22,
-    "width": 186.4,
+    "height": 130,
+    "width": 580,
     "tabOrder": 2200
   },
   "visual": {
-    "visualType": "multiRowCard",
+    "visualType": "clusteredBarChart",
     "query": {
       "queryState": {
-        "Values": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "componente"
+                    }
+                  },
+                  "Property": "componente"
+                }
+              },
+              "queryRef": "componente.componente",
+              "nativeQueryRef": "componente",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
           "projections": [
             {
               "field": {
@@ -23,24 +42,75 @@
                       "Entity": "componente"
                     }
                   },
-                  "Property": "Data 12 Meses Antes"
+                  "Property": "Componente Há 12 Meses"
                 }
               },
-              "queryRef": "componente.Data 12 Meses Antes",
-              "nativeQueryRef": "Data 12 Meses Antes"
+              "queryRef": "componente.Componente Há 12 Meses",
+              "nativeQueryRef": "Há 12 meses",
+              "displayName": "Há 12 meses"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "componente"
+                    }
+                  },
+                  "Property": "Componente Hoje"
+                }
+              },
+              "queryRef": "componente.Componente Hoje",
+              "nativeQueryRef": "Hoje",
+              "displayName": "Hoje"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "componente"
+                  }
+                },
+                "Property": "componente"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
       }
     },
     "objects": {
-      "dataLabels": [
+      "categoryAxis": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "8.5D"
+                  "Value": "9.0D"
+                }
+              }
+            },
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
+                    }
+                  }
                 }
               }
             },
@@ -51,21 +121,24 @@
                 }
               }
             },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#8B95A9'"
-                    }
-                  }
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "maxMarginFactor": {
+              "expr": {
+                "Literal": {
+                  "Value": "40L"
                 }
               }
             }
           }
         }
       ],
-      "categoryLabels": [
+      "valueAxis": [
         {
           "properties": {
             "show": {
@@ -74,24 +147,38 @@
                   "Value": "false"
                 }
               }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "gridlineShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
             }
           }
         }
       ],
-      "cardTitle": [
+      "labels": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "fontSize": {
               "expr": {
                 "Literal": {
                   "Value": "8.5D"
-                }
-              }
-            },
-            "fontFamily": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -105,45 +192,104 @@
                   }
                 }
               }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
             }
           }
         }
       ],
-      "card": [
+      "legend": [
         {
           "properties": {
-            "outline": {
+            "show": {
               "expr": {
                 "Literal": {
-                  "Value": "'None'"
+                  "Value": "true"
                 }
               }
             },
-            "barShow": {
+            "position": {
+              "expr": {
+                "Literal": {
+                  "Value": "'TopRight'"
+                }
+              }
+            },
+            "showTitle": {
               "expr": {
                 "Literal": {
                   "Value": "false"
                 }
               }
             },
-            "cardPadding": {
+            "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "0.0D"
+                  "Value": "8.5D"
                 }
               }
             },
-            "cardBackground": {
+            "labelColor": {
               "solid": {
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#0D1424'"
+                      "Value": "'#8B95A9'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#4A5570'"
                     }
                   }
                 }
               }
             }
+          },
+          "selector": {
+            "metadata": "componente.Componente Há 12 Meses"
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "componente.Componente Hoje"
           }
         }
       ]

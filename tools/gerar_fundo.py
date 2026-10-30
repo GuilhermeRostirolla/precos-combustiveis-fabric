@@ -35,12 +35,12 @@ def html() -> str:
     # cartões
     for i, titulo in enumerate(L.CARTOES):
         x, y = L.cartao_x(i), L.CARTAO_Y
-        partes += [caixa(x, y, L.CARTAO_W, L.CARTAO_H), texto(titulo, x + 16, y + 16, 12, 500, C["suave"])]
+        partes += [caixa(x, y, L.CARTAO_W, L.CARTAO_H), texto(titulo, x + 16, y + 12, 12, 500, C["suave"])]
         if i in (0, 2):
-            partes.append(texto("/litro", x + L.SUFIXO_LITRO_X, y + 54, 13, 500, C["suave"]))
+            partes.append(texto("/litro", x + L.SUFIXO_LITRO_X, y + 46, 13, 500, C["suave"]))
         if i == 1:
-            partes += [texto("no posto", x + 16, y + 76, 11, 400, C["suave"]),
-                       texto("na refinaria", x + 112, y + 76, 11, 400, C["suave"])]
+            partes += [texto("no posto", x + 16, y + 66, 11, 400, C["suave"]),
+                       texto("na refinaria", x + 112, y + 66, 11, 400, C["suave"])]
         if i == 4:
             marca = x + L.BARRA_X + round(0.7 * L.BARRA_W)
             partes.append(f'<div style="position:absolute;left:{marca}px;top:{y + L.BARRA_Y - 4}px;width:2px;'
@@ -52,13 +52,10 @@ def html() -> str:
                texto(g["subtitulo"], g["x"] + 16, g["y"] + 35, 12, 400, C["suave"]),
                caixa(L.PONTE["x"], L.PONTE["y"], L.PONTE["w"], L.PONTE["h"]),
                texto(L.PONTE["titulo"], L.PONTE["x"] + 16, L.PONTE["y"] + 15, 14, 600, C["texto"])]
-    for i, nome in enumerate(L.BLOCOS):
-        x = L.bloco_x(i)
-        partes += [caixa(x, L.BLOCO_Y, L.BLOCO_W, L.BLOCO_H, fundo=C["caixa"], borda=False, raio=8),
-                   texto(nome, x + 14, L.BLOCO_Y + 12, 12, 500, C["suave"])]
-        if i < len(L.OPERADORES):
-            partes.append(texto(L.OPERADORES[i], x + L.BLOCO_W + L.BLOCO_OPERADOR / 2 - 7, L.BLOCO_Y + 30, 22, 400,
-                                C["apagado"]))
+    for b in (L.BARRAS_ESQ, L.BARRAS_DIR):
+        partes.append(texto(b["titulo"], b["x"], L.BARRAS_Y - 4, 12, 500, C["suave"]))
+    partes.append(f'<div style="position:absolute;left:640px;top:{L.BARRAS_Y}px;width:1px;'
+                  f'height:{L.BARRAS_H - 6}px;background:{C["borda"]}"></div>')
     return ('<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0}'
             f'body{{width:1280px;height:720px;background:{C["pagina"]};position:relative;'
             'font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}</style></head><body>'

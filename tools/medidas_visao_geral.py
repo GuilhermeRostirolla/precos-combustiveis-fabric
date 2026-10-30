@@ -313,6 +313,14 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
              f"        [Principal Motivo 12 Meses] = \"{parte}\" && ABS ( [Δ12 Posto] ) >= 0.02, \"▲ principal motivo\",\n"
              "        d >= 0.01, \"subiu\",\n        d <= -0.01, \"caiu\",\n        \"ficou estável\"\n    )"),
         )],
+        ("Cor Variação 12 Meses do Componente", "Cores", None,
+         f'VAR d = [Variação 12 Meses do Componente]\nRETURN\n    IF ( d >= 0, "{CORES["alta"]}", "{CORES["baixa"]}" )'),
+        ("Componente Há 12 Meses", "Ponte", REAIS,
+         "SWITCH (\n    SELECTEDVALUE ( componente[componente] ),\n    \"Refinaria\", [Ponte Refinaria 12 Meses Antes],\n"
+         "    \"Impostos\", [Ponte Impostos 12 Meses Antes],\n    [Ponte Outros 12 Meses Antes]\n)"),
+        ("Componente Hoje", "Ponte", REAIS,
+         "SWITCH (\n    SELECTEDVALUE ( componente[componente] ),\n    \"Refinaria\", [Ponte Refinaria Hoje],\n"
+         "    \"Impostos\", [Ponte Impostos Hoje],\n    [Ponte Outros Hoje]\n)"),
         ("Variação 12 Meses do Componente", "Ponte", VARIACAO_REAIS,
          "SWITCH (\n    SELECTEDVALUE ( componente[componente] ),\n    \"Refinaria\", [Δ12 Refinaria],\n"
          "    \"Impostos\", [Δ12 Impostos],\n    [Δ12 Outros]\n)"),

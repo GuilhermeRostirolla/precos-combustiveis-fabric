@@ -2,18 +2,37 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "c4d74a4a4df7604654c4",
   "position": {
-    "x": 54.0,
-    "y": 620,
+    "x": 44,
+    "y": 560,
     "z": 2100,
-    "height": 36,
-    "width": 186.4,
+    "height": 130,
+    "width": 580,
     "tabOrder": 2100
   },
   "visual": {
-    "visualType": "multiRowCard",
+    "visualType": "clusteredBarChart",
     "query": {
       "queryState": {
-        "Values": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "componente"
+                    }
+                  },
+                  "Property": "componente"
+                }
+              },
+              "queryRef": "componente.componente",
+              "nativeQueryRef": "componente",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
           "projections": [
             {
               "field": {
@@ -23,35 +42,52 @@
                       "Entity": "componente"
                     }
                   },
-                  "Property": "Texto Preço 12 Meses Antes"
+                  "Property": "Variação 12 Meses do Componente"
                 }
               },
-              "queryRef": "componente.Texto Preço 12 Meses Antes",
-              "nativeQueryRef": "Texto Preço 12 Meses Antes"
+              "queryRef": "componente.Variação 12 Meses do Componente",
+              "nativeQueryRef": "Variação 12 Meses do Componente"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "componente"
+                  }
+                },
+                "Property": "componente"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
       }
     },
     "objects": {
-      "dataLabels": [
+      "categoryAxis": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "9.0D"
                 }
               }
             },
-            "fontFamily": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Segoe UI Semibold'"
-                }
-              }
-            },
-            "color": {
+            "labelColor": {
               "solid": {
                 "color": {
                   "expr": {
@@ -61,11 +97,32 @@
                   }
                 }
               }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "maxMarginFactor": {
+              "expr": {
+                "Literal": {
+                  "Value": "60L"
+                }
+              }
             }
           }
         }
       ],
-      "categoryLabels": [
+      "valueAxis": [
         {
           "properties": {
             "show": {
@@ -74,24 +131,38 @@
                   "Value": "false"
                 }
               }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "gridlineShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
             }
           }
         }
       ],
-      "cardTitle": [
+      "labels": [
         {
           "properties": {
-            "fontSize": {
+            "show": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "true"
                 }
               }
             },
-            "fontFamily": {
+            "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "9.0D"
                 }
               }
             },
@@ -105,45 +176,45 @@
                   }
                 }
               }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
             }
           }
         }
       ],
-      "card": [
+      "dataPoint": [
         {
           "properties": {
-            "outline": {
-              "expr": {
-                "Literal": {
-                  "Value": "'None'"
-                }
-              }
-            },
-            "barShow": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "cardPadding": {
-              "expr": {
-                "Literal": {
-                  "Value": "0.0D"
-                }
-              }
-            },
-            "cardBackground": {
+            "fill": {
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#0D1424'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "componente"
+                        }
+                      },
+                      "Property": "Cor Variação 12 Meses do Componente"
                     }
                   }
                 }
               }
             }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ]
           }
         }
       ]

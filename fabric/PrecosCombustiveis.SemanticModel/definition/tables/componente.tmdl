@@ -142,6 +142,38 @@ table componente
 		displayFolder: Ponte
 		lineageTag: 714e881c-93b8-55f1-8683-a826d7f6e7a9
 
+	measure 'Cor Variação 12 Meses do Componente' = ```
+			VAR d = [Variação 12 Meses do Componente]
+			RETURN
+			    IF ( d >= 0, "#E8833A", "#3BA3D9" )
+			```
+		displayFolder: Cores
+		lineageTag: 661234f0-cd5d-5765-a4a8-8043212ab48b
+
+	measure 'Componente Há 12 Meses' = ```
+			SWITCH (
+			    SELECTEDVALUE ( componente[componente] ),
+			    "Refinaria", [Ponte Refinaria 12 Meses Antes],
+			    "Impostos", [Ponte Impostos 12 Meses Antes],
+			    [Ponte Outros 12 Meses Antes]
+			)
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Ponte
+		lineageTag: 2b54cf41-dfc5-5f32-81bf-8ee1c5dc8492
+
+	measure 'Componente Hoje' = ```
+			SWITCH (
+			    SELECTEDVALUE ( componente[componente] ),
+			    "Refinaria", [Ponte Refinaria Hoje],
+			    "Impostos", [Ponte Impostos Hoje],
+			    [Ponte Outros Hoje]
+			)
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Ponte
+		lineageTag: 26f82abf-a09f-58e7-8ef0-9ee7cfcfff7e
+
 	measure 'Variação 12 Meses do Componente' = ```
 			SWITCH (
 			    SELECTEDVALUE ( componente[componente] ),
