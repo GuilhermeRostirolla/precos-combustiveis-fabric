@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a965f96a3d1f0d3da872",
   "position": {
-    "x": 781,
-    "y": 164,
+    "x": 1028,
+    "y": 232,
     "z": 1300,
-    "height": 38,
+    "height": 22,
     "width": 211,
     "tabOrder": 1300
   },
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Variação Refinaria 4 Semanas"
+                  "Property": "Apoio Etanol"
                 }
               },
-              "queryRef": "composicao_preco_semana.Variação Refinaria 4 Semanas",
-              "nativeQueryRef": "Variação Refinaria 4 Semanas"
+              "queryRef": "composicao_preco_semana.Apoio Etanol",
+              "nativeQueryRef": "Apoio Etanol"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "22.0D"
+                  "Value": "8.5D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Refinaria 4 Semanas"
+                    "Literal": {
+                      "Value": "'#8B95A9'"
                     }
                   }
                 }
@@ -89,14 +84,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "22.0D"
+                  "Value": "8.5D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -104,13 +99,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Refinaria 4 Semanas"
+                    "Literal": {
+                      "Value": "'#8B95A9'"
                     }
                   }
                 }

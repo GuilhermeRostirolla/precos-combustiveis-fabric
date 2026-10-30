@@ -164,13 +164,14 @@ class Pagina:
         selecao = ({"strictSingleSelect": lit(True)} if obrigatorio
                    else {"strictSingleSelect": lit(False), "singleSelect": lit(True)})
         objetos = {"data": [{"properties": {"mode": lit("Dropdown")}}],
+                   "general": [{"properties": {"outlineColor": cor(COR["cartao"]), "outlineWeight": lit(0.0)}}],
                    "selection": [{"properties": selecao}],
                    "header": [{"properties": {"show": lit(False)}}],
                    "items": [{"properties": {"fontColor": cor(COR["texto"]), "background": cor(COR["cartao"]),
                                              "textSize": lit(10.0), "fontFamily": lit(FONTE), "outline": lit("None")}}]}
         if padrao is not None:
             tabela, col = coluna.split(".", 1)
-            objetos["general"] = [{"properties": {"filter": {"filter": condicao_em(tabela, col, [padrao])}}}]
+            objetos["general"][0]["properties"]["filter"] = {"filter": condicao_em(tabela, col, [padrao])}
         return self._add(x, y, w, h, {
             "visualType": "slicer",
             "query": {"queryState": {"Values": {"projections": [projecao(coluna, ativo=True)]}},
@@ -204,9 +205,9 @@ class Pagina:
 
     def barras_coloridas(self, x, y, w, h, categoria, medida, medida_cor):
         objetos = {
-            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["texto"]),
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(10.0), "labelColor": cor(COR["texto"]),
                                              "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
-                                             "maxMarginFactor": lit(60)}}],
+                                             "maxMarginFactor": lit(30), "innerPadding": lit(35.0)}}],
             "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
             "labels": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "color": cor(COR["texto"]),
                                        "fontFamily": lit(FONTE_FORTE)}}],
@@ -350,47 +351,40 @@ def visao_geral() -> Pagina:
                              (L.ESTADO, "dim_uf.estado", {"padrao": "Brasil"}),
                              (L.SEMANA, "semana_referencia.rotulo", {"obrigatorio": False, "decrescente": True})]:
         p.lista(coluna, f["x"] + f["rotulo_w"], f["y"] + 2, f["w"] - f["rotulo_w"] - 4, f["h"] - 4, **extra)
-    # cartões
+    # cartões: título na imagem de fundo; número grande e uma linha de apoio
     y = L.CARTAO_Y
-    x = L.cartao_x(0)
-    p.texto_dinamico("Preço no Posto", x + 12, y + 28, 110, 38, 22.0, forte=True)
-    p.texto_dinamico("Apoio Preço no Posto", x + 12, y + 82, 211, 24, 8.5, medida_cor="Cor Apoio Preço no Posto")
-    x = L.cartao_x(1)
-    p.texto_dinamico("Variação 12 Meses Posto", x + 12, y + 28, 96, 36, 20.0, medida_cor="Cor Variação 12 Meses",
-                     forte=True)
-    p.texto_dinamico("Variação 12 Meses Refinaria", x + 108, y + 28, 115, 36, 20.0,
-                     medida_cor="Cor Variação 12 Meses Refinaria", forte=True)
-    p.texto_dinamico("Posto x Refinaria 12 Meses", x + 12, y + 84, 211, 22, 8.5, cor_texto=COR["suave"])
-    x = L.cartao_x(2)
-    p.texto_dinamico("Diferença Posto Refinaria", x + 12, y + 28, 110, 38, 22.0, forte=True)
-    p.texto_dinamico("Apoio Diferença Refinaria", x + 12, y + 66, 211, 20, 8.5, cor_texto=COR["suave"])
-    p.texto_dinamico("Apoio Diferença Média", x + 12, y + 84, 211, 20, 8.5, cor_texto=COR["suave"])
-    for i, (valor, cor_valor, barra, resto, cor_barra, apoio) in enumerate([
-        ("Variação Refinaria 4 Semanas", "Cor Refinaria 4 Semanas", "Barra Repasse 4 Semanas", "Resto Barra Repasse",
-         COR["baixa"], "Apoio Repasse 4 Semanas"),
-        ("Etanol ÷ Gasolina", "Cor Etanol", "Barra Etanol", "Resto Barra Etanol", COR["etanol"], "Apoio Etanol"),
-    ], start=3):
+    for i, (valor, cor_valor, apoio, cor_apoio, w_valor) in enumerate([
+        ("Preço no Posto", None, "Apoio Preço no Posto", "Cor Apoio Preço no Posto", 110),
+        (None, None, "Posto x Refinaria 12 Meses", None, None),
+        ("Diferença Posto Refinaria", None, "Apoio Diferença Curto", None, 110),
+        ("Variação Refinaria 4 Semanas", "Cor Refinaria 4 Semanas", "Apoio Repasse 4 Semanas", None, 211),
+        ("Etanol ÷ Gasolina", "Cor Etanol", "Apoio Etanol", None, 211),
+    ]):
         x = L.cartao_x(i)
-        p.texto_dinamico(valor, x + 12, y + 28, 211, 38, 22.0, medida_cor=cor_valor, forte=True)
+        if valor:
+            p.texto_dinamico(valor, x + 12, y + 32, w_valor, 40, 22.0, medida_cor=cor_valor, forte=True)
+        p.texto_dinamico(apoio, x + 12, y + 96, 211, 22, 8.5, cor_texto=COR["suave"], medida_cor=cor_apoio)
+    x = L.cartao_x(1)
+    p.texto_dinamico("Variação 12 Meses Posto", x + 12, y + 34, 96, 36, 20.0, medida_cor="Cor Variação 12 Meses",
+                     forte=True)
+    p.texto_dinamico("Variação 12 Meses Refinaria", x + 108, y + 34, 115, 36, 20.0,
+                     medida_cor="Cor Variação 12 Meses Refinaria", forte=True)
+    for i, barra, cor_barra in [(3, "Texto Barra Repasse", COR["baixa"]), (4, "Texto Barra Etanol", COR["etanol"])]:
         # a barra é um texto de blocos "█" sobre um fundo da cor do trilho (o Power BI não desenha gráficos tão baixos)
-        p.texto_dinamico(barra.replace("Barra", "Texto Barra").replace(" 4 Semanas", ""), x + L.BARRA_X,
-                         y + L.BARRA_Y - 3, L.BARRA_W, 14, 7.0, cor_texto=cor_barra, fundo=COR["trilho"])
-        p.texto_dinamico(apoio, x + 12, y + 84, 211, 22, 8.5, cor_texto=COR["suave"])
+        x = L.cartao_x(i)
+        p.texto_dinamico(barra, x + L.BARRA_X, y + L.BARRA_Y - 3, L.BARRA_W, 14, 7.0, cor_texto=cor_barra,
+                         fundo=COR["trilho"])
     # o que aconteceu com o preço, mês a mês
     g = L.GRAFICO
     p.colunas_lado_a_lado(g["x"] + 12, g["y"] + 54, g["w"] - 24, g["h"] - 62, "dim_semana.mes_rotulo",
-                          [("Variação Mensal Posto", "Posto"), ("Variação Mensal Refinaria", "Refinaria")],
-                          [COR["posto"], COR["refinaria"]], rotulos_em="Variação Mensal Posto")
-    # por que o preço mudou em 12 meses: frase no topo e dois gráficos de barras
+                          [("Variação Mensal Posto R$", "Posto"), ("Variação Mensal Refinaria R$", "Refinaria (no litro)")],
+                          [COR["posto"], COR["refinaria"]], rotulos_em="Variação Mensal Posto R$")
+    # por que o preço mudou em 12 meses: frase-resumo e um gráfico de barras
     b = L.PONTE
-    p.texto_dinamico("Manchete 12 Meses", b["x"] + 12, b["y"] + 36, b["w"] - 24, 28, 12.0,
+    p.texto_dinamico("Manchete 12 Meses", b["x"] + 12, b["y"] + 56, b["w"] - 24, 28, 12.0,
                      medida_cor="Cor Conclusão 12 Meses", forte=True)
-    e, d = L.BARRAS_ESQ, L.BARRAS_DIR
-    p.barras_coloridas(e["x"], L.BARRAS_Y + 14, e["w"], L.BARRAS_H - 14, "componente.componente",
+    p.barras_coloridas(b["x"] + 12, b["y"] + 90, b["w"] - 24, b["h"] - 98, "componente.componente",
                        "Variação 12 Meses do Componente", "Cor Variação 12 Meses do Componente")
-    p.barras_agrupadas(d["x"], L.BARRAS_Y + 14, d["w"], L.BARRAS_H - 14, "componente.componente",
-                       [("Componente Há 12 Meses", "Há 12 meses"), ("Componente Hoje", "Hoje")],
-                       [COR["apagado"], COR["texto"]])
     return p
 
 

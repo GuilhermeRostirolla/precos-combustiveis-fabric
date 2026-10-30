@@ -18,10 +18,10 @@ ESTADO = {"x": 268, "y": 91, "w": 150, "h": 30, "rotulo": "Estado", "rotulo_w": 
 SEMANA = {"x": 428, "y": 91, "w": 176, "h": 30, "rotulo": "Semana", "rotulo_w": 62}
 
 # cartões
-CARTAO_Y, CARTAO_W, CARTAO_H, CARTAO_GAP = 136, 235, 112, 12
+CARTAO_Y, CARTAO_W, CARTAO_H, CARTAO_GAP = 136, 235, 124, 12
 CARTOES = ["Preço médio no posto", "Variação em 12 meses", "Diferença posto − refinaria",
            "Refinaria nas últimas 4 semanas", "Etanol ÷ gasolina"]
-BARRA_Y, BARRA_H = 72, 8          # trilho das barras de progresso (relativo ao cartão)
+BARRA_Y, BARRA_H = 78, 8          # trilho das barras de progresso (relativo ao cartão)
 BARRA_X, BARRA_W = 16, 203
 SUFIXO_LITRO_X = 128              # "/litro" depois de "R$ 0,00" (largura fixa: um dígito antes da vírgula)
 
@@ -31,12 +31,10 @@ def cartao_x(i: int) -> int:
 
 
 # gráfico
-GRAFICO = {"x": 28, "y": 262, "w": 1224, "h": 200,
+GRAFICO = {"x": 28, "y": 274, "w": 1224, "h": 206,
            "titulo": "O que aconteceu com o preço, mês a mês",
-           "subtitulo": "Variação do preço médio em relação ao mês anterior · últimos 12 meses"}
+           "subtitulo": "Quanto o litro subiu ou caiu em relação ao mês anterior (R$) · últimos 12 meses"}
 
-# por que mudou em 12 meses: frase no topo e dois gráficos de barras
-PONTE = {"x": 28, "y": 474, "w": 1224, "h": 222, "titulo": "Por que o preço mudou em 12 meses"}
-BARRAS_Y, BARRAS_H = 546, 144
-BARRAS_ESQ = {"x": 44, "w": 580, "titulo": "Quanto cada parte do litro mudou (R$)"}
-BARRAS_DIR = {"x": 656, "w": 580, "titulo": "Cada parte do litro: há 12 meses x hoje (R$)"}
+# por que mudou em 12 meses: frase no topo e um gráfico de barras
+PONTE = {"x": 28, "y": 492, "w": 1224, "h": 204, "titulo": "Por que o preço mudou em 12 meses",
+         "subtitulo": "Quanto cada parte do litro subiu ou caiu (R$)"}

@@ -2,8 +2,8 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a1d9b31180b2a5f6f493",
   "position": {
-    "x": 287,
-    "y": 220,
+    "x": 534,
+    "y": 232,
     "z": 900,
     "height": 22,
     "width": 211,
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Posto x Refinaria 12 Meses"
+                  "Property": "Apoio Diferença Curto"
                 }
               },
-              "queryRef": "composicao_preco_semana.Posto x Refinaria 12 Meses",
-              "nativeQueryRef": "Posto x Refinaria 12 Meses"
+              "queryRef": "composicao_preco_semana.Apoio Diferença Curto",
+              "nativeQueryRef": "Apoio Diferença Curto"
             }
           ]
         }

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "ccec244d7a35c9207471",
   "position": {
-    "x": 1028,
-    "y": 164,
+    "x": 785,
+    "y": 211,
     "z": 1600,
-    "height": 38,
-    "width": 211,
+    "height": 14,
+    "width": 203,
     "tabOrder": 1600
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Etanol ÷ Gasolina"
+                  "Property": "Texto Barra Repasse"
                 }
               },
-              "queryRef": "composicao_preco_semana.Etanol ÷ Gasolina",
-              "nativeQueryRef": "Etanol ÷ Gasolina"
+              "queryRef": "composicao_preco_semana.Texto Barra Repasse",
+              "nativeQueryRef": "Texto Barra Repasse"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "22.0D"
+                  "Value": "7.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Etanol"
+                    "Literal": {
+                      "Value": "'#3BA3D9'"
                     }
                   }
                 }
@@ -89,14 +84,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "22.0D"
+                  "Value": "7.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -104,13 +99,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Etanol"
+                    "Literal": {
+                      "Value": "'#3BA3D9'"
                     }
                   }
                 }
@@ -148,7 +138,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#111A2B'"
+                      "Value": "'#1F2A40'"
                     }
                   }
                 }

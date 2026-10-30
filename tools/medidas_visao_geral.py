@@ -70,7 +70,7 @@ def postos(coluna: str) -> str:
             '        FILTER ( ALL ( fato_preco_uf_semana[uf] ), u = "BR" || fato_preco_uf_semana[uf] = u )\n    )')
 
 
-def variacao_mensal(expr: str) -> str:
+def variacao_mensal(expr: str, em_reais: bool = False) -> str:
     """Variação da média do mês no eixo contra a do mês anterior, só nos 12 meses até a semana de referência."""
     return (f"{UF}\nVAR ref = [Semana de Referência]\nVAR inicio = DATE ( YEAR ( ref ), MONTH ( ref ) - 11, 1 )\n"
             "VAR m = MAX ( dim_semana[mes_inicio] )\n"
@@ -78,7 +78,8 @@ def variacao_mensal(expr: str) -> str:
             f"    {C}[semana] >= m, {C}[semana] <= EOMONTH ( m, 0 ), {C}[semana] <= ref )\n"
             f"VAR antes = CALCULATE ( {expr}, REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), {C}[uf] = u,\n"
             f"    {C}[semana] >= EDATE ( m, -1 ), {C}[semana] < m )\n"
-            "RETURN\n    IF ( m >= inicio && m <= ref && NOT ISBLANK ( atual ) && NOT ISBLANK ( antes ), atual / antes - 1 )")
+            "RETURN\n    IF ( m >= inicio && m <= ref && NOT ISBLANK ( atual ) && NOT ISBLANK ( antes ), "
+            + ("ROUND ( atual - antes, 2 ) )" if em_reais else "atual / antes - 1 )"))
 
 
 def delta(componente: str, expr: str) -> list[tuple]:
@@ -241,6 +242,14 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Resto Barra Etanol", "Visão geral", "0%", "1 - COALESCE ( [Barra Etanol], 0 )"),
         ("Variação Mensal Posto", "Gráfico", "+0.0%;-0.0%;0.0%", variacao_mensal(f"AVERAGE ( {C}[preco_posto] )")),
         ("Variação Mensal Refinaria", "Gráfico", "+0.0%;-0.0%;0.0%", variacao_mensal(LITRO_A)),
+        ("Variação Mensal Posto R$", "Gráfico", VARIACAO_REAIS,
+         variacao_mensal(f"AVERAGE ( {C}[preco_posto] )", em_reais=True)),
+        ("Variação Mensal Refinaria R$", "Gráfico", VARIACAO_REAIS,
+         "// a parte da refinaria dentro do litro vendido no posto, para comparar na mesma régua\n"
+         + variacao_mensal(f"AVERAGE ( {C}[refinaria] )", em_reais=True)),
+        ("Apoio Diferença Curto", "Visão geral", None,
+         'IF ( ISBLANK ( [Diferença Média 12 Meses] ), "", "Refinaria R$ " & FORMAT ( [Refinaria no Litro do Posto], "0.00" ) '
+         '& " · média 12 meses R$ " & FORMAT ( [Diferença Média 12 Meses], "0.00" ) )'),
         # gráfico: do que é feito o preço, mês a mês
         ("Refinaria no Mês", "Gráfico", REAIS, no_grafico(f"AVERAGE ( {C}[refinaria] )")),
         ("Impostos no Mês", "Gráfico", REAIS, no_grafico(IMPOSTOS)),

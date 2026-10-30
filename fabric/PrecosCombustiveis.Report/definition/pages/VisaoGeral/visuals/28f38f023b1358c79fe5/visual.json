@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "28f38f023b1358c79fe5",
   "position": {
-    "x": 383,
-    "y": 164,
+    "x": 534,
+    "y": 168,
     "z": 800,
-    "height": 36,
-    "width": 115,
+    "height": 40,
+    "width": 110,
     "tabOrder": 800
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Variação 12 Meses Refinaria"
+                  "Property": "Diferença Posto Refinaria"
                 }
               },
-              "queryRef": "composicao_preco_semana.Variação 12 Meses Refinaria",
-              "nativeQueryRef": "Variação 12 Meses Refinaria"
+              "queryRef": "composicao_preco_semana.Diferença Posto Refinaria",
+              "nativeQueryRef": "Diferença Posto Refinaria"
             }
           ]
         }
@@ -40,7 +40,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "22.0D"
                 }
               }
             },
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Variação 12 Meses Refinaria"
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }
@@ -89,7 +84,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "20.0D"
+                  "Value": "22.0D"
                 }
               }
             },
@@ -104,13 +99,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Variação 12 Meses Refinaria"
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }

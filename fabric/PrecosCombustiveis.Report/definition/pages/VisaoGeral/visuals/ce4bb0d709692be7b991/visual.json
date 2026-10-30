@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "ce4bb0d709692be7b991",
   "position": {
-    "x": 785,
-    "y": 205,
+    "x": 287,
+    "y": 170,
     "z": 1400,
-    "height": 14,
-    "width": 203,
+    "height": 36,
+    "width": 96,
     "tabOrder": 1400
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Texto Barra Repasse"
+                  "Property": "Variação 12 Meses Posto"
                 }
               },
-              "queryRef": "composicao_preco_semana.Texto Barra Repasse",
-              "nativeQueryRef": "Texto Barra Repasse"
+              "queryRef": "composicao_preco_semana.Variação 12 Meses Posto",
+              "nativeQueryRef": "Variação 12 Meses Posto"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "7.0D"
+                  "Value": "20.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -55,8 +55,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#3BA3D9'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Variação 12 Meses"
                     }
                   }
                 }
@@ -84,14 +89,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "7.0D"
+                  "Value": "20.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -99,8 +104,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#3BA3D9'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Variação 12 Meses"
                     }
                   }
                 }
@@ -138,7 +148,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F2A40'"
+                      "Value": "'#111A2B'"
                     }
                   }
                 }

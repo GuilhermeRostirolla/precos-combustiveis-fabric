@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "ea32c163005f8c21aeb8",
   "position": {
-    "x": 534,
-    "y": 202,
+    "x": 781,
+    "y": 232,
     "z": 1100,
-    "height": 20,
+    "height": 22,
     "width": 211,
     "tabOrder": 1100
   },
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Apoio Diferença Refinaria"
+                  "Property": "Apoio Repasse 4 Semanas"
                 }
               },
-              "queryRef": "composicao_preco_semana.Apoio Diferença Refinaria",
-              "nativeQueryRef": "Apoio Diferença Refinaria"
+              "queryRef": "composicao_preco_semana.Apoio Repasse 4 Semanas",
+              "nativeQueryRef": "Apoio Repasse 4 Semanas"
             }
           ]
         }
