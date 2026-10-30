@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "ecd2099ee3c83365e2a6",
   "position": {
-    "x": 658,
+    "x": 40,
     "y": 516,
     "z": 2900,
     "height": 172,
@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "regiao_comparacao"
+                      "Entity": "componente"
                     }
                   },
-                  "Property": "regiao"
+                  "Property": "componente"
                 }
               },
-              "queryRef": "regiao_comparacao.regiao",
-              "nativeQueryRef": "regiao",
+              "queryRef": "componente.componente",
+              "nativeQueryRef": "componente",
               "active": true
             }
           ]
@@ -42,11 +42,11 @@
                       "Entity": "componente"
                     }
                   },
-                  "Property": "Preço por Região"
+                  "Property": "Variação 12 Meses do Componente"
                 }
               },
-              "queryRef": "componente.Preço por Região",
-              "nativeQueryRef": "Preço por Região"
+              "queryRef": "componente.Variação 12 Meses do Componente",
+              "nativeQueryRef": "Variação 12 Meses do Componente"
             }
           ]
         }
@@ -55,16 +55,16 @@
         "sort": [
           {
             "field": {
-              "Measure": {
+              "Column": {
                 "Expression": {
                   "SourceRef": {
                     "Entity": "componente"
                   }
                 },
-                "Property": "Preço por Região"
+                "Property": "componente"
               }
             },
-            "direction": "Descending"
+            "direction": "Ascending"
           }
         ]
       }
@@ -115,14 +115,14 @@
             "maxMarginFactor": {
               "expr": {
                 "Literal": {
-                  "Value": "30L"
+                  "Value": "45L"
                 }
               }
             },
             "innerPadding": {
               "expr": {
                 "Literal": {
-                  "Value": "30.0D"
+                  "Value": "35.0D"
                 }
               }
             }
@@ -207,7 +207,7 @@
                           "Entity": "componente"
                         }
                       },
-                      "Property": "Cor da Região"
+                      "Property": "Cor do Componente"
                     }
                   }
                 }

@@ -453,6 +453,9 @@ def visao_geral() -> Pagina:
                              (L.ESTADO, "dim_uf.estado", {"padrao": "Brasil"})]:
         p.rotulo(f["rotulo"], f["x"] + 4, f["y"] + 3, f["rotulo_w"], f["h"] - 6, 9)
         p.lista(coluna, f["x"] + f["rotulo_w"], f["y"] + 2, f["w"] - f["rotulo_w"] - 4, f["h"] - 4, **extra)
+    r = L.REFINARIA
+    p.rotulo(r["rotulo"], r["x"], r["y"] - 6, 70, 26, 9)
+    p.texto_dinamico("Região da Refinaria", r["x"] + 62, r["y"] - 1, 140, 20, 10.0, forte=True, fundo=COR["pagina"])
     d = L.DADOS_ATE
     p.rotulo(d["rotulo"], d["x"], d["y"] - 6, 70, 26, 9)
     p.texto_dinamico("Semana de Referência", d["x"] + 66, d["y"] - 1, 130, 20, 10.0, forte=True, fundo=COR["pagina"])

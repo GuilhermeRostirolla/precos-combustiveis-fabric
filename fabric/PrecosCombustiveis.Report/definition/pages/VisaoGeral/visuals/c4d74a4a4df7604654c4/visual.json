@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "c4d74a4a4df7604654c4",
   "position": {
-    "x": 1028,
-    "y": 150,
+    "x": 781,
+    "y": 188,
     "z": 2100,
-    "height": 40,
+    "height": 20,
     "width": 211,
     "tabOrder": 2100
   },
@@ -23,11 +23,11 @@
                       "Entity": "componente"
                     }
                   },
-                  "Property": "Valor Cartão 5"
+                  "Property": "Apoio Impostos Curto"
                 }
               },
-              "queryRef": "componente.Valor Cartão 5",
-              "nativeQueryRef": "Valor Cartão 5"
+              "queryRef": "componente.Apoio Impostos Curto",
+              "nativeQueryRef": "Apoio Impostos Curto"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "22.0D"
+                  "Value": "9.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "componente"
-                        }
-                      },
-                      "Property": "Cor Cartão 5"
+                    "Literal": {
+                      "Value": "'#8B95A9'"
                     }
                   }
                 }
@@ -89,14 +84,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "22.0D"
+                  "Value": "9.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -104,13 +99,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "componente"
-                        }
-                      },
-                      "Property": "Cor Cartão 5"
+                    "Literal": {
+                      "Value": "'#8B95A9'"
                     }
                   }
                 }

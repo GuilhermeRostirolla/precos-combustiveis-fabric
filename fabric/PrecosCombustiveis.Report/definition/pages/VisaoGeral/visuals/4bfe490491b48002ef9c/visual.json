@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "4bfe490491b48002ef9c",
   "position": {
-    "x": 781,
+    "x": 534,
     "y": 188,
     "z": 1900,
     "height": 20,
@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "componente"
+                      "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Apoio Impostos Curto"
+                  "Property": "Variação 12 Meses Posto"
                 }
               },
-              "queryRef": "componente.Apoio Impostos Curto",
-              "nativeQueryRef": "Apoio Impostos Curto"
+              "queryRef": "composicao_preco_semana.Variação 12 Meses Posto",
+              "nativeQueryRef": "Variação 12 Meses Posto"
             }
           ]
         }
@@ -55,8 +55,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#8B95A9'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Variação 12 Meses"
                     }
                   }
                 }
@@ -99,8 +104,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#8B95A9'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Variação 12 Meses"
                     }
                   }
                 }

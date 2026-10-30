@@ -2,158 +2,33 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "ce4bb0d709692be7b991",
   "position": {
-    "x": 287,
-    "y": 150,
+    "x": 891,
+    "y": 160,
     "z": 1400,
-    "height": 40,
-    "width": 211,
+    "height": 24,
+    "width": 60,
     "tabOrder": 1400
   },
   "visual": {
-    "visualType": "multiRowCard",
-    "query": {
-      "queryState": {
-        "Values": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "componente"
-                    }
-                  },
-                  "Property": "Variação 4 Semanas Posto"
-                }
-              },
-              "queryRef": "componente.Variação 4 Semanas Posto",
-              "nativeQueryRef": "Variação 4 Semanas Posto"
-            }
-          ]
-        }
-      }
-    },
+    "visualType": "textbox",
     "objects": {
-      "dataLabels": [
+      "general": [
         {
           "properties": {
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "22.0D"
-                }
-              }
-            },
-            "fontFamily": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Segoe UI Semibold'"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "componente"
-                        }
-                      },
-                      "Property": "Cor Variação 4 Semanas"
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "/litro",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#8B95A9"
                     }
                   }
-                }
+                ]
               }
-            }
-          }
-        }
-      ],
-      "categoryLabels": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "cardTitle": [
-        {
-          "properties": {
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "22.0D"
-                }
-              }
-            },
-            "fontFamily": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Segoe UI Semibold'"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "componente"
-                        }
-                      },
-                      "Property": "Cor Variação 4 Semanas"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      ],
-      "card": [
-        {
-          "properties": {
-            "outline": {
-              "expr": {
-                "Literal": {
-                  "Value": "'None'"
-                }
-              }
-            },
-            "barShow": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "cardPadding": {
-              "expr": {
-                "Literal": {
-                  "Value": "0.0D"
-                }
-              }
-            },
-            "cardBackground": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#111A2B'"
-                    }
-                  }
-                }
-              }
-            }
+            ]
           }
         }
       ]

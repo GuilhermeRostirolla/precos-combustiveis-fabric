@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "ccec244d7a35c9207471",
   "position": {
-    "x": 534,
+    "x": 287,
     "y": 150,
     "z": 1600,
     "height": 40,
@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "composicao_preco_semana"
+                      "Entity": "componente"
                     }
                   },
-                  "Property": "Δ12 Posto"
+                  "Property": "Variação 4 Semanas Posto"
                 }
               },
-              "queryRef": "composicao_preco_semana.Δ12 Posto",
-              "nativeQueryRef": "Δ12 Posto"
+              "queryRef": "componente.Variação 4 Semanas Posto",
+              "nativeQueryRef": "Variação 4 Semanas Posto"
             }
           ]
         }
@@ -58,10 +58,10 @@
                     "Measure": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "composicao_preco_semana"
+                          "Entity": "componente"
                         }
                       },
-                      "Property": "Cor Variação 12 Meses"
+                      "Property": "Cor Variação 4 Semanas"
                     }
                   }
                 }
@@ -107,10 +107,10 @@
                     "Measure": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "composicao_preco_semana"
+                          "Entity": "componente"
                         }
                       },
-                      "Property": "Cor Variação 12 Meses"
+                      "Property": "Cor Variação 4 Semanas"
                     }
                   }
                 }

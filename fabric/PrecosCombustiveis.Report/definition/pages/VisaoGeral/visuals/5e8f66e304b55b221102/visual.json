@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "5e8f66e304b55b221102",
   "position": {
-    "x": 1028,
-    "y": 128,
+    "x": 781,
+    "y": 150,
     "z": 2000,
-    "height": 20,
-    "width": 211,
+    "height": 40,
+    "width": 110,
     "tabOrder": 2000
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "componente"
+                      "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Título Cartão 5"
+                  "Property": "Impostos no Litro"
                 }
               },
-              "queryRef": "componente.Título Cartão 5",
-              "nativeQueryRef": "Título Cartão 5"
+              "queryRef": "composicao_preco_semana.Impostos no Litro",
+              "nativeQueryRef": "Impostos no Litro"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -56,7 +56,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#8B95A9'"
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }
@@ -84,14 +84,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -100,7 +100,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#8B95A9'"
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }

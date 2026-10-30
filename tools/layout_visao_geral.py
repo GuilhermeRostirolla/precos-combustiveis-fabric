@@ -15,6 +15,7 @@ TITULO = "Preço dos combustíveis"
 COMBUSTIVEL = {"x": 28, "y": 72, "w": 230, "h": 30, "rotulo": "Combustível", "rotulo_w": 88}
 ESTADO = {"x": 268, "y": 72, "w": 150, "h": 30, "rotulo": "Estado", "rotulo_w": 54}
 DADOS_ATE = {"x": 1060, "y": 78, "rotulo": "Dados até"}
+REFINARIA = {"x": 850, "y": 78, "rotulo": "Refinaria"}  # a ANP só publica a refinaria por região
 
 # cartões
 CARTAO_Y, CARTAO_W, CARTAO_H, CARTAO_GAP = 118, 235, 100, 12

@@ -41,6 +41,16 @@ CREATE TABLE silver.preco_produtor (
     preco decimal(10,4) NOT NULL
 );
 GO
+DROP TABLE IF EXISTS silver.preco_uf_semanal;
+GO
+CREATE TABLE silver.preco_uf_semanal (
+    semana date NOT NULL,
+    uf char(2) NOT NULL,
+    produto varchar(40) NOT NULL,
+    preco_medio decimal(8,4) NOT NULL,
+    postos int NOT NULL
+);
+GO
 
 CREATE OR ALTER PROCEDURE silver.sp_carregar
 AS
@@ -105,5 +115,16 @@ BEGIN
         CAST(p.preco AS decimal(10,4))
     FROM lh_combustiveis.dbo.bronze_produtor AS p
     WHERE p.preco IS NOT NULL AND p.preco > 0;
+
+    -- Levantamento semanal por estado: a pesquisa vai de domingo a sábado; a semana do relatório começa na
+    -- segunda seguinte ao domingo (cobre seis dos sete dias).
+    TRUNCATE TABLE silver.preco_uf_semanal;
+    INSERT INTO silver.preco_uf_semanal
+    SELECT DISTINCT
+        DATEADD(day, -(DATEDIFF(day, '19000101', DATEADD(day, 1, CAST(s.semana_inicio AS date))) % 7),
+                DATEADD(day, 1, CAST(s.semana_inicio AS date))),
+        s.uf, s.produto, CAST(s.preco_medio AS decimal(8,4)), s.postos
+    FROM lh_combustiveis.dbo.bronze_revenda_semanal AS s
+    WHERE s.preco_medio BETWEEN @minimo AND @maximo AND s.postos > 0;
 END;
 GO

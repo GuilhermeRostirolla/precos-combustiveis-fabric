@@ -8,6 +8,9 @@
 #   Os dois arquivos mais recentes são sempre reprocessados, porque ainda recebem correções.
 # - **Produtores e importadores**: planilha semanal com o preço na saída da refinaria, sem ICMS, por região.
 #   É pequena, então é recarregada inteira a cada execução.
+# - **Levantamento semanal por estado**: preço médio de cada estado, publicado toda semana. Cobre as semanas
+#   que a série histórica (mensal, com atraso) ainda não trouxe. Se a ANP estiver fora do ar, a carga segue
+#   sem ela e a tabela fica como estava.
 #
 # No fim, o SQL endpoint do lakehouse é atualizado para o Warehouse enxergar as tabelas novas na mesma execução.
 
@@ -112,6 +115,22 @@ produtor["arquivo_origem"] = URL_PRODUTOR.rsplit("/", 1)[-1]
  .withColumn("_data_carga", F.lit(CARIMBO))
  .write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("bronze_produtor"))
 print(f"produtores: {len(produtor):,} linhas, semanas de {produtor['semana_inicio'].min()} a {produtor['semana_inicio'].max()}")
+
+# %%
+ESQUEMA_SEMANAL = ("semana_inicio DATE, semana_fim DATE, uf STRING, produto STRING, postos INT, "
+                   "preco_medio DOUBLE, unidade STRING, _data_carga TIMESTAMP")
+try:
+    conteudo = baixar(URL_SEMANAL_ESTADOS)
+    (RAIZ / "produtor" / URL_SEMANAL_ESTADOS.rsplit("/", 1)[-1]).write_bytes(conteudo)
+    semanal = ler_semanal_estados(pd.read_excel(io.BytesIO(conteudo), header=None))
+    semanal = semanal[semanal["semana_inicio"] >= date.fromisoformat(DESDE)]
+    (spark.createDataFrame(semanal.assign(_data_carga=CARIMBO), ESQUEMA_SEMANAL)
+     .write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("bronze_revenda_semanal"))
+    print(f"levantamento semanal: {len(semanal):,} linhas, até a semana de {semanal['semana_inicio'].max()}")
+except Exception as erro:  # a fonte é complementar: sem ela, o relatório usa só a série histórica
+    print(f"levantamento semanal não carregado: {erro}")
+    if not spark.catalog.tableExists("bronze_revenda_semanal"):
+        spark.createDataFrame([], ESQUEMA_SEMANAL).write.format("delta").saveAsTable("bronze_revenda_semanal")
 
 # %%
 if novos_controles:

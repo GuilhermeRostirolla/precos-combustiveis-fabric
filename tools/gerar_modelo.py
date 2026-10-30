@@ -30,7 +30,7 @@ TABELAS = {
                                 ("icms", "dec"), ("outros", "dec")],
     "dim_produto": [("produto", "string"), ("tem_preco_refinaria", "bool"), ("nome", "string"), ("ordem", "int")],
     "fato_preco_uf_semana": [("semana", "date"), ("uf", "string"), ("produto", "string"), ("preco_medio", "dec"),
-                             ("coletas", "int"), ("postos", "int"), ("municipios", "int")],
+                             ("coletas", "int"), ("postos", "int"), ("municipios", "int"), ("fonte", "string")],
     "fato_preco_municipio_semana": [("semana", "date"), ("uf", "string"), ("municipio", "string"),
                                     ("produto", "string"), ("preco_medio", "dec"), ("preco_mediano", "dec"),
                                     ("preco_minimo", "dec"), ("preco_maximo", "dec"), ("coletas", "int"),

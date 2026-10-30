@@ -396,6 +396,10 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          'IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", [Cor Variação 12 Meses Refinaria], [Cor Etanol] )'),
         ("Marca 70%", "Visão geral", None,
          'IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "", "▲ 70%" )'),
+        ("Região da Refinaria", "Visão geral", None,
+         "// a ANP publica o preço da refinaria só por região: um estado usa o da região dele\n"
+         'VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )\nRETURN\n'
+         '    IF ( u = "BR", "Brasil", "região " & LOOKUPVALUE ( regiao_comparacao[regiao], regiao_comparacao[uf], u ) )'),
         ("Cor Fundo Barra", "Cores", None,
          'IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "#111A2B", "#1F2A40" )'),
     ]

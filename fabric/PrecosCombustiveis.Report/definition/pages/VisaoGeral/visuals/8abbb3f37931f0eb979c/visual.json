@@ -3,10 +3,10 @@
   "name": "8abbb3f37931f0eb979c",
   "position": {
     "x": 36,
-    "y": 482,
+    "y": 236,
     "z": 2600,
     "height": 28,
-    "width": 560,
+    "width": 700,
     "tabOrder": 2600
   },
   "visual": {
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "O que mudou em 12 meses · R$/litro",
+                    "value": "Do que é feito o preço do litro · últimas 52 semanas · R$",
                     "textStyle": {
                       "fontFamily": "Segoe UI Semibold",
                       "fontSize": "11pt",

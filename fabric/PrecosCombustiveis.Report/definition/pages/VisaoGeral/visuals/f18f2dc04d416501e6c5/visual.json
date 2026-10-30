@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "f18f2dc04d416501e6c5",
   "position": {
-    "x": 1060,
+    "x": 850,
     "y": 72,
     "z": 500,
     "height": 26,
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Dados até",
+                    "value": "Refinaria",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "9pt",

@@ -8,6 +8,17 @@
 #
 # Se alguma diferença passar da tolerância, o notebook falha e o pipeline aparece como falho.
 # No fim, mostra o resumo da análise.
+#
+# Antes de conferir, atualiza o modelo semântico: tabelas criadas pela carga (como uma tabela nova da gold)
+# só aparecem no Direct Lake depois de uma atualização.
+
+# %%
+try:
+    import sempy.fabric as fabric
+    fabric.refresh_dataset("PrecosCombustiveis", refresh_type="full")
+    print("modelo semântico atualizado")
+except Exception as erro:  # o modelo pode ainda não existir na primeira instalação
+    print(f"modelo semântico não atualizado: {erro}")
 
 # %%
 import struct
@@ -58,9 +69,11 @@ b = b.sort_values("arquivo_origem", ascending=False).drop_duplicates(["cnpj", "p
 b["semana"] = b["data"] - pd.to_timedelta(b["data"].dt.weekday, unit="D")
 media_py = b.groupby(["produto", "semana"])["valor"].mean().rename("py").reset_index()
 
+# só as semanas que vêm da série histórica: as mais recentes podem vir do levantamento semanal da ANP
 media_wh = sql("SELECT g.produto, g.semana, CAST(g.preco_medio AS float) AS wh FROM gold.fato_preco_uf_semana AS g "
-               "JOIN config.produto AS c ON c.produto = g.produto WHERE g.uf = 'RS'")
+               "JOIN config.produto AS c ON c.produto = g.produto WHERE g.uf = 'RS' AND g.fonte = 'Série histórica'")
 media_wh["semana"] = pd.to_datetime(media_wh["semana"])
+media_py = media_py[media_py["semana"] <= media_wh["semana"].max()]
 comparacao = media_py.merge(media_wh, on=["produto", "semana"], how="outer", indicator=True)
 so_um_lado = int((comparacao["_merge"] != "both").sum())
 diferenca = float((comparacao["py"] - comparacao["wh"]).abs().max())

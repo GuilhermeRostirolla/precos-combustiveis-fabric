@@ -5,7 +5,7 @@ from datetime import date, datetime
 import pandas as pd
 import pytest
 
-from anp import descobrir_arquivos, ler_produtor, ler_revenda, selecionar_arquivos
+from anp import descobrir_arquivos, ler_produtor, ler_revenda, ler_semanal_estados, selecionar_arquivos
 
 CABECALHO = ("﻿Regiao - Sigla;Estado - Sigla;Municipio;Revenda;CNPJ da Revenda;Nome da Rua;Numero Rua;"
              "Complemento;Bairro;Cep;Produto;Data da Coleta;Valor de Venda;Valor de Compra;"
@@ -115,3 +115,28 @@ def test_produtor_sem_comercializacao_vira_nulo_mas_guarda_original():
     df = ler_produtor(_planilha_produtor())
     co = df[(df["regiao"] == "Centro-Oeste") & df["produto"].str.startswith("Gasolina")].iloc[0]
     assert pd.isna(co["preco"]) and co["valor_original"] == "***"
+
+
+def _planilha_semanal():
+    cabecalho = ["DATA INICIAL", "DATA FINAL", "REGIÃO", "ESTADO", "PRODUTO", "NÚMERO DE POSTOS PESQUISADOS",
+                 "UNIDADE DE MEDIDA", "PREÇO MÉDIO REVENDA", "DESVIO PADRÃO REVENDA", "PREÇO MÍNIMO REVENDA"]
+    linhas = [[None] * 10 for _ in range(12)]
+    linhas[0][0] = "AGÊNCIA NACIONAL DO PETRÓLEO, GÁS NATURAL E BIOCOMBUSTÍVEIS - ANP"
+    linhas[10] = cabecalho
+    linhas.append([datetime(2026, 10, 18), datetime(2026, 10, 24), "SUDESTE", "SAO PAULO", "GASOLINA COMUM",
+                   1200, "R$/l", 6.41, 0.2, 5.79])
+    linhas.append([datetime(2026, 10, 18), datetime(2026, 10, 24), "NORTE", "AMAPÁ", "ÓLEO DIESEL S10",
+                   15, "R$/l", 7.5, 0.1, 7.2])
+    linhas.append([datetime(2026, 10, 18), datetime(2026, 10, 24), "SUL", "RIO GRANDE DO SUL", "GLP",
+                   300, "R$/13kg", 110.0, 5.0, 99.0])
+    return pd.DataFrame(linhas)
+
+
+def test_semanal_estados_vira_sigla_e_nome_da_serie_historica():
+    df = ler_semanal_estados(_planilha_semanal())
+    assert len(df) == 2  # GLP fica de fora
+    sp = df[df["uf"] == "SP"].iloc[0]
+    assert sp["produto"] == "GASOLINA" and sp["postos"] == 1200 and sp["preco_medio"] == pytest.approx(6.41)
+    assert sp["semana_inicio"] == date(2026, 10, 18)
+    ap = df[df["uf"] == "AP"].iloc[0]
+    assert ap["produto"] == "DIESEL S10"

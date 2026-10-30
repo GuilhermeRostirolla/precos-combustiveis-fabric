@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "f0a7094db5044977bd2b",
   "position": {
-    "x": 781,
+    "x": 534,
     "y": 150,
     "z": 1800,
     "height": 40,
-    "width": 110,
+    "width": 211,
     "tabOrder": 1800
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Impostos no Litro"
+                  "Property": "Δ12 Posto"
                 }
               },
-              "queryRef": "composicao_preco_semana.Impostos no Litro",
-              "nativeQueryRef": "Impostos no Litro"
+              "queryRef": "composicao_preco_semana.Δ12 Posto",
+              "nativeQueryRef": "Δ12 Posto"
             }
           ]
         }
@@ -55,8 +55,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Variação 12 Meses"
                     }
                   }
                 }
@@ -99,8 +104,13 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "composicao_preco_semana"
+                        }
+                      },
+                      "Property": "Cor Variação 12 Meses"
                     }
                   }
                 }

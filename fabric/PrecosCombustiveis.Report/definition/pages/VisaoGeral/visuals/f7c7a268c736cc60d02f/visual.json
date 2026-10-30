@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "f7c7a268c736cc60d02f",
   "position": {
-    "x": 654,
+    "x": 36,
     "y": 482,
     "z": 2800,
     "height": 28,
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Preço no posto por região · R$/litro",
+                    "value": "O que mudou em 12 meses · R$/litro",
                     "textStyle": {
                       "fontFamily": "Segoe UI Semibold",
                       "fontSize": "11pt",

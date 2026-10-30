@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a1d9b31180b2a5f6f493",
   "position": {
-    "x": 530,
+    "x": 36,
     "y": 124,
     "z": 900,
     "height": 26,
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Variação em 12 meses",
+                    "value": "Preço no posto",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "9pt",

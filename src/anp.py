@@ -1,6 +1,6 @@
 """Leitura das fontes públicas de preços de combustíveis da ANP.
 
-Duas fontes:
+Três fontes:
 
 - Série histórica do Levantamento de Preços de Combustíveis (LPC): preço de venda de cada posto
   pesquisado. Publicada em arquivos semestrais compactados (``dsas/ca/ca-AAAA-0S.zip``) e, para o
@@ -8,6 +8,8 @@ Duas fontes:
   ``...-diesel-gnv.csv``).
 - Preços médios ponderados semanais de produtores e importadores: preço na saída da refinaria ou do
   importador, sem ICMS, por região. Uma planilha .xls atualizada toda semana.
+- Levantamento semanal por estado: preço médio de revenda de cada estado, publicado toda semana. A série
+  histórica posto a posto só sai mês a mês, com atraso; esta planilha cobre as semanas mais recentes.
 
 As funções deste módulo não dependem de Spark nem do Fabric, então rodam nos testes locais e são
 copiadas para o notebook de ingestão pelo instalador.
@@ -29,6 +31,23 @@ URL_PRODUTOR = (
     "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/ppidp/"
     "precos-medios-ponderados-semanais-2013.xls"
 )
+
+URL_SEMANAL_ESTADOS = (
+    "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/"
+    "precos-revenda-e-de-distribuicao-combustiveis/shlp/semanal/semanal-estados-desde-2013.xlsx"
+)
+
+UF_POR_ESTADO = {
+    "ACRE": "AC", "ALAGOAS": "AL", "AMAPA": "AP", "AMAZONAS": "AM", "BAHIA": "BA", "CEARA": "CE",
+    "DISTRITO FEDERAL": "DF", "ESPIRITO SANTO": "ES", "GOIAS": "GO", "MARANHAO": "MA", "MATO GROSSO": "MT",
+    "MATO GROSSO DO SUL": "MS", "MINAS GERAIS": "MG", "PARA": "PA", "PARAIBA": "PB", "PARANA": "PR",
+    "PERNAMBUCO": "PE", "PIAUI": "PI", "RIO DE JANEIRO": "RJ", "RIO GRANDE DO NORTE": "RN",
+    "RIO GRANDE DO SUL": "RS", "RONDONIA": "RO", "RORAIMA": "RR", "SANTA CATARINA": "SC", "SAO PAULO": "SP",
+    "SERGIPE": "SE", "TOCANTINS": "TO",
+}
+# nomes do levantamento semanal -> nomes da série histórica
+PRODUTO_SEMANAL = {"GASOLINA COMUM": "GASOLINA", "GASOLINA ADITIVADA": "GASOLINA ADITIVADA",
+                   "ETANOL HIDRATADO": "ETANOL", "OLEO DIESEL": "DIESEL", "OLEO DIESEL S10": "DIESEL S10"}
 
 COLUNAS_REVENDA = {
     "regiao_sigla": "regiao",
@@ -204,3 +223,35 @@ def ler_produtor(tabela: pd.DataFrame) -> pd.DataFrame:
         })
         registros.append(parte)
     return pd.concat(registros, ignore_index=True)
+
+
+def _sem_acento(valor) -> str:
+    texto = unicodedata.normalize("NFKD", _rotulo(valor)).encode("ascii", "ignore").decode()
+    return re.sub(r"\s+", " ", texto.upper().replace("-", " ")).strip()
+
+
+def ler_semanal_estados(tabela: pd.DataFrame) -> pd.DataFrame:
+    """Converte a planilha do levantamento semanal por estado (lida com ``header=None``).
+
+    Uma linha por semana, estado e produto, com o preço médio de revenda e o número de postos pesquisados.
+    Só ficam os cinco produtos da série histórica, com os mesmos nomes dela, e o estado vira a sigla.
+    """
+    linha = next(i for i in range(min(40, len(tabela)))
+                 if {"ESTADO", "PRODUTO"} <= {_sem_acento(v) for v in tabela.iloc[i]})
+    colunas = [_normalizar_coluna(_sem_acento(v)) for v in tabela.iloc[linha]]
+    dados = tabela.iloc[linha + 1:].copy()
+    dados.columns = colunas
+    preco = next(c for c in colunas if c.startswith("preco_medio") and "revenda" in c)
+    postos = next(c for c in colunas if c.startswith("numero_de_postos"))
+    saida = pd.DataFrame({
+        "semana_inicio": pd.to_datetime(dados["data_inicial"], errors="coerce", dayfirst=True).dt.date,
+        "semana_fim": pd.to_datetime(dados["data_final"], errors="coerce", dayfirst=True).dt.date,
+        "uf": dados["estado"].map(_sem_acento).map(UF_POR_ESTADO),
+        "produto": dados["produto"].map(_sem_acento).map(PRODUTO_SEMANAL),
+        "postos": pd.to_numeric(dados[postos], errors="coerce"),
+        "preco_medio": pd.to_numeric(dados[preco], errors="coerce"),
+        "unidade": dados.get("unidade_de_medida", pd.Series("", index=dados.index)).map(_rotulo),
+    })
+    saida = saida.dropna(subset=["semana_inicio", "uf", "produto", "preco_medio"])
+    saida["postos"] = saida["postos"].fillna(0).astype(int)
+    return saida.reset_index(drop=True)

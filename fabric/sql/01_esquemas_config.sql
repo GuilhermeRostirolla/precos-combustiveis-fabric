@@ -113,9 +113,10 @@ INSERT INTO config.tributo VALUES
     ('GASOLINA',   '2024-02-01', '2025-01-31', 1.3700, 0.8925, 0.8925, 0.1922),
     ('GASOLINA',   '2025-02-01', '2025-12-31', 1.4700, 0.8925, 0.8925, 0.1922),
     ('GASOLINA',   '2026-01-01', '2026-09-09', 1.5700, 0.8925, 0.8925, 0.1922),
-    -- Decreto 13.116/2026: PIS/Cofins da gasolina cai R$ 0,63 (fica R$ 0,16) de 10/09 a 09/10/2026
+    -- Decreto 13.116/2026: PIS/Cofins da gasolina A de R$ 792,50 para R$ 160 por m³ (R$ 0,16/litro) de 10/09 a
+    -- 09/10/2026; a Cide (R$ 0,10) continua. O etanol zerado é o hidratado; o anidro segue tributado.
     ('GASOLINA',   '2026-09-10', '2026-10-09', 1.5700, 0.8925, 0.2625, 0.1922),
-    -- tributos federais da gasolina zerados por 30 dias a partir de 10/10/2026
+    -- Decreto 13.134/2026: PIS/Cofins e Cide da gasolina zerados por 30 dias a partir de 10/10/2026
     ('GASOLINA',   '2026-10-10', '2026-11-08', 1.5700, 0.8925, 0.0000, 0.1922),
     ('GASOLINA',   '2026-11-09', '2027-01-31', 1.5700, 0.8925, 0.8925, 0.1922),
     ('GASOLINA',   '2027-02-01', '2099-12-31', 1.6400, 0.8925, 0.8925, 0.1922),
@@ -123,8 +124,10 @@ INSERT INTO config.tributo VALUES
     ('DIESEL S10', '2024-02-01', '2025-01-31', 1.0635, 0.3515, 0.3515, 0.1480),
     ('DIESEL S10', '2025-02-01', '2025-12-31', 1.1200, 0.3515, 0.3515, 0.1480),
     ('DIESEL S10', '2026-01-01', '2026-03-11', 1.1700, 0.3515, 0.3515, 0.1480),
-    -- PIS/Cofins do diesel zerado a partir de 12/03/2026, previsto até o fim do ano
-    ('DIESEL S10', '2026-03-12', '2026-12-31', 1.1700, 0.3515, 0.0000, 0.1480),
+    -- PIS/Cofins do diesel zerado de 12/03 a 31/12/2026; o do biodiesel, de 08/04 a 31/07/2026
+    ('DIESEL S10', '2026-03-12', '2026-04-07', 1.1700, 0.3515, 0.0000, 0.1480),
+    ('DIESEL S10', '2026-04-08', '2026-07-31', 1.1700, 0.3515, 0.0000, 0.0000),
+    ('DIESEL S10', '2026-08-01', '2026-12-31', 1.1700, 0.3515, 0.0000, 0.1480),
     ('DIESEL S10', '2027-01-01', '2027-01-31', 1.1700, 0.3515, 0.3515, 0.1480),
     ('DIESEL S10', '2027-02-01', '2099-12-31', 1.3000, 0.3515, 0.3515, 0.1480);
 GO
@@ -151,6 +154,7 @@ INSERT INTO config.evento VALUES
     ('2026-01-01', 'DIESEL S10', 'Imposto', 'ICMS do diesel sobe de R$ 1,12 para R$ 1,17 por litro'),
     ('2026-03-01', 'TODOS',      'Mercado', 'Petróleo dispara com o conflito no Oriente Médio'),
     ('2026-03-12', 'DIESEL S10', 'Imposto', 'Governo zera PIS/Cofins do diesel e cria subvenção a produtores e importadores'),
+    ('2026-04-08', 'DIESEL S10', 'Imposto', 'PIS/Cofins do biodiesel zerado até 31/07'),
     ('2026-08-01', 'GASOLINA',   'Mistura', 'Mistura de etanol na gasolina passa de 30% para 32%'),
     ('2026-09-10', 'GASOLINA',   'Imposto', 'Governo reduz PIS/Cofins da gasolina em R$ 0,63 por litro até 09/10'),
     ('2026-10-10', 'GASOLINA',   'Imposto', 'Tributos federais da gasolina zerados por 30 dias'),

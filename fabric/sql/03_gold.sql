@@ -34,15 +34,35 @@ BEGIN
       ON p.semana = f.semana AND p.uf = f.uf AND p.municipio = f.municipio AND p.produto = f.produto;
 
     -- Média do estado: média simples dos postos pesquisados na semana.
-    DROP TABLE IF EXISTS gold.fato_preco_uf_semana;
-    CREATE TABLE gold.fato_preco_uf_semana AS
+    -- A série histórica sai por mês, então a última semana dela pode estar incompleta (o mês acaba no meio da
+    -- semana). Depois da última semana completa, vale o levantamento semanal da ANP, quando houver.
+    DECLARE @ultima_coleta date = (SELECT MAX(data_coleta) FROM silver.preco_revenda);
+    DECLARE @ultima_semana_completa date =
+        DATEADD(day, -7, DATEADD(day, -(DATEDIFF(day, '19000101', DATEADD(day, 1, @ultima_coleta)) % 7),
+                                 DATEADD(day, 1, @ultima_coleta)));
+    DROP TABLE IF EXISTS #serie;
     SELECT semana, uf, produto,
            CAST(AVG(valor_venda) AS decimal(8,4)) AS preco_medio,
            COUNT(*) AS coletas,
            COUNT(DISTINCT cnpj) AS postos,
            COUNT(DISTINCT municipio) AS municipios
+    INTO #serie
     FROM silver.preco_revenda
     GROUP BY semana, uf, produto;
+
+    DROP TABLE IF EXISTS gold.fato_preco_uf_semana;
+    CREATE TABLE gold.fato_preco_uf_semana AS
+    SELECT s.semana, s.uf, s.produto, s.preco_medio, s.coletas, s.postos, s.municipios,
+           CAST('Série histórica' AS varchar(20)) AS fonte
+    FROM #serie AS s
+    WHERE s.semana <= @ultima_semana_completa
+       OR NOT EXISTS (SELECT 1 FROM silver.preco_uf_semanal AS w
+                      WHERE w.semana = s.semana AND w.uf = s.uf AND w.produto = s.produto)
+    UNION ALL
+    SELECT w.semana, w.uf, w.produto, w.preco_medio, w.postos, w.postos, CAST(NULL AS int),
+           CAST('Levantamento semanal' AS varchar(20))
+    FROM silver.preco_uf_semanal AS w
+    WHERE w.semana > @ultima_semana_completa;
 
     -- Refinaria (produtores e importadores) com a parcela fóssil que chega ao litro vendido no posto.
     DROP TABLE IF EXISTS gold.fato_preco_produtor_semana;
@@ -98,6 +118,8 @@ BEGIN
     -- Do que é feito o preço no posto, semana a semana, por estado e para o Brasil (uf = 'BR').
     -- Mesmo método da Síntese Semanal da ANP: preço no posto = refinaria (parte fóssil, sem tributos)
     -- + tributos federais + ICMS + o restante (etanol anidro ou biodiesel, frete e margens).
+    -- Diferença em relação à Síntese: os tributos federais são os efetivamente cobrados. A Síntese usa sempre a
+    -- alíquota cheia, o que, durante os cortes de 2026, joga o corte para dentro do preço da refinaria.
     -- A série de produtores e importadores oscila quando muda a proporção de importadores; usa-se a
     -- mediana de três semanas, como na análise de repasse.
     DROP TABLE IF EXISTS #produtor;
@@ -141,12 +163,16 @@ BEGIN
            CAST(x.preco_posto - x.refinaria - x.tributos_federais - x.icms AS decimal(8,4)) AS outros
     FROM (
         SELECT p.semana, p.uf, p.produto, p.preco_posto, s.fracao_fossil, t.icms,
-               s.fracao_fossil * (s.preco_produtor - t.federal_fossil_cobrado) AS refinaria,
+               -- a planilha da refinaria traz o tributo cobrado na semana dela (a anterior à do posto)
+               s.fracao_fossil * (s.preco_produtor - tr.federal_fossil_cobrado) AS refinaria,
                s.fracao_fossil * t.federal_fossil_cobrado + (1 - s.fracao_fossil) * t.federal_bio AS tributos_federais
         FROM #posto AS p
         JOIN config.uf_regiao AS r ON r.uf = p.uf
-        JOIN #produtor_suavizado AS s ON s.produto = p.produto AND s.regiao = r.regiao AND s.semana = p.semana
+        -- como na Síntese Semanal da ANP, o posto da semana é comparado com a refinaria da semana anterior
+        JOIN #produtor_suavizado AS s ON s.produto = p.produto AND s.regiao = r.regiao
+                                      AND s.semana = DATEADD(day, -7, p.semana)
         JOIN config.tributo AS t ON t.produto = p.produto AND p.semana BETWEEN t.vigente_de AND t.vigente_ate
+        JOIN config.tributo AS tr ON tr.produto = p.produto AND s.semana BETWEEN tr.vigente_de AND tr.vigente_ate
     ) AS x;
 
     -- Semanas que podem ser escolhidas no relatório (sem relação com as tabelas: a página usa a escolhida

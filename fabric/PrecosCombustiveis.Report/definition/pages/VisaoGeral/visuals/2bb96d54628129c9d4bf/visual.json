@@ -2,37 +2,18 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "2bb96d54628129c9d4bf",
   "position": {
-    "x": 40,
-    "y": 266,
+    "x": 1170,
+    "y": 202,
     "z": 2500,
-    "height": 190,
-    "width": 1200,
+    "height": 14,
+    "width": 44,
     "tabOrder": 2500
   },
   "visual": {
-    "visualType": "stackedAreaChart",
+    "visualType": "multiRowCard",
     "query": {
       "queryState": {
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_semana"
-                    }
-                  },
-                  "Property": "semana"
-                }
-              },
-              "queryRef": "dim_semana.semana",
-              "nativeQueryRef": "semana",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
+        "Values": {
           "projections": [
             {
               "field": {
@@ -42,90 +23,24 @@
                       "Entity": "componente"
                     }
                   },
-                  "Property": "Refinaria na Semana"
+                  "Property": "Marca 70%"
                 }
               },
-              "queryRef": "componente.Refinaria na Semana",
-              "nativeQueryRef": "Refinaria",
-              "displayName": "Refinaria"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "componente"
-                    }
-                  },
-                  "Property": "Impostos na Semana"
-                }
-              },
-              "queryRef": "componente.Impostos na Semana",
-              "nativeQueryRef": "Impostos",
-              "displayName": "Impostos"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "componente"
-                    }
-                  },
-                  "Property": "Outros na Semana"
-                }
-              },
-              "queryRef": "componente.Outros na Semana",
-              "nativeQueryRef": "Etanol/biodiesel, frete e margens",
-              "displayName": "Etanol/biodiesel, frete e margens"
+              "queryRef": "componente.Marca 70%",
+              "nativeQueryRef": "Marca 70%"
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_semana"
-                  }
-                },
-                "Property": "semana"
-              }
-            },
-            "direction": "Ascending"
-          }
-        ]
       }
     },
     "objects": {
-      "categoryAxis": [
+      "dataLabels": [
         {
           "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "8.5D"
-                }
-              }
-            },
-            "labelColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#8B95A9'"
-                    }
-                  }
+                  "Value": "7.0D"
                 }
               }
             },
@@ -136,14 +51,24 @@
                 }
               }
             },
-            "showAxisTitle": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#8B95A9'"
+                    }
+                  }
                 }
               }
-            },
-            "gridlineShow": {
+            }
+          }
+        }
+      ],
+      "categoryLabels": [
+        {
+          "properties": {
+            "show": {
               "expr": {
                 "Literal": {
                   "Value": "false"
@@ -153,31 +78,13 @@
           }
         }
       ],
-      "valueAxis": [
+      "cardTitle": [
         {
           "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "8.5D"
-                }
-              }
-            },
-            "labelColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#8B95A9'"
-                    }
-                  }
+                  "Value": "7.0D"
                 }
               }
             },
@@ -188,80 +95,7 @@
                 }
               }
             },
-            "showAxisTitle": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "gridlineShow": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "gridlineColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#1A2438'"
-                    }
-                  }
-                }
-              }
-            },
-            "labelDisplayUnits": {
-              "expr": {
-                "Literal": {
-                  "Value": "1.0D"
-                }
-              }
-            },
-            "labelPrecision": {
-              "expr": {
-                "Literal": {
-                  "Value": "0L"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "legend": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "position": {
-              "expr": {
-                "Literal": {
-                  "Value": "'TopRight'"
-                }
-              }
-            },
-            "showTitle": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "9.0D"
-                }
-              }
-            },
-            "labelColor": {
+            "color": {
               "solid": {
                 "color": {
                   "expr": {
@@ -271,103 +105,45 @@
                   }
                 }
               }
-            },
-            "fontFamily": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Segoe UI'"
-                }
-              }
             }
           }
         }
       ],
-      "lineStyles": [
+      "card": [
         {
           "properties": {
-            "strokeWidth": {
+            "outline": {
               "expr": {
                 "Literal": {
-                  "Value": "1L"
+                  "Value": "'None'"
                 }
               }
             },
-            "areaTransparency": {
-              "expr": {
-                "Literal": {
-                  "Value": "15L"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "labels": [
-        {
-          "properties": {
-            "show": {
+            "barShow": {
               "expr": {
                 "Literal": {
                   "Value": "false"
                 }
               }
-            }
-          }
-        }
-      ],
-      "dataPoint": [
-        {
-          "properties": {
-            "fill": {
+            },
+            "cardPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
+                }
+              }
+            },
+            "cardBackground": {
               "solid": {
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#3BA3D9'"
+                      "Value": "'#111A2B'"
                     }
                   }
                 }
               }
             }
-          },
-          "selector": {
-            "metadata": "componente.Refinaria na Semana"
-          }
-        },
-        {
-          "properties": {
-            "fill": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#8A7CF0'"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "componente.Impostos na Semana"
-          }
-        },
-        {
-          "properties": {
-            "fill": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#E8833A'"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "componente.Outros na Semana"
           }
         }
       ]

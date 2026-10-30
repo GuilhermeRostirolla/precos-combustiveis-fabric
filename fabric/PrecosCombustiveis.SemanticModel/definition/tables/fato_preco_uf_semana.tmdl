@@ -110,6 +110,15 @@ table fato_preco_uf_semana
 
 		annotation SummarizationSetBy = Automatic
 
+	column fonte
+		dataType: string
+		lineageTag: 196de3c4-4752-5872-9a3c-8d24d20ab5d9
+		sourceLineageTag: fonte
+		summarizeBy: none
+		sourceColumn: fonte
+
+		annotation SummarizationSetBy = Automatic
+
 	partition fato_preco_uf_semana = entity
 		mode: directLake
 		source

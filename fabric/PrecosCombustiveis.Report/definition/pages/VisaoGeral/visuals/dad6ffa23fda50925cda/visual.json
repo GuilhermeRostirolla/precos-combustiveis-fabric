@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "dad6ffa23fda50925cda",
   "position": {
-    "x": 36,
-    "y": 124,
+    "x": 1060,
+    "y": 72,
     "z": 700,
     "height": 26,
-    "width": 220,
+    "width": 70,
     "tabOrder": 700
   },
   "visual": {
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Preço no posto",
+                    "value": "Dados até",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "9pt",

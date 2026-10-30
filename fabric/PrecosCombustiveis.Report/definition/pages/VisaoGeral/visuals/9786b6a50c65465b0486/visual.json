@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "9786b6a50c65465b0486",
   "position": {
-    "x": 1126,
+    "x": 912,
     "y": 77,
     "z": 600,
     "height": 20,
-    "width": 130,
+    "width": 140,
     "tabOrder": 600
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "composicao_preco_semana"
+                      "Entity": "componente"
                     }
                   },
-                  "Property": "Semana de Referência"
+                  "Property": "Região da Refinaria"
                 }
               },
-              "queryRef": "composicao_preco_semana.Semana de Referência",
-              "nativeQueryRef": "Semana de Referência"
+              "queryRef": "componente.Região da Refinaria",
+              "nativeQueryRef": "Região da Refinaria"
             }
           ]
         }
