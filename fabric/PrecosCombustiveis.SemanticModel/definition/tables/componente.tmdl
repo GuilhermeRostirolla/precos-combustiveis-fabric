@@ -179,7 +179,8 @@ table componente
 			    SELECTEDVALUE ( componente[componente] ),
 			    "Refinaria", [Δ12 Refinaria],
 			    "Impostos", [Δ12 Impostos],
-			    [Δ12 Outros]
+			    "Etanol/biodiesel, frete e margens", [Δ12 Outros],
+			    "Preço no posto", [Δ12 Posto]
 			)
 			```
 		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
@@ -203,6 +204,7 @@ table componente
 			    SELECTEDVALUE ( componente[componente] ),
 			    "Refinaria", "#3BA3D9",
 			    "Impostos", "#8A7CF0",
+			    "Preço no posto", "#E6EAF2",
 			    "#E8833A"
 			)
 			```
@@ -379,6 +381,48 @@ table componente
 			```
 		displayFolder: Visão geral
 		lineageTag: 84531576-57d8-5fd0-aa3a-f54108c11e68
+
+	measure 'Diferença para o Brasil' = ```
+			// preço da região (ou do estado escolhido) menos o do Brasil, na semana de referência
+			VAR item = SELECTEDVALUE ( comparacao_item[item] )
+			VAR tipo = SELECTEDVALUE ( comparacao_item[tipo] )
+			VAR escolhido = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência]
+			VAR ufs =
+			    SELECTCOLUMNS (
+			        FILTER ( ALL ( regiao_comparacao ),
+			            IF ( tipo = "Estado", regiao_comparacao[uf] = item, regiao_comparacao[regiao] = item ) ),
+			        "uf", regiao_comparacao[uf]
+			    )
+			VAR preco =
+			    CALCULATE (
+			        DIVIDE ( SUMX ( fato_preco_uf_semana, fato_preco_uf_semana[preco_medio] * fato_preco_uf_semana[coletas] ), SUM ( fato_preco_uf_semana[coletas] ) ),
+			        REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ),
+			        TREATAS ( ufs, fato_preco_uf_semana[uf] ), fato_preco_uf_semana[semana] = s
+			    )
+			VAR brasil =
+			    CALCULATE (
+			        DIVIDE ( SUMX ( fato_preco_uf_semana, fato_preco_uf_semana[preco_medio] * fato_preco_uf_semana[coletas] ), SUM ( fato_preco_uf_semana[coletas] ) ),
+			        REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), fato_preco_uf_semana[semana] = s
+			    )
+			RETURN
+			    IF ( tipo = "Estado" && item <> escolhido, BLANK (), IF ( NOT ISBLANK ( preco ), ROUND ( preco - brasil, 2 ) ) )
+			```
+		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		displayFolder: Gráfico
+		lineageTag: e53c73ef-6acf-532a-8054-06cb17b50b7b
+
+	measure 'Cor Diferença para o Brasil' = ```
+			VAR d = [Diferença para o Brasil]
+			RETURN
+			    IF ( SELECTEDVALUE ( comparacao_item[tipo] ) = "Estado", "#E8833A", IF ( d > 0, "#E5534B", "#3FB950" ) )
+			```
+		displayFolder: Cores
+		lineageTag: c3175233-140c-5b3f-a9aa-2771de0eba10
+
+	measure 'Texto Preço Brasil' = "Brasil R$ " & FORMAT ( CALCULATE ( [Preço no Posto], REMOVEFILTERS ( dim_uf ) ), "0.00" )
+		displayFolder: Visão geral
+		lineageTag: 9d0f0404-207a-51d9-b9b3-044d0d13d5d9
 
 	measure 'Cor Fundo Barra' = IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "#111A2B", "#1F2A40" )
 		displayFolder: Cores

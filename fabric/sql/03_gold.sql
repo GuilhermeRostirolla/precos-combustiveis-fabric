@@ -211,7 +211,15 @@ BEGIN
     DROP TABLE IF EXISTS gold.componente;
     CREATE TABLE gold.componente AS
     SELECT componente, ordem
-    FROM (VALUES ('Refinaria', 1), ('Impostos', 2), ('Etanol/biodiesel, frete e margens', 3)) AS c(componente, ordem);
+    FROM (VALUES ('Refinaria', 1), ('Impostos', 2), ('Etanol/biodiesel, frete e margens', 3),
+                 ('Preço no posto', 4)) AS c(componente, ordem);
+
+    -- Itens da comparação com a média do Brasil: as cinco regiões e os estados (só o escolhido aparece).
+    DROP TABLE IF EXISTS gold.comparacao_item;
+    CREATE TABLE gold.comparacao_item AS
+    SELECT DISTINCT regiao AS item, CAST('Região' AS varchar(10)) AS tipo FROM config.uf_regiao WHERE uf <> 'BR'
+    UNION ALL
+    SELECT uf, CAST('Estado' AS varchar(10)) FROM config.uf_regiao WHERE uf <> 'BR';
 
     DROP TABLE IF EXISTS gold.evento;
     CREATE TABLE gold.evento AS

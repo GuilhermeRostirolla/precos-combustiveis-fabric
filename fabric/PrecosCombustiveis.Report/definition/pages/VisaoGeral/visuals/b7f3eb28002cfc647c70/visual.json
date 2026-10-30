@@ -2,37 +2,18 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "b7f3eb28002cfc647c70",
   "position": {
-    "x": 658,
-    "y": 516,
+    "x": 1122,
+    "y": 488,
     "z": 3100,
-    "height": 172,
-    "width": 582,
+    "height": 20,
+    "width": 120,
     "tabOrder": 3100
   },
   "visual": {
-    "visualType": "clusteredBarChart",
+    "visualType": "multiRowCard",
     "query": {
       "queryState": {
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "regiao_comparacao"
-                    }
-                  },
-                  "Property": "regiao"
-                }
-              },
-              "queryRef": "regiao_comparacao.regiao",
-              "nativeQueryRef": "regiao",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
+        "Values": {
           "projections": [
             {
               "field": {
@@ -42,59 +23,24 @@
                       "Entity": "componente"
                     }
                   },
-                  "Property": "Preço por Região"
+                  "Property": "Texto Preço Brasil"
                 }
               },
-              "queryRef": "componente.Preço por Região",
-              "nativeQueryRef": "Preço por Região"
+              "queryRef": "componente.Texto Preço Brasil",
+              "nativeQueryRef": "Texto Preço Brasil"
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Measure": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "componente"
-                  }
-                },
-                "Property": "Preço por Região"
-              }
-            },
-            "direction": "Descending"
-          }
-        ]
       }
     },
     "objects": {
-      "categoryAxis": [
+      "dataLabels": [
         {
           "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10.0D"
-                }
-              }
-            },
-            "labelColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#E6EAF2'"
-                    }
-                  }
+                  "Value": "9.0D"
                 }
               }
             },
@@ -105,48 +51,24 @@
                 }
               }
             },
-            "showAxisTitle": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "maxMarginFactor": {
-              "expr": {
-                "Literal": {
-                  "Value": "30L"
-                }
-              }
-            },
-            "innerPadding": {
-              "expr": {
-                "Literal": {
-                  "Value": "30.0D"
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#8B95A9'"
+                    }
+                  }
                 }
               }
             }
           }
         }
       ],
-      "valueAxis": [
+      "categoryLabels": [
         {
           "properties": {
             "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "showAxisTitle": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "gridlineShow": {
               "expr": {
                 "Literal": {
                   "Value": "false"
@@ -156,20 +78,20 @@
           }
         }
       ],
-      "labels": [
+      "cardTitle": [
         {
           "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
             "fontSize": {
               "expr": {
                 "Literal": {
                   "Value": "9.0D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -178,50 +100,50 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E6EAF2'"
+                      "Value": "'#8B95A9'"
                     }
                   }
-                }
-              }
-            },
-            "fontFamily": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Segoe UI Semibold'"
                 }
               }
             }
           }
         }
       ],
-      "dataPoint": [
+      "card": [
         {
           "properties": {
-            "fill": {
+            "outline": {
+              "expr": {
+                "Literal": {
+                  "Value": "'None'"
+                }
+              }
+            },
+            "barShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "cardPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
+                }
+              }
+            },
+            "cardBackground": {
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "componente"
-                        }
-                      },
-                      "Property": "Cor da Região"
+                    "Literal": {
+                      "Value": "'#111A2B'"
                     }
                   }
                 }
               }
             }
-          },
-          "selector": {
-            "data": [
-              {
-                "dataViewWildcard": {
-                  "matchingOption": 1
-                }
-              }
-            ]
           }
         }
       ]

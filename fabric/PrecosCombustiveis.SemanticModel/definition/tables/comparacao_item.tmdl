@@ -1,0 +1,28 @@
+table comparacao_item
+	lineageTag: b45cf0c8-b36b-5c3d-833d-260937fcbbb6
+	sourceLineageTag: [gold].[comparacao_item]
+
+	column item
+		dataType: string
+		lineageTag: 44dcd7c5-f5b0-54e3-9c7c-8db335258cd5
+		sourceLineageTag: item
+		summarizeBy: none
+		sourceColumn: item
+
+		annotation SummarizationSetBy = Automatic
+
+	column tipo
+		dataType: string
+		lineageTag: b865fa57-b262-5760-8c0f-f22c1c7f76ea
+		sourceLineageTag: tipo
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition comparacao_item = entity
+		mode: directLake
+		source
+			entityName: comparacao_item
+			schemaName: gold
+			expressionSource: DatabaseQuery

@@ -438,6 +438,26 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo(medida), "direction": "Descending"}]}},
             "objects": objetos})
 
+    def colunas_coloridas(self, x, y, w, h, categoria, medida, medida_cor):
+        """Colunas que sobem ou descem a partir do zero, na ordem da categoria, coloridas por medida."""
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["suave"]),
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                             "gridlineShow": lit(False), "innerPadding": lit(45.0),
+                                             "axisType": lit("Categorical")}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
+            "labels": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "color": cor(COR["texto"]),
+                                       "fontFamily": lit(FONTE_FORTE), "labelPosition": lit("OutsideEnd")}}],
+            "dataPoint": [{"properties": {"fill": cor_da_medida(medida_cor)},
+                           "selector": {"data": [{"dataViewWildcard": {"matchingOption": 1}}]}}],
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "clusteredColumnChart",
+            "query": {"queryState": {"Category": {"projections": [projecao(categoria, ativo=True)]},
+                                     "Y": {"projections": campos([medida])}},
+                      "sortDefinition": {"sort": [{"field": campo(categoria), "direction": "Ascending"}]}},
+            "objects": objetos})
+
     def interacao(self, origem, destino, tipo="DataFilter"):
         self.interacoes.append({"source": origem, "target": destino, "type": tipo})
 
@@ -491,16 +511,17 @@ def visao_geral() -> Pagina:
             [("Refinaria na Semana", "Refinaria"), ("Impostos na Semana", "Impostos"),
              ("Outros na Semana", "Etanol/biodiesel, frete e margens")],
             [COR["refinaria"], "#8A7CF0", COR["alta"]])
-    # o que mudou em cada parte do litro em 12 meses
+    # o que mudou em cada parte do litro em 12 meses; a última coluna é o resultado no posto
     b = L.PONTE
     p.rotulo(b["titulo"], b["x"] + 8, b["y"] + 6, 560, 28, 11, COR["texto"], forte=True)
-    p.barras_coloridas(b["x"] + 12, b["y"] + 40, b["w"] - 24, b["h"] - 48, "componente.componente",
-                       "Variação 12 Meses do Componente", "Cor do Componente")
-    # preço por região, com o Brasil de referência (a região do estado escolhido fica em destaque)
+    p.colunas_coloridas(b["x"] + 12, b["y"] + 40, b["w"] - 24, b["h"] - 48, "componente.componente",
+                        "Variação 12 Meses do Componente", "Cor do Componente")
+    # diferença de cada região (e do estado escolhido, em laranja) para a média do Brasil
     r = L.RANKING
-    p.rotulo(r["titulo"], r["x"] + 8, r["y"] + 6, 560, 28, 11, COR["texto"], forte=True)
-    p.barras_ordenadas(r["x"] + 12, r["y"] + 40, r["w"] - 24, r["h"] - 48, "regiao_comparacao.regiao",
-                       "Preço por Região", "Cor da Região")
+    p.rotulo(r["titulo"], r["x"] + 8, r["y"] + 6, 420, 28, 11, COR["texto"], forte=True)
+    p.texto_dinamico("Texto Preço Brasil", r["x"] + r["w"] - 130, r["y"] + 12, 120, 20, 9.0, cor_texto=COR["suave"])
+    p.barras_ordenadas(r["x"] + 12, r["y"] + 40, r["w"] - 24, r["h"] - 48, "comparacao_item.item",
+                       "Diferença para o Brasil", "Cor Diferença para o Brasil")
     return p
 
 

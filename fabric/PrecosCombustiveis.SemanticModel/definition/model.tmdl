@@ -8,6 +8,7 @@ ref table dim_semana
 ref table dim_uf
 ref table semana_referencia
 ref table regiao_comparacao
+ref table comparacao_item
 ref table componente
 ref table evento
 ref table composicao_preco_semana

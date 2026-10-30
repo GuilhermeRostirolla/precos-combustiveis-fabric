@@ -22,6 +22,7 @@ TABELAS = {
     "dim_uf": [("uf", "string"), ("estado", "string"), ("regiao", "string"), ("ordem", "int")],
     "semana_referencia": [("semana", "date"), ("rotulo", "string")],
     "regiao_comparacao": [("uf", "string"), ("regiao", "string")],
+    "comparacao_item": [("item", "string"), ("tipo", "string")],
     "componente": [("componente", "string"), ("ordem", "int")],
     "evento": [("data", "date"), ("semana", "date"), ("produto", "string"), ("tipo", "string"),
                ("descricao", "string")],

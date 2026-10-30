@@ -341,14 +341,14 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          "    \"Impostos\", [Ponte Impostos Hoje],\n    [Ponte Outros Hoje]\n)"),
         ("Variação 12 Meses do Componente", "Ponte", VARIACAO_REAIS,
          "SWITCH (\n    SELECTEDVALUE ( componente[componente] ),\n    \"Refinaria\", [Δ12 Refinaria],\n"
-         "    \"Impostos\", [Δ12 Impostos],\n    [Δ12 Outros]\n)"),
+         "    \"Impostos\", [Δ12 Impostos],\n    \"Etanol/biodiesel, frete e margens\", [Δ12 Outros],\n"
+         "    \"Preço no posto\", [Δ12 Posto]\n)"),
         ("Variação do Componente", "Por que mudou", VARIACAO_REAIS,
          "SWITCH (\n    SELECTEDVALUE ( componente[componente] ),\n    \"Refinaria\", [Δ Refinaria],\n"
          "    \"Impostos\", [Δ Impostos],\n    [Δ Outros]\n)"),
         ("Cor do Componente", "Cores", None,
          f"SWITCH (\n    SELECTEDVALUE ( componente[componente] ),\n    \"Refinaria\", \"{CORES['refinaria']}\",\n"
-         f"    \"Impostos\", \"{CORES['impostos']}\",\n    \"{CORES['outros']}\"\n)"),
-        # página limpa: cartões, linha semanal e ranking de estados
+         f"    \"Impostos\", \"{CORES['impostos']}\",\n    \"Preço no posto\", \"#E6EAF2\",\n    \"{CORES['outros']}\"\n)"),
         ("Variação Semana Posto", "Visão geral", VARIACAO_REAIS,
          "VAR a = [Preço no Posto]\nVAR b = [Preço no Posto Semana Anterior]\nRETURN\n"
          "    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )"),
@@ -400,6 +400,28 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          "// a ANP publica o preço da refinaria só por região: um estado usa o da região dele\n"
          'VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )\nRETURN\n'
          '    IF ( u = "BR", "Brasil", "região " & LOOKUPVALUE ( regiao_comparacao[regiao], regiao_comparacao[uf], u ) )'),
+        ("Diferença para o Brasil", "Gráfico", VARIACAO_REAIS,
+         "// preço da região (ou do estado escolhido) menos o do Brasil, na semana de referência\n"
+         "VAR item = SELECTEDVALUE ( comparacao_item[item] )\nVAR tipo = SELECTEDVALUE ( comparacao_item[tipo] )\n"
+         'VAR escolhido = SELECTEDVALUE ( dim_uf[uf], "BR" )\nVAR s = [Semana de Referência]\n'
+         "VAR ufs =\n    SELECTCOLUMNS (\n        FILTER ( ALL ( regiao_comparacao ),\n"
+         '            IF ( tipo = "Estado", regiao_comparacao[uf] = item, regiao_comparacao[regiao] = item ) ),\n'
+         '        "uf", regiao_comparacao[uf]\n    )\n'
+         "VAR preco =\n    CALCULATE (\n        DIVIDE ( SUMX ( fato_preco_uf_semana, fato_preco_uf_semana[preco_medio] "
+         "* fato_preco_uf_semana[coletas] ), SUM ( fato_preco_uf_semana[coletas] ) ),\n"
+         "        REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ),\n"
+         "        TREATAS ( ufs, fato_preco_uf_semana[uf] ), fato_preco_uf_semana[semana] = s\n    )\n"
+         "VAR brasil =\n    CALCULATE (\n        DIVIDE ( SUMX ( fato_preco_uf_semana, fato_preco_uf_semana[preco_medio] "
+         "* fato_preco_uf_semana[coletas] ), SUM ( fato_preco_uf_semana[coletas] ) ),\n"
+         "        REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), fato_preco_uf_semana[semana] = s\n    )\n"
+         "RETURN\n"
+         '    IF ( tipo = "Estado" && item <> escolhido, BLANK (), IF ( NOT ISBLANK ( preco ), ROUND ( preco - brasil, 2 ) ) )'),
+        ("Cor Diferença para o Brasil", "Cores", None,
+         'VAR d = [Diferença para o Brasil]\nRETURN\n'
+         f'    IF ( SELECTEDVALUE ( comparacao_item[tipo] ) = "Estado", "{CORES["outros"]}", '
+         f'IF ( d > 0, "{CORES["alta"]}", "{CORES["baixa"]}" ) )'),
+        ("Texto Preço Brasil", "Visão geral", None,
+         '"Brasil R$ " & FORMAT ( CALCULATE ( [Preço no Posto], REMOVEFILTERS ( dim_uf ) ), "0.00" )'),
         ("Cor Fundo Barra", "Cores", None,
          'IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "#111A2B", "#1F2A40" )'),
     ]

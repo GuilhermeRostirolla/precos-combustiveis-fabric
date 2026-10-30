@@ -10,7 +10,7 @@
     "tabOrder": 2900
   },
   "visual": {
-    "visualType": "clusteredBarChart",
+    "visualType": "clusteredColumnChart",
     "query": {
       "queryState": {
         "Category": {
@@ -83,7 +83,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10.0D"
+                  "Value": "9.0D"
                 }
               }
             },
@@ -92,7 +92,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E6EAF2'"
+                      "Value": "'#8B95A9'"
                     }
                   }
                 }
@@ -112,17 +112,24 @@
                 }
               }
             },
-            "maxMarginFactor": {
+            "gridlineShow": {
               "expr": {
                 "Literal": {
-                  "Value": "45L"
+                  "Value": "false"
                 }
               }
             },
             "innerPadding": {
               "expr": {
                 "Literal": {
-                  "Value": "35.0D"
+                  "Value": "45.0D"
+                }
+              }
+            },
+            "axisType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Categorical'"
                 }
               }
             }
@@ -188,6 +195,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "labelPosition": {
+              "expr": {
+                "Literal": {
+                  "Value": "'OutsideEnd'"
                 }
               }
             }
