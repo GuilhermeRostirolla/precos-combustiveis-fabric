@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "f0a7094db5044977bd2b",
   "position": {
-    "x": 534,
-    "y": 188,
+    "x": 781,
+    "y": 150,
     "z": 1800,
-    "height": 20,
-    "width": 211,
+    "height": 40,
+    "width": 110,
     "tabOrder": 1800
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Variação 12 Meses Posto"
+                  "Property": "Impostos no Litro"
                 }
               },
-              "queryRef": "composicao_preco_semana.Variação 12 Meses Posto",
-              "nativeQueryRef": "Variação 12 Meses Posto"
+              "queryRef": "composicao_preco_semana.Impostos no Litro",
+              "nativeQueryRef": "Impostos no Litro"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Variação 12 Meses"
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }
@@ -89,14 +84,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -104,13 +99,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Variação 12 Meses"
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }

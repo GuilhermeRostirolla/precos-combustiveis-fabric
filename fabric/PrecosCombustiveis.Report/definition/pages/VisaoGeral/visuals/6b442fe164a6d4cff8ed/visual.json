@@ -3,9 +3,9 @@
   "name": "6b442fe164a6d4cff8ed",
   "position": {
     "x": 287,
-    "y": 150,
+    "y": 188,
     "z": 1500,
-    "height": 40,
+    "height": 20,
     "width": 211,
     "tabOrder": 1500
   },
@@ -23,11 +23,11 @@
                       "Entity": "componente"
                     }
                   },
-                  "Property": "Variação Semana Posto"
+                  "Property": "Variação 4 Semanas Posto %"
                 }
               },
-              "queryRef": "componente.Variação Semana Posto",
-              "nativeQueryRef": "Variação Semana Posto"
+              "queryRef": "componente.Variação 4 Semanas Posto %",
+              "nativeQueryRef": "Variação 4 Semanas Posto %"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "22.0D"
+                  "Value": "9.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -61,7 +61,7 @@
                           "Entity": "componente"
                         }
                       },
-                      "Property": "Cor Variação Semana"
+                      "Property": "Cor Variação 4 Semanas"
                     }
                   }
                 }
@@ -89,14 +89,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "22.0D"
+                  "Value": "9.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -110,7 +110,7 @@
                           "Entity": "componente"
                         }
                       },
-                      "Property": "Cor Variação Semana"
+                      "Property": "Cor Variação 4 Semanas"
                     }
                   }
                 }

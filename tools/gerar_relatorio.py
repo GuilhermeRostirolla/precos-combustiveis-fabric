@@ -134,7 +134,7 @@ class Pagina:
         return nome
 
     def texto_dinamico(self, medida, x, y, w, h, tamanho, cor_texto=COR["texto"], medida_cor=None, forte=False,
-                       fundo=COR["cartao"]):
+                       fundo=COR["cartao"], medida_fundo=None):
         """Texto alinhado à esquerda (cartão de várias linhas, sem moldura nem rótulo)."""
         rotulos = {"fontSize": lit(float(tamanho)), "fontFamily": lit(FONTE_FORTE if forte else FONTE),
                    "color": cor_da_medida(medida_cor) if medida_cor else cor(cor_texto)}
@@ -147,7 +147,9 @@ class Pagina:
                         "categoryLabels": [{"properties": {"show": lit(False)}}],
                         "cardTitle": [{"properties": rotulos}],
                         "card": [{"properties": {"outline": lit("None"), "barShow": lit(False),
-                                                 "cardPadding": lit(0.0), "cardBackground": cor(fundo)}}]}})
+                                                 "cardPadding": lit(0.0),
+                                                 "cardBackground": cor_da_medida(medida_fundo) if medida_fundo
+                                                 else cor(fundo)}}]}})
 
     def texto_longo(self, medida, x, y, w, h, tamanho, cor_texto):
         """Texto com quebra de linha (cartão simples)."""
@@ -457,24 +459,28 @@ def visao_geral() -> Pagina:
     # cartões: título, número e um detalhe pequeno
     y = L.CARTAO_Y
     for i, titulo in enumerate(L.CARTOES):
-        p.rotulo(titulo, L.cartao_x(i) + 8, y + 6, 220, 26, 9)
+        if titulo:
+            p.rotulo(titulo, L.cartao_x(i) + 8, y + 6, 220, 26, 9)
     for i in (0, 3):
         p.rotulo("/litro", L.cartao_x(i) + 122, y + 42, 60, 24, 10)
     p.texto_dinamico("Preço no Posto", L.cartao_x(0) + 12, y + 32, 110, 40, 22.0, forte=True)
-    p.texto_dinamico("Variação Semana Posto", L.cartao_x(1) + 12, y + 32, 211, 40, 22.0,
-                     medida_cor="Cor Variação Semana", forte=True)
-    p.texto_dinamico("Variação Semana Posto %", L.cartao_x(1) + 12, y + 70, 211, 20, 9.0,
-                     medida_cor="Cor Variação Semana")
+    p.texto_dinamico("Variação 4 Semanas Posto", L.cartao_x(1) + 12, y + 32, 211, 40, 22.0,
+                     medida_cor="Cor Variação 4 Semanas", forte=True)
+    p.texto_dinamico("Variação 4 Semanas Posto %", L.cartao_x(1) + 12, y + 70, 211, 20, 9.0,
+                     medida_cor="Cor Variação 4 Semanas")
     x = L.cartao_x(2)
     p.texto_dinamico("Δ12 Posto", x + 12, y + 32, 211, 40, 22.0, medida_cor="Cor Variação 12 Meses", forte=True)
     p.texto_dinamico("Variação 12 Meses Posto", x + 12, y + 70, 211, 20, 9.0, medida_cor="Cor Variação 12 Meses")
     p.texto_dinamico("Impostos no Litro", L.cartao_x(3) + 12, y + 32, 110, 40, 22.0, forte=True)
-    p.texto_dinamico("Impostos % do Preço", L.cartao_x(3) + 12, y + 70, 211, 20, 9.0, cor_texto=COR["suave"])
+    p.texto_dinamico("Apoio Impostos Curto", L.cartao_x(3) + 12, y + 70, 211, 20, 9.0, cor_texto=COR["suave"])
+    # último cartão: etanol ÷ gasolina (com a barra e a marca dos 70%) ou, no diesel, a refinaria em 12 meses
     x = L.cartao_x(4)
-    p.texto_dinamico("Etanol ÷ Gasolina", x + 12, y + 32, 211, 40, 22.0, medida_cor="Cor Etanol", forte=True)
-    # barra de blocos "█" sobre o trilho; a marca de 70% está na imagem de fundo
+    p.texto_dinamico("Título Cartão 5", x + 12, y + 10, 211, 20, 9.0, cor_texto=COR["suave"])
+    p.texto_dinamico("Valor Cartão 5", x + 12, y + 32, 211, 40, 22.0, medida_cor="Cor Cartão 5", forte=True)
     p.texto_dinamico("Texto Barra Etanol", x + L.BARRA_X, y + L.BARRA_Y - 3, L.BARRA_W, 14, 7.0,
-                     cor_texto=COR["etanol"], fundo=COR["trilho"])
+                     cor_texto=COR["etanol"], medida_fundo="Cor Fundo Barra")
+    marca = x + L.BARRA_X + round(0.7 * L.BARRA_W) - 4
+    p.texto_dinamico("Marca 70%", marca, y + L.BARRA_Y + 12, 44, 14, 7.0, cor_texto=COR["suave"])
     # do que é feito o preço, semana a semana (as três partes somadas dão o preço no posto)
     g = L.GRAFICO
     p.rotulo(g["titulo"], g["x"] + 8, g["y"] + 6, 700, 28, 11, COR["texto"], forte=True)
@@ -486,7 +492,7 @@ def visao_geral() -> Pagina:
     b = L.PONTE
     p.rotulo(b["titulo"], b["x"] + 8, b["y"] + 6, 560, 28, 11, COR["texto"], forte=True)
     p.barras_coloridas(b["x"] + 12, b["y"] + 40, b["w"] - 24, b["h"] - 48, "componente.componente",
-                       "Variação 12 Meses do Componente", "Cor Variação 12 Meses do Componente")
+                       "Variação 12 Meses do Componente", "Cor do Componente")
     # preço por região, com o Brasil de referência (a região do estado escolhido fica em destaque)
     r = L.RANKING
     p.rotulo(r["titulo"], r["x"] + 8, r["y"] + 6, 560, 28, 11, COR["texto"], forte=True)

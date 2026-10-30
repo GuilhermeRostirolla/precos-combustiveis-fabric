@@ -33,11 +33,6 @@ def html() -> str:
     for i in range(len(L.CARTOES)):
         x, y = L.cartao_x(i), L.CARTAO_Y
         partes.append(caixa(x, y, L.CARTAO_W, L.CARTAO_H))
-    # marca de 70% na barra do etanol
-    x = L.cartao_x(4)
-    marca = x + L.BARRA_X + round(0.7 * L.BARRA_W)
-    partes.append(f'<div style="position:absolute;left:{marca}px;top:{L.CARTAO_Y + L.BARRA_Y - 4}px;width:2px;'
-                  f'height:{L.BARRA_H + 8}px;background:{C["texto"]}"></div>')
     for q in (L.GRAFICO, L.PONTE, L.RANKING):
         partes.append(caixa(q["x"], q["y"], q["w"], q["h"]))
     return ('<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0}'

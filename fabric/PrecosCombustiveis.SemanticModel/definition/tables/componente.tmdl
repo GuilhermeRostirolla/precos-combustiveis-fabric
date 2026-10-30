@@ -60,7 +60,7 @@ table componente
 	measure 'Cor Δ12 Refinaria' = ```
 			VAR d = [Δ12 Refinaria]
 			RETURN
-			    IF ( d >= 0.01, "#E8833A", IF ( d <= -0.01, "#3BA3D9", "#8B95A9" ) )
+			    IF ( d >= 0.01, "#E5534B", IF ( d <= -0.01, "#3FB950", "#8B95A9" ) )
 			```
 		displayFolder: Cores
 		lineageTag: ca9d6139-cdee-52bc-82ae-2750576d8cef
@@ -91,7 +91,7 @@ table componente
 	measure 'Cor Δ12 Impostos' = ```
 			VAR d = [Δ12 Impostos]
 			RETURN
-			    IF ( d >= 0.01, "#E8833A", IF ( d <= -0.01, "#3BA3D9", "#8B95A9" ) )
+			    IF ( d >= 0.01, "#E5534B", IF ( d <= -0.01, "#3FB950", "#8B95A9" ) )
 			```
 		displayFolder: Cores
 		lineageTag: 46ce2b16-8988-5fea-aee3-23b6b575a2f9
@@ -122,7 +122,7 @@ table componente
 	measure 'Cor Δ12 Outros' = ```
 			VAR d = [Δ12 Outros]
 			RETURN
-			    IF ( d >= 0.01, "#E8833A", IF ( d <= -0.01, "#3BA3D9", "#8B95A9" ) )
+			    IF ( d >= 0.01, "#E5534B", IF ( d <= -0.01, "#3FB950", "#8B95A9" ) )
 			```
 		displayFolder: Cores
 		lineageTag: dce3e1b8-2fa0-547b-9798-eaa16e2be20b
@@ -145,7 +145,7 @@ table componente
 	measure 'Cor Variação 12 Meses do Componente' = ```
 			VAR d = [Variação 12 Meses do Componente]
 			RETURN
-			    IF ( d >= 0, "#E8833A", "#3BA3D9" )
+			    IF ( d >= 0, "#E5534B", "#3FB950" )
 			```
 		displayFolder: Cores
 		lineageTag: 661234f0-cd5d-5765-a4a8-8043212ab48b
@@ -232,7 +232,7 @@ table componente
 	measure 'Cor Variação Semana' = ```
 			VAR d = [Variação Semana Posto]
 			RETURN
-			    IF ( d > 0, "#E8833A", IF ( d < 0, "#3BA3D9", "#8B95A9" ) )
+			    IF ( d > 0, "#E5534B", IF ( d < 0, "#3FB950", "#8B95A9" ) )
 			```
 		displayFolder: Cores
 		lineageTag: 5c436e4a-1613-5336-910b-c2b1b6fb2ecb
@@ -306,6 +306,74 @@ table componente
 			```
 		displayFolder: Cores
 		lineageTag: eaaf881e-496b-56af-90e0-2c6ce992f381
+
+	measure 'Variação 4 Semanas Posto' = ```
+			VAR a = [Preço no Posto]
+			VAR b = [Preço no Posto 4 Semanas Antes]
+			RETURN
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
+			```
+		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		displayFolder: Visão geral
+		lineageTag: 7564ee23-0801-518f-bbb5-d43045d382d9
+
+	measure 'Variação 4 Semanas Posto %' = ```
+			VAR a = [Preço no Posto]
+			VAR b = [Preço no Posto 4 Semanas Antes]
+			RETURN
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), a / b - 1 )
+			```
+		formatString: +0.0%;-0.0%
+		displayFolder: Visão geral
+		lineageTag: 0898e880-7d54-5914-bc21-83e90bb4d2a2
+
+	measure 'Cor Variação 4 Semanas' = ```
+			VAR d = [Variação 4 Semanas Posto]
+			RETURN
+			    IF ( d > 0, "#E5534B", IF ( d < 0, "#3FB950", "#8B95A9" ) )
+			```
+		displayFolder: Cores
+		lineageTag: ac537f6d-5a70-572e-8d4d-c1e9d4129b2d
+
+	measure 'Impostos 12 Meses Antes' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência] - 364
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( composicao_preco_semana[tributos_federais] ) + AVERAGE ( composicao_preco_semana[icms] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] = s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Visão geral
+		lineageTag: 5b9e084c-b0f3-5f43-ab6e-f1ec1c7e4c40
+
+	measure 'Apoio Impostos Curto' = FORMAT ( DIVIDE ( [Impostos no Litro], [Preço no Posto] ), "0%" ) & " do preço · há 12 meses R$ " & FORMAT ( [Impostos 12 Meses Antes], "0.00" )
+		displayFolder: Visão geral
+		lineageTag: 44c6f078-cc7a-5e57-b41a-21585bfd96a0
+
+	measure 'Título Cartão 5' = IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "Refinaria em 12 meses", "Etanol ÷ gasolina" )
+		displayFolder: Visão geral
+		lineageTag: 514a951c-2bd1-5678-9de5-f82dd5c911dc
+
+	measure 'Valor Cartão 5' = IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", FORMAT ( [Variação 12 Meses Refinaria], "+0.0%;-0.0%" ), FORMAT ( [Etanol ÷ Gasolina], "0%" ) )
+		displayFolder: Visão geral
+		lineageTag: 68b02895-1e56-56dc-9e1a-4326fae38e02
+
+	measure 'Cor Cartão 5' = IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", [Cor Variação 12 Meses Refinaria], [Cor Etanol] )
+		displayFolder: Cores
+		lineageTag: 8bfd98f8-f261-5dbc-b5f5-7d5f545ebe10
+
+	measure 'Marca 70%' = IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "", "▲ 70%" )
+		displayFolder: Visão geral
+		lineageTag: 5cd08456-71df-595a-8b70-6362e33794e1
+
+	measure 'Cor Fundo Barra' = IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "#111A2B", "#1F2A40" )
+		displayFolder: Cores
+		lineageTag: 2401bbcf-e1df-5ba8-94d9-727086a94460
 
 	column componente
 		dataType: string

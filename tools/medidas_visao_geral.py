@@ -10,7 +10,8 @@ UF = 'VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )'
 REAIS = '"R$" #,0.00'
 VARIACAO_REAIS = '+"R$" 0.00;-"R$" 0.00;"R$" 0.00'
 PCT_SINAL = "+0.0%;-0.0%"
-CORES = {"alta": "#E8833A", "baixa": "#3BA3D9", "neutra": "#8B95A9", "refinaria": "#3BA3D9", "impostos": "#8A7CF0",
+# alta/baixa: subiu (vermelho) ou caiu (verde); as partes do preço têm cores próprias
+CORES = {"alta": "#E5534B", "baixa": "#3FB950", "neutra": "#8B95A9", "refinaria": "#3BA3D9", "impostos": "#8A7CF0",
          "outros": "#E8833A", "etanol": "#4CC38A"}
 IMPOSTOS = f"AVERAGE ( {C}[tributos_federais] ) + AVERAGE ( {C}[icms] )"
 LITRO_A = f"AVERAGEX ( {C}, {C}[refinaria] / {C}[fracao_fossil] )"
@@ -170,7 +171,7 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          f'IF ( [Variação 12 Meses Posto] >= 0, "{CORES["alta"]}", "{CORES["baixa"]}" )'),
         ("Cor Refinaria 4 Semanas", "Cores", None,
          f'IF ( [Variação Refinaria 4 Semanas] >= 0, "{CORES["alta"]}", "{CORES["baixa"]}" )'),
-        ("Cor Etanol", "Cores", None, f'IF ( [Etanol ÷ Gasolina] < 0.7, "{CORES["etanol"]}", "{CORES["alta"]}" )'),
+        ("Cor Etanol", "Cores", None, f'IF ( [Etanol ÷ Gasolina] < 0.7, "{CORES["etanol"]}", "{CORES["outros"]}" )'),
         # desenho "o que aconteceu com o preço"
         ("Texto Dados Até a Semana", "Visão geral", None,
          '"Dados até a semana de " & FORMAT ( [Semana de Referência], "dd/MM/yyyy" )'),
@@ -209,7 +210,9 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Texto Barra Repasse", "Visão geral", None,
          "// barra de progresso feita de traços (o trilho está na imagem de fundo)\n"
          'REPT ( "█", ROUND ( [Barra Repasse 4 Semanas] * 30, 0 ) )'),
-        ("Texto Barra Etanol", "Visão geral", None, 'REPT ( "█", ROUND ( COALESCE ( [Barra Etanol], 0 ) * 30, 0 ) )'),
+        ("Texto Barra Etanol", "Visão geral", None,
+         'IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "", '
+         'REPT ( "█", ROUND ( COALESCE ( [Barra Etanol], 0 ) * 30, 0 ) ) )'),
         # ponte de preço: o que mudou em cada parte do litro em 12 meses
         *[(f"Ponte {nome} 12 Meses Antes", "Ponte", REAIS, na_semana(expr, 364)) for nome, expr in PARTES],
         *[(f"Ponte {nome} Hoje", "Ponte", REAIS, na_semana(expr)) for nome, expr in PARTES],
@@ -370,6 +373,30 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          'VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )\n'
          'VAR escolhida = IF ( u = "BR", "Brasil", LOOKUPVALUE ( regiao_comparacao[regiao], regiao_comparacao[uf], u ) )\n'
          'VAR r = SELECTEDVALUE ( regiao_comparacao[regiao] )\nRETURN\n'
-         f'    IF ( r = escolhida, "{CORES["alta"]}", IF ( r = "Brasil", "#8B95A9", "#3A4660" ) )'),
+         f'    IF ( r = escolhida, "{CORES["outros"]}", IF ( r = "Brasil", "#8B95A9", "#3A4660" ) )'),
+        # cartões
+        ("Variação 4 Semanas Posto", "Visão geral", VARIACAO_REAIS,
+         "VAR a = [Preço no Posto]\nVAR b = [Preço no Posto 4 Semanas Antes]\nRETURN\n"
+         "    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )"),
+        ("Variação 4 Semanas Posto %", "Visão geral", PCT_SINAL,
+         variacao("[Preço no Posto]", "[Preço no Posto 4 Semanas Antes]")),
+        ("Cor Variação 4 Semanas", "Cores", None,
+         f'VAR d = [Variação 4 Semanas Posto]\nRETURN\n    IF ( d > 0, "{CORES["alta"]}", IF ( d < 0, "{CORES["baixa"]}", "{CORES["neutra"]}" ) )'),
+        ("Impostos 12 Meses Antes", "Visão geral", REAIS, na_semana(IMPOSTOS, 364)),
+        ("Apoio Impostos Curto", "Visão geral", None,
+         'FORMAT ( DIVIDE ( [Impostos no Litro], [Preço no Posto] ), "0%" ) & " do preço · há 12 meses R$ " '
+         '& FORMAT ( [Impostos 12 Meses Antes], "0.00" )'),
+        # último cartão: etanol ÷ gasolina; com diesel escolhido, a refinaria do diesel em 12 meses
+        ("Título Cartão 5", "Visão geral", None,
+         'IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "Refinaria em 12 meses", "Etanol ÷ gasolina" )'),
+        ("Valor Cartão 5", "Visão geral", None,
+         'IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", '
+         'FORMAT ( [Variação 12 Meses Refinaria], "+0.0%;-0.0%" ), FORMAT ( [Etanol ÷ Gasolina], "0%" ) )'),
+        ("Cor Cartão 5", "Cores", None,
+         'IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", [Cor Variação 12 Meses Refinaria], [Cor Etanol] )'),
+        ("Marca 70%", "Visão geral", None,
+         'IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "", "▲ 70%" )'),
+        ("Cor Fundo Barra", "Cores", None,
+         'IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "#111A2B", "#1F2A40" )'),
     ]
     return {C: composicao, "componente": componente}

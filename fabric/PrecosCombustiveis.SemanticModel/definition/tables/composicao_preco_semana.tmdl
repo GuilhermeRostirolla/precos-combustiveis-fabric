@@ -374,11 +374,11 @@ table composicao_preco_semana
 		displayFolder: Visão geral
 		lineageTag: ed6956a9-0dc5-57c9-bcb9-8415ceef2ae6
 
-	measure 'Cor Variação 12 Meses' = IF ( [Variação 12 Meses Posto] >= 0, "#E8833A", "#3BA3D9" )
+	measure 'Cor Variação 12 Meses' = IF ( [Variação 12 Meses Posto] >= 0, "#E5534B", "#3FB950" )
 		displayFolder: Cores
 		lineageTag: 9474e6d0-b174-56c4-a940-efb9fd67bc66
 
-	measure 'Cor Refinaria 4 Semanas' = IF ( [Variação Refinaria 4 Semanas] >= 0, "#E8833A", "#3BA3D9" )
+	measure 'Cor Refinaria 4 Semanas' = IF ( [Variação Refinaria 4 Semanas] >= 0, "#E5534B", "#3FB950" )
 		displayFolder: Cores
 		lineageTag: 7c1189e7-059c-5bff-b16e-368a8ace2f83
 
@@ -394,14 +394,14 @@ table composicao_preco_semana
 		displayFolder: Visão geral
 		lineageTag: 79974fe0-746f-55ea-a084-f7600d68190d
 
-	measure 'Cor Variação 12 Meses Refinaria' = IF ( [Variação 12 Meses Refinaria] >= 0, "#E8833A", "#3BA3D9" )
+	measure 'Cor Variação 12 Meses Refinaria' = IF ( [Variação 12 Meses Refinaria] >= 0, "#E5534B", "#3FB950" )
 		displayFolder: Cores
 		lineageTag: 253f64a6-6500-567e-a1d7-e3cb23669290
 
 	measure 'Cor Apoio Preço no Posto' = ```
 			VAR d = [Preço no Posto] - [Preço no Posto Semana Anterior]
 			RETURN
-			    IF ( d > 0.005, "#E8833A", IF ( d < -0.005, "#3BA3D9", "#8B95A9" ) )
+			    IF ( d > 0.005, "#E5534B", IF ( d < -0.005, "#3FB950", "#8B95A9" ) )
 			```
 		displayFolder: Cores
 		lineageTag: 3111f334-959f-5ebd-9689-3dc645f96aff
@@ -467,7 +467,7 @@ table composicao_preco_semana
 		displayFolder: Visão geral
 		lineageTag: 8c447818-9a42-5ad0-a44f-05d01999d762
 
-	measure 'Texto Barra Etanol' = REPT ( "█", ROUND ( COALESCE ( [Barra Etanol], 0 ) * 30, 0 ) )
+	measure 'Texto Barra Etanol' = IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "", REPT ( "█", ROUND ( COALESCE ( [Barra Etanol], 0 ) * 30, 0 ) ) )
 		displayFolder: Visão geral
 		lineageTag: 8ac1d2f4-a2b9-5fac-a236-c49eac541787
 
@@ -669,7 +669,7 @@ table composicao_preco_semana
 	measure 'Cor Conclusão 12 Meses' = ```
 			VAR d = [Δ12 Posto]
 			RETURN
-			    IF ( d >= 0.02, "#E8833A", IF ( d <= -0.02, "#3BA3D9", "#8B95A9" ) )
+			    IF ( d >= 0.02, "#E5534B", IF ( d <= -0.02, "#3FB950", "#8B95A9" ) )
 			```
 		displayFolder: Cores
 		lineageTag: 15f0767d-4e35-52b7-80d2-62451ec88f98
@@ -1076,7 +1076,7 @@ table composicao_preco_semana
 	measure 'Cor Δ Posto' = ```
 			VAR d = [Δ Posto]
 			RETURN
-			    IF ( d > 0.005, "#E8833A", IF ( d < -0.005, "#3BA3D9", "#8B95A9" ) )
+			    IF ( d > 0.005, "#E5534B", IF ( d < -0.005, "#3FB950", "#8B95A9" ) )
 			```
 		displayFolder: Cores
 		lineageTag: 1c1c181b-0bf6-5632-a434-825ba1296b99

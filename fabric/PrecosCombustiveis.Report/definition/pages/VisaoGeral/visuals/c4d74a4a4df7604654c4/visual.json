@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "composicao_preco_semana"
+                      "Entity": "componente"
                     }
                   },
-                  "Property": "Etanol ÷ Gasolina"
+                  "Property": "Valor Cartão 5"
                 }
               },
-              "queryRef": "composicao_preco_semana.Etanol ÷ Gasolina",
-              "nativeQueryRef": "Etanol ÷ Gasolina"
+              "queryRef": "componente.Valor Cartão 5",
+              "nativeQueryRef": "Valor Cartão 5"
             }
           ]
         }
@@ -58,10 +58,10 @@
                     "Measure": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "composicao_preco_semana"
+                          "Entity": "componente"
                         }
                       },
-                      "Property": "Cor Etanol"
+                      "Property": "Cor Cartão 5"
                     }
                   }
                 }
@@ -107,10 +107,10 @@
                     "Measure": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "composicao_preco_semana"
+                          "Entity": "componente"
                         }
                       },
-                      "Property": "Cor Etanol"
+                      "Property": "Cor Cartão 5"
                     }
                   }
                 }
