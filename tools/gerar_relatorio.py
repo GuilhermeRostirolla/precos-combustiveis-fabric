@@ -171,6 +171,7 @@ class Pagina:
                    "general": [{"properties": {"outlineColor": cor(COR["cartao"]), "outlineWeight": lit(0.0)}}],
                    "selection": [{"properties": selecao}],
                    "header": [{"properties": {"show": lit(False), "outlineStyle": lit(0)}}],
+                   "dropdown": [{"properties": {"borderColor": cor(COR["cartao"]), "iconColor": cor(COR["suave"])}}],
                    "items": [{"properties": {"fontColor": cor(COR["texto"]), "background": cor(COR["cartao"]),
                                              "textSize": lit(10.0), "fontFamily": lit(FONTE), "outlineStyle": lit(0),
                                              # o tema base liga o contraste de acessibilidade, que desenha uma
@@ -512,10 +513,11 @@ def visao_geral() -> Pagina:
                      cor_texto=COR["etanol"], medida_fundo="Cor Fundo Barra")
     marca = x + L.BARRA_X + round(0.7 * L.BARRA_W) - 4
     p.texto_dinamico("Marca 70%", marca, y + L.BARRA_Y + 12, 44, 14, 7.0, cor_texto=COR["suave"])
-    # do que é feito o preço, semana a semana (as três partes somadas dão o preço no posto)
+    # do que é feito o preço, mês a mês (as três partes somadas dão o preço no posto)
     g = L.GRAFICO
     p.rotulo(g["titulo"], g["x"] + 8, g["y"] + 6, 700, 28, 11, COR["texto"], forte=True)
-    p.areas(g["x"] + 12, g["y"] + 36, g["w"] - 24, g["h"] - 44, "dim_semana.semana",
+    # média de cada mês: semana a semana, a refinaria do diesel oscila quando muda a proporção de importadores
+    p.areas(g["x"] + 12, g["y"] + 36, g["w"] - 24, g["h"] - 44, "dim_semana.mes_inicio",
             [("Refinaria na Semana", "Refinaria"), ("Impostos na Semana", "Impostos"),
              ("Outros na Semana", "Etanol/biodiesel, frete e margens")],
             [COR["refinaria"], "#8A7CF0", COR["alta"]])

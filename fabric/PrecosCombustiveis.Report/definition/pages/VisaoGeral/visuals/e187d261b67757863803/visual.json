@@ -23,11 +23,11 @@
                       "Entity": "dim_semana"
                     }
                   },
-                  "Property": "semana"
+                  "Property": "mes_inicio"
                 }
               },
-              "queryRef": "dim_semana.semana",
-              "nativeQueryRef": "semana",
+              "queryRef": "dim_semana.mes_inicio",
+              "nativeQueryRef": "mes_inicio",
               "active": true
             }
           ]
@@ -92,7 +92,7 @@
                     "Entity": "dim_semana"
                   }
                 },
-                "Property": "semana"
+                "Property": "mes_inicio"
               }
             },
             "direction": "Ascending"

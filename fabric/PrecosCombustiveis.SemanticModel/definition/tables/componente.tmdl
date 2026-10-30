@@ -247,9 +247,11 @@ table componente
 	measure 'Refinaria na Semana' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR ref = [Semana de Referência]
-			VAR s = MAX ( dim_semana[semana] )
+			VAR inicio = DATE ( YEAR ( ref ), MONTH ( ref ) - 11, 1 )
+			VAR m = MAX ( dim_semana[mes_inicio] )
 			RETURN
-			    IF ( s > ref - 364 && s <= ref, CALCULATE ( AVERAGE ( composicao_preco_semana[refinaria] ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u ) )
+			    IF ( m >= inicio && m <= ref,
+			        CALCULATE ( AVERAGE ( composicao_preco_semana[refinaria] ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u, composicao_preco_semana[semana] <= ref ) )
 			```
 		formatString: """R$"" #,0.00"
 		displayFolder: Gráfico
@@ -258,9 +260,11 @@ table componente
 	measure 'Impostos na Semana' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR ref = [Semana de Referência]
-			VAR s = MAX ( dim_semana[semana] )
+			VAR inicio = DATE ( YEAR ( ref ), MONTH ( ref ) - 11, 1 )
+			VAR m = MAX ( dim_semana[mes_inicio] )
 			RETURN
-			    IF ( s > ref - 364 && s <= ref, CALCULATE ( AVERAGE ( composicao_preco_semana[tributos_federais] ) + AVERAGE ( composicao_preco_semana[icms] ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u ) )
+			    IF ( m >= inicio && m <= ref,
+			        CALCULATE ( AVERAGE ( composicao_preco_semana[tributos_federais] ) + AVERAGE ( composicao_preco_semana[icms] ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u, composicao_preco_semana[semana] <= ref ) )
 			```
 		formatString: """R$"" #,0.00"
 		displayFolder: Gráfico
@@ -269,9 +273,11 @@ table componente
 	measure 'Outros na Semana' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR ref = [Semana de Referência]
-			VAR s = MAX ( dim_semana[semana] )
+			VAR inicio = DATE ( YEAR ( ref ), MONTH ( ref ) - 11, 1 )
+			VAR m = MAX ( dim_semana[mes_inicio] )
 			RETURN
-			    IF ( s > ref - 364 && s <= ref, CALCULATE ( AVERAGE ( composicao_preco_semana[outros] ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u ) )
+			    IF ( m >= inicio && m <= ref,
+			        CALCULATE ( AVERAGE ( composicao_preco_semana[outros] ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u, composicao_preco_semana[semana] <= ref ) )
 			```
 		formatString: """R$"" #,0.00"
 		displayFolder: Gráfico

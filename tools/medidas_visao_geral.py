@@ -45,9 +45,11 @@ def no_grafico(expr: str) -> str:
 
 
 def na_linha(expr: str) -> str:
-    """Valor da semana no eixo do gráfico, só nas 52 semanas que terminam na semana de referência."""
-    return (f"{UF}\nVAR ref = [Semana de Referência]\nVAR s = MAX ( dim_semana[semana] )\nRETURN\n"
-            f"    IF ( s > ref - 364 && s <= ref, CALCULATE ( {expr}, REMOVEFILTERS ( dim_uf ), {C}[uf] = u ) )")
+    """Média do mês no eixo do gráfico, só nos 12 meses que terminam na semana de referência."""
+    return (f"{UF}\nVAR ref = [Semana de Referência]\nVAR inicio = DATE ( YEAR ( ref ), MONTH ( ref ) - 11, 1 )\n"
+            "VAR m = MAX ( dim_semana[mes_inicio] )\nRETURN\n"
+            f"    IF ( m >= inicio && m <= ref,\n"
+            f"        CALCULATE ( {expr}, REMOVEFILTERS ( dim_uf ), {C}[uf] = u, {C}[semana] <= ref ) )")
 
 
 def no_mes(expr: str, anterior: bool = False) -> str:
