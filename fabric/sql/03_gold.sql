@@ -154,12 +154,24 @@ BEGIN
     JOIN config.produto AS c ON c.produto = u.produto
     GROUP BY u.semana, u.produto;
 
+    -- Tributo médio de cada semana, dia a dia: os cortes de 2026 começaram no meio da semana (10/09 e 10/10).
+    DROP TABLE IF EXISTS #tributo_semana;
+    SELECT w.semana, t.produto,
+           CAST(AVG(t.icms) AS decimal(10,6)) AS icms,
+           CAST(AVG(t.federal_fossil_cobrado) AS decimal(10,6)) AS federal_fossil_cobrado,
+           CAST(AVG(t.federal_bio) AS decimal(10,6)) AS federal_bio
+    INTO #tributo_semana
+    FROM (SELECT DISTINCT semana FROM gold.dim_semana) AS w
+    CROSS JOIN (VALUES (0),(1),(2),(3),(4),(5),(6)) AS d(n)
+    JOIN config.tributo AS t ON DATEADD(day, d.n, w.semana) BETWEEN t.vigente_de AND t.vigente_ate
+    GROUP BY w.semana, t.produto;
+
     DROP TABLE IF EXISTS gold.composicao_preco_semana;
     CREATE TABLE gold.composicao_preco_semana AS
     SELECT x.semana, x.uf, x.produto, x.preco_posto, x.fracao_fossil,
            CAST(x.refinaria AS decimal(8,4)) AS refinaria,
            CAST(x.tributos_federais AS decimal(8,4)) AS tributos_federais,
-           x.icms,
+           CAST(x.icms AS decimal(8,4)) AS icms,
            CAST(x.preco_posto - x.refinaria - x.tributos_federais - x.icms AS decimal(8,4)) AS outros
     FROM (
         SELECT p.semana, p.uf, p.produto, p.preco_posto, s.fracao_fossil, t.icms,
@@ -171,8 +183,8 @@ BEGIN
         -- como na Síntese Semanal da ANP, o posto da semana é comparado com a refinaria da semana anterior
         JOIN #produtor_suavizado AS s ON s.produto = p.produto AND s.regiao = r.regiao
                                       AND s.semana = DATEADD(day, -7, p.semana)
-        JOIN config.tributo AS t ON t.produto = p.produto AND p.semana BETWEEN t.vigente_de AND t.vigente_ate
-        JOIN config.tributo AS tr ON tr.produto = p.produto AND s.semana BETWEEN tr.vigente_de AND tr.vigente_ate
+        JOIN #tributo_semana AS t ON t.produto = p.produto AND t.semana = p.semana
+        JOIN #tributo_semana AS tr ON tr.produto = p.produto AND tr.semana = s.semana
     ) AS x;
 
     -- Semanas que podem ser escolhidas no relatório (sem relação com as tabelas: a página usa a escolhida

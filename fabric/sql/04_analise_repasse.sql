@@ -105,7 +105,7 @@ BEGIN
            produto, semana, preco_medio
     INTO #bomba
     FROM gold.fato_preco_uf_semana
-    WHERE uf = 'RS'
+    WHERE uf = 'RS' AND fonte = 'Série histórica'  -- o estudo usa só a série posto a posto
     UNION ALL
     SELECT CAST(municipio AS varchar(120)), municipio, produto, semana, preco_medio
     FROM gold.fato_preco_municipio_semana
