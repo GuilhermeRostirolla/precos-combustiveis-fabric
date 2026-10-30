@@ -275,10 +275,7 @@ class Pagina:
             "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
                                              "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
                                              "gridlineShow": lit(False), "axisType": lit("Categorical")}}],
-            "valueAxis": [{"properties": {"show": lit(True), "fontSize": lit(7.5), "labelColor": cor(COR["apagado"]),
-                                          "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
-                                          "gridlineShow": lit(True), "gridlineColor": cor(COR["grade"]),
-                                          "gridlineStyle": lit("solid")}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
             "legend": [{"properties": {"show": lit(True), "position": lit("TopRight"), "showTitle": lit(False),
                                        "fontSize": lit(9.0), "labelColor": cor(COR["suave"]),
                                        "fontFamily": lit(FONTE)}}],
@@ -356,7 +353,7 @@ def visao_geral() -> Pagina:
     for i, (valor, cor_valor, apoio, cor_apoio, w_valor) in enumerate([
         ("Preço no Posto", None, "Apoio Preço no Posto", "Cor Apoio Preço no Posto", 110),
         (None, None, "Posto x Refinaria 12 Meses", None, None),
-        ("Diferença Posto Refinaria", None, "Apoio Diferença Curto", None, 110),
+        ("Diferença Posto Refinaria", None, "Apoio Diferença", None, 110),
         ("Variação Refinaria 4 Semanas", "Cor Refinaria 4 Semanas", "Apoio Repasse 4 Semanas", None, 211),
         ("Etanol ÷ Gasolina", "Cor Etanol", "Apoio Etanol", None, 211),
     ]):

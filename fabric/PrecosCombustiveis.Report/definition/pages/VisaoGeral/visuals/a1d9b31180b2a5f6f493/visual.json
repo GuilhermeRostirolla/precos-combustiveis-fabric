@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Apoio Diferença Curto"
+                  "Property": "Apoio Diferença"
                 }
               },
-              "queryRef": "composicao_preco_semana.Apoio Diferença Curto",
-              "nativeQueryRef": "Apoio Diferença Curto"
+              "queryRef": "composicao_preco_semana.Apoio Diferença",
+              "nativeQueryRef": "Apoio Diferença"
             }
           ]
         }
