@@ -86,7 +86,7 @@ The same analysis runs for each RS city with at least 5 surveyed stations in the
 
 ## Report
 
-One page, dark theme, no explanatory text: five cards (pump price, change over 4 weeks and 12 months, taxes per liter and ethanol ÷ gasoline, which becomes the refinery change when diesel is selected), the weekly price breakdown, what changed in each part over 12 months (ending with the pump price) and each region's difference from the Brazil average, with the selected state highlighted. Filters for fuel (regular gasoline or S10 diesel) and state.
+One page, dark theme, no explanatory text: five cards (pump price, change over 4 weeks and 12 months, taxes per liter and ethanol ÷ gasoline, which becomes the refinery change when diesel is selected), the monthly price breakdown, what changed in each part over 12 months (ending with the pump price) and each region's difference from the Brazil average, with the selected state highlighted. Filters for fuel (regular gasoline or S10 diesel) and state.
 
 ## How to run
 

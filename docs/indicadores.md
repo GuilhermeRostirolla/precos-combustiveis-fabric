@@ -36,8 +36,8 @@ Preço da refinaria por litro de diesel A hoje ÷ o de 52 semanas antes − 1.
 
 ## Gráficos
 
-### Do que é feito o preço do litro (últimas 52 semanas)
-As três partes empilhadas somam o preço no posto de cada semana:
+### Do que é feito o preço do litro (média de cada mês)
+As três partes empilhadas somam o preço médio no posto de cada mês, nos últimos 12 meses. Usar a média do mês evita os "dentes" de uma semana que a série da refinaria tem quando muda a proporção de importadores:
 - **Refinaria**: preço de produtores e importadores (planilha semanal da ANP) da semana anterior, menos os tributos federais cobrados naquela semana, vezes a parcela fóssil do litro (68% na gasolina E32, 85% no diesel B15). Mediana de 3 semanas, porque a série oscila quando muda a proporção de importadores.
 - **Impostos**: ICMS + tributos federais efetivamente cobrados.
 - **Etanol/biodiesel, frete e margens**: o que sobra (preço no posto − refinaria − impostos).
