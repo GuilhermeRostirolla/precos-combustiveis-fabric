@@ -330,8 +330,9 @@ def visao_geral() -> Pagina:
     ], start=3):
         x = L.cartao_x(i)
         p.texto_dinamico(valor, x + 12, y + 34, 211, 40, 22.0, medida_cor=cor_valor, forte=True)
-        p.texto_dinamico("Texto " + barra.replace("Barra ", "Barra ").replace(" 4 Semanas", ""), x + L.BARRA_X - 2,
-                         y + L.BARRA_Y - 5, L.BARRA_W + 40, 20, 7.0, cor_texto=cor_barra)
+        # a barra é um texto de blocos "█" sobre um fundo da cor do trilho (o Power BI não desenha gráficos tão baixos)
+        p.texto_dinamico(barra.replace("Barra", "Texto Barra").replace(" 4 Semanas", ""), x + L.BARRA_X,
+                         y + L.BARRA_Y - 3, L.BARRA_W, 14, 7.0, cor_texto=cor_barra, fundo=COR["trilho"])
         p.texto_dinamico(apoio, x + 12, y + 114, 211, 24, 8.5, cor_texto=COR["suave"])
     # o que aconteceu com o preço, mês a mês
     g = L.GRAFICO
