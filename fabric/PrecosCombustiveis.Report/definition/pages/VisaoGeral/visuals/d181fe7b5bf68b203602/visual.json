@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Texto Dados Até"
+                  "Property": "Texto Dados Até a Semana"
                 }
               },
-              "queryRef": "composicao_preco_semana.Texto Dados Até",
-              "nativeQueryRef": "Texto Dados Até"
+              "queryRef": "composicao_preco_semana.Texto Dados Até a Semana",
+              "nativeQueryRef": "Texto Dados Até a Semana"
             }
           ]
         }

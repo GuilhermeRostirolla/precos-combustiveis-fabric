@@ -161,7 +161,7 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          f'IF ( [Variação Refinaria 4 Semanas] >= 0, "{CORES["alta"]}", "{CORES["baixa"]}" )'),
         ("Cor Etanol", "Cores", None, f'IF ( [Etanol ÷ Gasolina] < 0.7, "{CORES["etanol"]}", "{CORES["alta"]}" )'),
         # desenho "o que aconteceu com o preço"
-        ("Texto Dados Até", "Visão geral", None,
+        ("Texto Dados Até a Semana", "Visão geral", None,
          '"Dados até a semana de " & FORMAT ( [Semana de Referência], "dd/MM/yyyy" )'),
         ("Texto Postos e Fonte", "Visão geral", None,
          'FORMAT ( [Postos Pesquisados], "#,0" ) & " postos pesquisados em " & FORMAT ( [Municípios Pesquisados], "#,0" ) '

@@ -293,7 +293,7 @@ class Pagina:
 def visao_geral() -> Pagina:
     p = Pagina("VisaoGeral", "Visão geral", fundo=FUNDO)
     # nota do canto superior direito
-    p.texto_dinamico("Texto Dados Até", 1068, 22, 190, 18, 8.0, cor_texto=COR["nota"], fundo=COR["pagina"])
+    p.texto_dinamico("Texto Dados Até a Semana", 1068, 22, 190, 18, 8.0, cor_texto=COR["nota"], fundo=COR["pagina"])
     p.texto_dinamico("Texto Postos e Fonte", 948, 39, 310, 18, 8.0, cor_texto=COR["nota"], fundo=COR["pagina"])
     # filtros
     c = L.COMBUSTIVEL
