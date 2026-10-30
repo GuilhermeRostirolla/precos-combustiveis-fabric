@@ -166,26 +166,44 @@ BEGIN
     JOIN config.tributo AS t ON DATEADD(day, d.n, w.semana) BETWEEN t.vigente_de AND t.vigente_ate
     GROUP BY w.semana, t.produto;
 
-    DROP TABLE IF EXISTS gold.composicao_preco_semana;
-    CREATE TABLE gold.composicao_preco_semana AS
-    SELECT x.semana, x.uf, x.produto, x.preco_posto, x.fracao_fossil,
+    -- Composição de cada estado, com a refinaria da região dele.
+    DROP TABLE IF EXISTS #composicao_uf;
+    SELECT x.semana, x.uf, x.produto, x.coletas, x.preco_posto, x.fracao_fossil,
            CAST(x.refinaria AS decimal(8,4)) AS refinaria,
            CAST(x.tributos_federais AS decimal(8,4)) AS tributos_federais,
            CAST(x.icms AS decimal(8,4)) AS icms,
            CAST(x.preco_posto - x.refinaria - x.tributos_federais - x.icms AS decimal(8,4)) AS outros
     FROM (
-        SELECT p.semana, p.uf, p.produto, p.preco_posto, s.fracao_fossil, t.icms,
+        SELECT p.semana, p.uf, p.produto, p.coletas, p.preco_posto, s.fracao_fossil, t.icms,
                -- a planilha da refinaria traz o tributo cobrado na semana dela (a anterior à do posto)
                s.fracao_fossil * (s.preco_produtor - tr.federal_fossil_cobrado) AS refinaria,
                s.fracao_fossil * t.federal_fossil_cobrado + (1 - s.fracao_fossil) * t.federal_bio AS tributos_federais
         FROM #posto AS p
-        JOIN config.uf_regiao AS r ON r.uf = p.uf
+        JOIN config.uf_regiao AS r ON r.uf = p.uf AND p.uf <> 'BR'
         -- como na Síntese Semanal da ANP, o posto da semana é comparado com a refinaria da semana anterior
         JOIN #produtor_suavizado AS s ON s.produto = p.produto AND s.regiao = r.regiao
                                       AND s.semana = DATEADD(day, -7, p.semana)
         JOIN #tributo_semana AS t ON t.produto = p.produto AND t.semana = p.semana
         JOIN #tributo_semana AS tr ON tr.produto = p.produto AND tr.semana = s.semana
     ) AS x;
+
+    -- O Brasil é a média dos estados, ponderada pelas coletas. A série "Brasil" da planilha de produtores pesa
+    -- pelo volume vendido e dispara quando o Nordeste importa caro (maio/2026: R$ 5,26 no Brasil contra R$ 3,47 a
+    -- R$ 3,64 no Sul, Sudeste e Centro-Oeste), enquanto a média dos postos é dominada pelo Sul e pelo Sudeste.
+    DROP TABLE IF EXISTS gold.composicao_preco_semana;
+    CREATE TABLE gold.composicao_preco_semana AS
+    SELECT semana, uf, produto, preco_posto, fracao_fossil, refinaria, tributos_federais, icms, outros
+    FROM #composicao_uf
+    UNION ALL
+    SELECT semana, 'BR', produto,
+           CAST(SUM(preco_posto * coletas) / SUM(coletas) AS decimal(8,4)),
+           CAST(SUM(fracao_fossil * coletas) / SUM(coletas) AS decimal(8,4)),
+           CAST(SUM(refinaria * coletas) / SUM(coletas) AS decimal(8,4)),
+           CAST(SUM(tributos_federais * coletas) / SUM(coletas) AS decimal(8,4)),
+           CAST(SUM(icms * coletas) / SUM(coletas) AS decimal(8,4)),
+           CAST(SUM(outros * coletas) / SUM(coletas) AS decimal(8,4))
+    FROM #composicao_uf
+    GROUP BY semana, produto;
 
     -- Semanas que podem ser escolhidas no relatório (sem relação com as tabelas: a página usa a escolhida
     -- e olha para trás a partir dela).
