@@ -247,8 +247,11 @@ class Pagina:
             "legend": [{"properties": {"show": lit(False)}}],
             "dataPoint": [{"properties": {"fill": cor(cor_barra)}, "selector": {"metadata": projecao(medida)["queryRef"]}},
                           {"properties": {"fill": cor(COR["trilho"])}, "selector": {"metadata": projecao(resto)["queryRef"]}}],
-            "layout": [{"properties": {"innerPadding": lit(0.0)}}],
+            "layout": [{"properties": {"innerPadding": lit(50.0)}}],
         }
+        # o Power BI não desenha barras em visuais muito baixos: o visual é mais alto que a barra e o
+        # espaçamento interno deixa a barra fina, centrada na altura pedida
+        y, h = y - 9, h + 18
         return self._add(x, y, w, h, {
             "visualType": "hundredPercentStackedBarChart",
             "query": {"queryState": {"Y": {"projections": campos([medida, resto])}}},
