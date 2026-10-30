@@ -43,10 +43,10 @@ As três partes empilhadas somam o preço no posto de cada semana:
 - **Etanol/biodiesel, frete e margens**: o que sobra (preço no posto − refinaria − impostos).
 
 ### O que mudou em 12 meses
-Variação de cada parte entre a semana de referência e a de 52 semanas antes. Gasolina, Brasil: refinaria +R$ 0,28, impostos −R$ 0,52, etanol/biodiesel, frete e margens +R$ 0,52.
+Variação de cada parte entre a semana de referência e a de 52 semanas antes, e na última coluna o resultado no posto. Gasolina, Brasil: refinaria +R$ 0,28, impostos −R$ 0,52, etanol/biodiesel, frete e margens +R$ 0,52; preço no posto +R$ 0,28.
 
-### Preço no posto por região
-Preço médio de cada região (média dos postos pesquisados nos estados dela) e do Brasil, na semana de referência. A região do estado escolhido fica em laranja.
+### Diferença para a média do Brasil
+Preço médio de cada região (média dos postos pesquisados nos estados dela) menos o do Brasil, na semana de referência. Vermelho: mais caro que a média; verde: mais barato. Com um estado escolhido, ele aparece em laranja. Gasolina: Norte +R$ 0,42, Nordeste +R$ 0,24, Centro-Oeste −R$ 0,02, Sudeste −R$ 0,11, Sul −R$ 0,15; SP −R$ 0,14.
 
 ## Método e conferência
 

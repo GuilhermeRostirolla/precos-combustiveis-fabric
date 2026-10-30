@@ -86,7 +86,7 @@ A mesma análise roda para cada município do RS com pelo menos 5 postos pesquis
 
 ## Relatório
 
-Uma página, em tema escuro, sem textos de apoio: cinco cartões (preço no posto, variação em 4 semanas e em 12 meses, impostos no litro e etanol ÷ gasolina, que vira a variação da refinaria quando o diesel é escolhido), a composição do preço semana a semana, o que mudou em cada parte em 12 meses e o preço por região. Filtros de combustível (gasolina comum ou diesel S10) e de estado.
+Uma página, em tema escuro, sem textos de apoio: cinco cartões (preço no posto, variação em 4 semanas e em 12 meses, impostos no litro e etanol ÷ gasolina, que vira a variação da refinaria quando o diesel é escolhido), a composição do preço semana a semana, o que mudou em cada parte em 12 meses (com o resultado no posto) e a diferença de cada região para a média do Brasil, com o estado escolhido em destaque. Filtros de combustível (gasolina comum ou diesel S10) e de estado.
 
 ## Como rodar
 
