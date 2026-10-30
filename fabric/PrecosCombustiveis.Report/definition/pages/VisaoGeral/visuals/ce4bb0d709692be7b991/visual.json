@@ -13,6 +13,25 @@
     "visualType": "hundredPercentStackedBarChart",
     "query": {
       "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_produto"
+                    }
+                  },
+                  "Property": "nome"
+                }
+              },
+              "queryRef": "dim_produto.nome",
+              "nativeQueryRef": "nome",
+              "active": true
+            }
+          ]
+        },
         "Y": {
           "projections": [
             {

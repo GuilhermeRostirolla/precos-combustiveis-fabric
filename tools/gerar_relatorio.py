@@ -254,7 +254,9 @@ class Pagina:
         y, h = y - 9, h + 18
         return self._add(x, y, w, h, {
             "visualType": "hundredPercentStackedBarChart",
-            "query": {"queryState": {"Y": {"projections": campos([medida, resto])}}},
+            # uma categoria qualquer com um valor só (o combustível escolhido): sem categoria o gráfico fica vazio
+            "query": {"queryState": {"Category": {"projections": [projecao("dim_produto.nome", ativo=True)]},
+                                     "Y": {"projections": campos([medida, resto])}}},
             "objects": objetos})
 
     def colunas_lado_a_lado(self, x, y, w, h, eixo, medidas, cores, rotulos_em=None):
