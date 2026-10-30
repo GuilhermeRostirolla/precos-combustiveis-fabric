@@ -10,7 +10,7 @@
     "tabOrder": 1800
   },
   "visual": {
-    "visualType": "multiRowCard",
+    "visualType": "card",
     "query": {
       "queryState": {
         "Values": {
@@ -34,7 +34,7 @@
       }
     },
     "objects": {
-      "dataLabels": [
+      "labels": [
         {
           "properties": {
             "fontSize": {
@@ -78,51 +78,13 @@
           }
         }
       ],
-      "cardTitle": [
+      "wordWrap": [
         {
           "properties": {
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "card": [
-        {
-          "properties": {
-            "outline": {
-              "expr": {
-                "Literal": {
-                  "Value": "'None'"
-                }
-              }
-            },
-            "barShow": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "cardPadding": {
-              "expr": {
-                "Literal": {
-                  "Value": "0.0D"
-                }
-              }
-            },
-            "cardBackground": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#111A2B'"
-                    }
-                  }
+                  "Value": "true"
                 }
               }
             }

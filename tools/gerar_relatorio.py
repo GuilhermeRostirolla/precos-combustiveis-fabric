@@ -137,14 +137,26 @@ class Pagina:
         """Texto alinhado à esquerda (cartão de várias linhas, sem moldura nem rótulo)."""
         rotulos = {"fontSize": lit(float(tamanho)), "fontFamily": lit(FONTE_FORTE if forte else FONTE),
                    "color": cor_da_medida(medida_cor) if medida_cor else cor(cor_texto)}
+        # num cartão de várias linhas, um texto aparece como título do cartão e um número como valor:
+        # os dois recebem o mesmo estilo
         return self._add(x, y, w, h, {
             "visualType": "multiRowCard",
             "query": {"queryState": {"Values": {"projections": campos([medida])}}},
             "objects": {"dataLabels": [{"properties": rotulos}],
                         "categoryLabels": [{"properties": {"show": lit(False)}}],
-                        "cardTitle": [{"properties": {"show": lit(False)}}],
+                        "cardTitle": [{"properties": rotulos}],
                         "card": [{"properties": {"outline": lit("None"), "barShow": lit(False),
                                                  "cardPadding": lit(0.0), "cardBackground": cor(COR["cartao"])}}]}})
+
+    def texto_longo(self, medida, x, y, w, h, tamanho, cor_texto):
+        """Texto com quebra de linha (cartão simples)."""
+        return self._add(x, y, w, h, {
+            "visualType": "card",
+            "query": {"queryState": {"Values": {"projections": campos([medida])}}},
+            "objects": {"labels": [{"properties": {"fontSize": lit(float(tamanho)), "fontFamily": lit(FONTE),
+                                                   "color": cor(cor_texto)}}],
+                        "categoryLabels": [{"properties": {"show": lit(False)}}],
+                        "wordWrap": [{"properties": {"show": lit(True)}}]}})
 
     def lista(self, coluna, x, y, w, h, padrao=None, filtros=None, obrigatorio=True, decrescente=False):
         """Filtro em lista suspensa, sem cabeçalho (o rótulo está na imagem de fundo)."""
@@ -235,8 +247,8 @@ def visao_geral() -> Pagina:
         ("Postos Pesquisados", "Apoio Postos"),
     ]):
         x = L.cartao_x(i)
-        p.texto_dinamico(medida, x + 12, L.CARTOES_Y + 34, L.CARTAO_W - 24, 34, 20.0, forte=True)
-        p.texto_dinamico(apoio, x + 12, L.CARTOES_Y + 66, L.CARTAO_W - 24, 20, 9.0, cor_texto=COR["suave"])
+        p.texto_dinamico(medida, x + 10, L.CARTOES_Y + 30, L.CARTAO_W - 20, 40, 20.0, forte=True)
+        p.texto_dinamico(apoio, x + 10, L.CARTOES_Y + 64, L.CARTAO_W - 20, 26, 9.0, cor_texto=COR["suave"])
     # do que é feito o preço, mês a mês
     g = L.GRAFICO
     grafico = p.colunas_empilhadas(
@@ -253,8 +265,7 @@ def visao_geral() -> Pagina:
     barras = p.barras_coloridas(x, pn["y"] + 140, w, 160, "componente.componente", "Variação do Componente",
                                 "Cor do Componente")
     p.texto_dinamico("Conclusão", c["x"] + 8, c["y"] + 8, c["w"] - 16, 26, 11.0, forte=True)
-    p.texto_dinamico("Conclusão Detalhe", c["x"] + 8, c["y"] + 34, c["w"] - 16, c["h"] - 40, 9.0,
-                     cor_texto=COR["suave"])
+    p.texto_longo("Conclusão Detalhe", c["x"] + 8, c["y"] + 34, c["w"] - 16, c["h"] - 40, 9.0, COR["suave"])
     # o mês clicado no gráfico filtra as barras do "por quê" (em vez de só destacar)
     p.interacao(grafico, barras)
     return p
