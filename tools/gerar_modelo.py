@@ -240,6 +240,9 @@ MEDIDAS = {
 from medidas_visao_geral import medidas_visao_geral  # noqa: E402
 
 MEDIDAS.update(medidas_visao_geral())
+_repetidas = sorted({m[0] for ms in MEDIDAS.values() for m in ms
+                     if sum(m[0] == n[0] for ns in MEDIDAS.values() for n in ns) > 1})
+assert not _repetidas, f"medidas com o mesmo nome: {_repetidas}"
 
 
 def tag(*partes: str) -> str:

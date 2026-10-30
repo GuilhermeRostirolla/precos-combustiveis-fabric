@@ -204,14 +204,14 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          'REPT ( "█", ROUND ( [Barra Repasse 4 Semanas] * 30, 0 ) )'),
         ("Texto Barra Etanol", "Visão geral", None, 'REPT ( "█", ROUND ( COALESCE ( [Barra Etanol], 0 ) * 30, 0 ) )'),
         # ponte de preço: o que mudou em cada parte do litro em 12 meses
-        *[(f"{nome} 12 Meses Antes", "Ponte", REAIS, na_semana(expr, 364)) for nome, expr in PARTES],
-        *[(f"{nome} Hoje", "Ponte", REAIS, na_semana(expr)) for nome, expr in PARTES],
+        *[(f"Ponte {nome} 12 Meses Antes", "Ponte", REAIS, na_semana(expr, 364)) for nome, expr in PARTES],
+        *[(f"Ponte {nome} Hoje", "Ponte", REAIS, na_semana(expr)) for nome, expr in PARTES],
         *[(f"Δ12 {nome}", "Ponte", VARIACAO_REAIS,
-           f"VAR a = [{nome} Hoje]\nVAR b = [{nome} 12 Meses Antes]\nRETURN\n"
+           f"VAR a = [Ponte {nome} Hoje]\nVAR b = [Ponte {nome} 12 Meses Antes]\nRETURN\n"
            "    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )") for nome, _ in PARTES],
         ("Texto Ponte De Para", "Ponte", None,
          "VAR s = [Semana de Referência]\nRETURN\n    IF (\n        ISBLANK ( [Δ12 Posto] ),\n        \"\",\n"
-         '        "De R$ " & FORMAT ( [Posto 12 Meses Antes], "0.00" ) & " para R$ " & FORMAT ( [Posto Hoje], "0.00" )\n'
+         '        "De R$ " & FORMAT ( [Ponte Posto 12 Meses Antes], "0.00" ) & " para R$ " & FORMAT ( [Ponte Posto Hoje], "0.00" )\n'
          '            & " por litro (" & FORMAT ( s - 364, "dd/MM/yy" ) & " a " & FORMAT ( s, "dd/MM/yy" ) & ")"\n    )'),
         ("Conclusão 12 Meses", "Ponte", None,
          "VAR d = [Δ12 Posto]\nRETURN\n    SWITCH (\n        TRUE (),\n        ISBLANK ( d ), \"\",\n"

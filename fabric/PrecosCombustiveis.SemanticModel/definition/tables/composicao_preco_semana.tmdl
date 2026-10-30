@@ -471,7 +471,7 @@ table composicao_preco_semana
 		displayFolder: Visão geral
 		lineageTag: 8ac1d2f4-a2b9-5fac-a236-c49eac541787
 
-	measure 'Posto 12 Meses Antes' = ```
+	measure 'Ponte Posto 12 Meses Antes' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR s = [Semana de Referência] - 364
 			RETURN
@@ -485,9 +485,9 @@ table composicao_preco_semana
 			```
 		formatString: """R$"" #,0.00"
 		displayFolder: Ponte
-		lineageTag: 0fa26d12-75de-5f3b-a1d7-6106bdf5e118
+		lineageTag: 8f4967a9-a8a8-50e7-87a9-2dbd59979545
 
-	measure 'Refinaria 12 Meses Antes' = ```
+	measure 'Ponte Refinaria 12 Meses Antes' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR s = [Semana de Referência] - 364
 			RETURN
@@ -501,9 +501,9 @@ table composicao_preco_semana
 			```
 		formatString: """R$"" #,0.00"
 		displayFolder: Ponte
-		lineageTag: 7789b41d-0409-594e-887d-ac1a584c2137
+		lineageTag: bb8be852-74ae-53d3-8cbb-eb0e4939db92
 
-	measure 'Impostos 12 Meses Antes' = ```
+	measure 'Ponte Impostos 12 Meses Antes' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR s = [Semana de Referência] - 364
 			RETURN
@@ -517,9 +517,9 @@ table composicao_preco_semana
 			```
 		formatString: """R$"" #,0.00"
 		displayFolder: Ponte
-		lineageTag: 510024a2-1a85-55f2-92e2-df9b7f18c2b4
+		lineageTag: 511aaab9-0e27-5e97-b5b3-7ee21996c77f
 
-	measure 'Outros 12 Meses Antes' = ```
+	measure 'Ponte Outros 12 Meses Antes' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR s = [Semana de Referência] - 364
 			RETURN
@@ -533,9 +533,9 @@ table composicao_preco_semana
 			```
 		formatString: """R$"" #,0.00"
 		displayFolder: Ponte
-		lineageTag: f364438e-0f03-5626-b5f4-7ae0fcca6d8a
+		lineageTag: 044525a3-4fc8-577b-8af1-3d67bbb2c79f
 
-	measure 'Posto Hoje' = ```
+	measure 'Ponte Posto Hoje' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR s = [Semana de Referência] - 0
 			RETURN
@@ -549,9 +549,9 @@ table composicao_preco_semana
 			```
 		formatString: """R$"" #,0.00"
 		displayFolder: Ponte
-		lineageTag: a8d73dd0-18f6-5796-8f34-35057b43816e
+		lineageTag: 368d6194-fcd4-512f-ada5-03e8122794a8
 
-	measure 'Refinaria Hoje' = ```
+	measure 'Ponte Refinaria Hoje' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR s = [Semana de Referência] - 0
 			RETURN
@@ -565,9 +565,9 @@ table composicao_preco_semana
 			```
 		formatString: """R$"" #,0.00"
 		displayFolder: Ponte
-		lineageTag: 4d6fbffc-7507-5062-bdfa-bef515814425
+		lineageTag: df87390b-95d4-5773-bceb-c7329dec61db
 
-	measure 'Impostos Hoje' = ```
+	measure 'Ponte Impostos Hoje' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR s = [Semana de Referência] - 0
 			RETURN
@@ -581,9 +581,9 @@ table composicao_preco_semana
 			```
 		formatString: """R$"" #,0.00"
 		displayFolder: Ponte
-		lineageTag: 017b5861-375c-5eaf-a058-5ad27f9140a3
+		lineageTag: 316b02a7-eb6c-55df-b22c-5b288204f594
 
-	measure 'Outros Hoje' = ```
+	measure 'Ponte Outros Hoje' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR s = [Semana de Referência] - 0
 			RETURN
@@ -597,11 +597,11 @@ table composicao_preco_semana
 			```
 		formatString: """R$"" #,0.00"
 		displayFolder: Ponte
-		lineageTag: 9fab12d0-19a1-5646-bfa1-0a695ec1e1d1
+		lineageTag: 59160ab3-ab08-5cbd-96d3-24685fd90984
 
 	measure 'Δ12 Posto' = ```
-			VAR a = [Posto Hoje]
-			VAR b = [Posto 12 Meses Antes]
+			VAR a = [Ponte Posto Hoje]
+			VAR b = [Ponte Posto 12 Meses Antes]
 			RETURN
 			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
 			```
@@ -610,8 +610,8 @@ table composicao_preco_semana
 		lineageTag: 8b247713-5584-5c4f-8fbd-ffb08d35bf25
 
 	measure 'Δ12 Refinaria' = ```
-			VAR a = [Refinaria Hoje]
-			VAR b = [Refinaria 12 Meses Antes]
+			VAR a = [Ponte Refinaria Hoje]
+			VAR b = [Ponte Refinaria 12 Meses Antes]
 			RETURN
 			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
 			```
@@ -620,8 +620,8 @@ table composicao_preco_semana
 		lineageTag: 2a3df33c-a7db-5989-9e78-9114bd900aa9
 
 	measure 'Δ12 Impostos' = ```
-			VAR a = [Impostos Hoje]
-			VAR b = [Impostos 12 Meses Antes]
+			VAR a = [Ponte Impostos Hoje]
+			VAR b = [Ponte Impostos 12 Meses Antes]
 			RETURN
 			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
 			```
@@ -630,8 +630,8 @@ table composicao_preco_semana
 		lineageTag: 93f4f8ed-a30d-5bf7-a24e-e2016a2eea6c
 
 	measure 'Δ12 Outros' = ```
-			VAR a = [Outros Hoje]
-			VAR b = [Outros 12 Meses Antes]
+			VAR a = [Ponte Outros Hoje]
+			VAR b = [Ponte Outros 12 Meses Antes]
 			RETURN
 			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
 			```
@@ -645,7 +645,7 @@ table composicao_preco_semana
 			    IF (
 			        ISBLANK ( [Δ12 Posto] ),
 			        "",
-			        "De R$ " & FORMAT ( [Posto 12 Meses Antes], "0.00" ) & " para R$ " & FORMAT ( [Posto Hoje], "0.00" )
+			        "De R$ " & FORMAT ( [Ponte Posto 12 Meses Antes], "0.00" ) & " para R$ " & FORMAT ( [Ponte Posto Hoje], "0.00" )
 			            & " por litro (" & FORMAT ( s - 364, "dd/MM/yy" ) & " a " & FORMAT ( s, "dd/MM/yy" ) & ")"
 			    )
 			```
