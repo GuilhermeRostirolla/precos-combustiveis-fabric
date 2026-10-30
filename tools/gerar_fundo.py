@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import layout_visao_geral as L  # noqa: E402
 
 DESTINO = Path(__file__).resolve().parent / "recursos" / "fundo_visao_geral.png"
-C = L.COR
+C = {**L.COR, "caixa": "#0D1424"}
 
 
 def caixa(x, y, w, h, fundo=C["cartao"], borda=True, raio=10):
@@ -51,9 +51,14 @@ def html() -> str:
                texto(g["titulo"], g["x"] + 16, g["y"] + 15, 14, 600, C["texto"]),
                texto(g["subtitulo"], g["x"] + 16, g["y"] + 35, 12, 400, C["suave"]),
                caixa(L.PONTE["x"], L.PONTE["y"], L.PONTE["w"], L.PONTE["h"]),
-               texto(L.PONTE["titulo"], L.PONTE["x"] + 16, L.PONTE["y"] + 15, 14, 600, C["texto"]),
-               caixa(L.CONCLUSAO["x"], L.CONCLUSAO["y"], L.CONCLUSAO["w"], L.CONCLUSAO["h"]),
-               texto(L.CONCLUSAO["titulo"], L.CONCLUSAO["x"] + 16, L.CONCLUSAO["y"] + 15, 14, 600, C["texto"])]
+               texto(L.PONTE["titulo"], L.PONTE["x"] + 16, L.PONTE["y"] + 15, 14, 600, C["texto"])]
+    for i, nome in enumerate(L.BLOCOS):
+        x = L.bloco_x(i)
+        partes += [caixa(x, L.BLOCO_Y, L.BLOCO_W, L.BLOCO_H, fundo=C["caixa"], borda=False, raio=8),
+                   texto(nome, x + 14, L.BLOCO_Y + 12, 12, 500, C["suave"])]
+        if i < len(L.OPERADORES):
+            partes.append(texto(L.OPERADORES[i], x + L.BLOCO_W + L.BLOCO_OPERADOR / 2 - 7, L.BLOCO_Y + 30, 22, 400,
+                                C["apagado"]))
     return ('<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0}'
             f'body{{width:1280px;height:720px;background:{C["pagina"]};position:relative;'
             'font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}</style></head><body>'

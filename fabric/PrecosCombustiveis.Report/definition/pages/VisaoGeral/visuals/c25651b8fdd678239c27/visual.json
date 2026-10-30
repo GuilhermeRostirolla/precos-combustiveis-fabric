@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "c25651b8fdd678239c27",
   "position": {
-    "x": 860,
-    "y": 552,
+    "x": 54.0,
+    "y": 656,
     "z": 2200,
-    "height": 30,
-    "width": 380,
+    "height": 22,
+    "width": 186.4,
     "tabOrder": 2200
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "composicao_preco_semana"
+                      "Entity": "componente"
                     }
                   },
-                  "Property": "Conclusão 12 Meses"
+                  "Property": "Data 12 Meses Antes"
                 }
               },
-              "queryRef": "composicao_preco_semana.Conclusão 12 Meses",
-              "nativeQueryRef": "Conclusão 12 Meses"
+              "queryRef": "componente.Data 12 Meses Antes",
+              "nativeQueryRef": "Data 12 Meses Antes"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "13.0D"
+                  "Value": "8.5D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Conclusão 12 Meses"
+                    "Literal": {
+                      "Value": "'#8B95A9'"
                     }
                   }
                 }
@@ -89,14 +84,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "13.0D"
+                  "Value": "8.5D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -104,13 +99,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "composicao_preco_semana"
-                        }
-                      },
-                      "Property": "Cor Conclusão 12 Meses"
+                    "Literal": {
+                      "Value": "'#8B95A9'"
                     }
                   }
                 }
@@ -148,7 +138,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#111A2B'"
+                      "Value": "'#0D1424'"
                     }
                   }
                 }

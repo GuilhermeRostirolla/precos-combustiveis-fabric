@@ -35,6 +35,13 @@ GRAFICO = {"x": 28, "y": 304, "w": 1224, "h": 196,
            "titulo": "O que aconteceu com o preço, mês a mês",
            "subtitulo": "Variação do preço médio em relação ao mês anterior · últimos 12 meses"}
 
-# por que mudou: ponte de preço (esquerda) e conclusão em texto (direita)
-PONTE = {"x": 28, "y": 512, "w": 808, "h": 184, "titulo": "Por que o preço mudou em 12 meses"}
-CONCLUSAO = {"x": 848, "y": 512, "w": 404, "h": 184, "titulo": "Em resumo"}
+# por que mudou em 12 meses: frase no topo e a conta em blocos
+PONTE = {"x": 28, "y": 512, "w": 1224, "h": 184, "titulo": "Por que o preço mudou em 12 meses"}
+BLOCOS = ["Preço há 12 meses", "Refinaria", "Impostos", "Etanol, frete e margens", "Preço hoje"]
+OPERADORES = ["+", "+", "+", "="]
+BLOCO_Y, BLOCO_H, BLOCO_OPERADOR = 590, 92, 40
+BLOCO_W = (1224 - 32 - BLOCO_OPERADOR * 4) / 5
+
+
+def bloco_x(i: int) -> float:
+    return 28 + 16 + i * (BLOCO_W + BLOCO_OPERADOR)

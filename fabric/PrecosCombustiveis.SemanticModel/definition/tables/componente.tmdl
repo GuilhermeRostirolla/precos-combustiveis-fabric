@@ -2,6 +2,146 @@ table componente
 	lineageTag: bf49bf38-cc4a-5ef8-a0b3-83168b6e86f5
 	sourceLineageTag: [gold].[componente]
 
+	measure 'Principal Motivo 12 Meses' = ```
+			VAR d = [Δ12 Posto]
+			VAR s = IF ( d < 0, -1, 1 )
+			VAR r = [Δ12 Refinaria] * s
+			VAR i = [Δ12 Impostos] * s
+			VAR o = [Δ12 Outros] * s
+			RETURN
+			    SWITCH ( TRUE (), o >= r && o >= i, "Outros", r >= i, "Refinaria", "Impostos" )
+			```
+		displayFolder: Ponte
+		lineageTag: eba9b91c-9ef5-5ff0-846e-74ed29d0da61
+
+	measure 'Manchete 12 Meses' = ```
+			VAR d = [Δ12 Posto]
+			VAR r = [Δ12 Refinaria]
+			VAR m = [Principal Motivo 12 Meses]
+			VAR motivo = SWITCH ( m, "Refinaria", "da refinaria", "Impostos", "dos impostos", "de etanol, frete e margens" )
+			VAR refinaria =
+			    SWITCH ( TRUE (), r <= -0.01, "A refinaria baixou R$ " & FORMAT ( -r, "0.00" ),
+			        r >= 0.01, "A refinaria subiu R$ " & FORMAT ( r, "0.00" ), "A refinaria ficou estável" )
+			RETURN
+			    IF (
+			        ISBLANK ( d ),
+			        "",
+			        [Conclusão 12 Meses] & " " & refinaria & "; "
+			            & IF ( d >= 0, "o aumento", "a queda" ) & " veio principalmente " & motivo & "."
+			    )
+			```
+		displayFolder: Ponte
+		lineageTag: 59076442-686c-56d6-bf39-a3a673f4f626
+
+	measure 'Texto Preço 12 Meses Antes' = IF ( ISBLANK ( [Ponte Posto 12 Meses Antes] ), "", "R$ " & FORMAT ( [Ponte Posto 12 Meses Antes], "0.00" ) )
+		displayFolder: Ponte
+		lineageTag: b4f87556-f2e5-5b74-8176-74a887b4ed71
+
+	measure 'Texto Preço Hoje' = IF ( ISBLANK ( [Ponte Posto Hoje] ), "", "R$ " & FORMAT ( [Ponte Posto Hoje], "0.00" ) )
+		displayFolder: Ponte
+		lineageTag: 70a578f9-7d88-5aba-bdff-9f240a636f7d
+
+	measure 'Data 12 Meses Antes' = "semana de " & FORMAT ( [Semana de Referência] - 364, "dd/MM/yy" )
+		displayFolder: Ponte
+		lineageTag: bb8105a8-c311-557c-a24c-656842b49690
+
+	measure 'Data Hoje' = "semana de " & FORMAT ( [Semana de Referência], "dd/MM/yy" )
+		displayFolder: Ponte
+		lineageTag: ad95e3a8-5e75-55a9-b3ef-74c04cd87327
+
+	measure 'Texto Δ12 Refinaria' = ```
+			VAR d = [Δ12 Refinaria]
+			RETURN
+			    IF ( ISBLANK ( d ), "", IF ( d < 0, "-", "+" ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ) )
+			```
+		displayFolder: Ponte
+		lineageTag: dd03a91b-4b5a-55fc-8896-c10d410a784b
+
+	measure 'Cor Δ12 Refinaria' = ```
+			VAR d = [Δ12 Refinaria]
+			RETURN
+			    IF ( d >= 0.01, "#E8833A", IF ( d <= -0.01, "#3BA3D9", "#8B95A9" ) )
+			```
+		displayFolder: Cores
+		lineageTag: ca9d6139-cdee-52bc-82ae-2750576d8cef
+
+	measure 'Legenda Δ12 Refinaria' = ```
+			VAR d = [Δ12 Refinaria]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( d ), "",
+			        [Principal Motivo 12 Meses] = "Refinaria" && ABS ( [Δ12 Posto] ) >= 0.02, "▲ principal motivo",
+			        d >= 0.01, "subiu",
+			        d <= -0.01, "caiu",
+			        "ficou estável"
+			    )
+			```
+		displayFolder: Ponte
+		lineageTag: da43fcdd-2aef-5038-b0c7-3fc9689177a5
+
+	measure 'Texto Δ12 Impostos' = ```
+			VAR d = [Δ12 Impostos]
+			RETURN
+			    IF ( ISBLANK ( d ), "", IF ( d < 0, "-", "+" ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ) )
+			```
+		displayFolder: Ponte
+		lineageTag: e654e0e9-e22d-5bd5-9d51-f17105c08a14
+
+	measure 'Cor Δ12 Impostos' = ```
+			VAR d = [Δ12 Impostos]
+			RETURN
+			    IF ( d >= 0.01, "#E8833A", IF ( d <= -0.01, "#3BA3D9", "#8B95A9" ) )
+			```
+		displayFolder: Cores
+		lineageTag: 46ce2b16-8988-5fea-aee3-23b6b575a2f9
+
+	measure 'Legenda Δ12 Impostos' = ```
+			VAR d = [Δ12 Impostos]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( d ), "",
+			        [Principal Motivo 12 Meses] = "Impostos" && ABS ( [Δ12 Posto] ) >= 0.02, "▲ principal motivo",
+			        d >= 0.01, "subiu",
+			        d <= -0.01, "caiu",
+			        "ficou estável"
+			    )
+			```
+		displayFolder: Ponte
+		lineageTag: 76ada8eb-d0e8-5f78-935a-b6f9ee14e44c
+
+	measure 'Texto Δ12 Outros' = ```
+			VAR d = [Δ12 Outros]
+			RETURN
+			    IF ( ISBLANK ( d ), "", IF ( d < 0, "-", "+" ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ) )
+			```
+		displayFolder: Ponte
+		lineageTag: 4af43e20-ba39-575e-833f-7096dd3e3981
+
+	measure 'Cor Δ12 Outros' = ```
+			VAR d = [Δ12 Outros]
+			RETURN
+			    IF ( d >= 0.01, "#E8833A", IF ( d <= -0.01, "#3BA3D9", "#8B95A9" ) )
+			```
+		displayFolder: Cores
+		lineageTag: dce3e1b8-2fa0-547b-9798-eaa16e2be20b
+
+	measure 'Legenda Δ12 Outros' = ```
+			VAR d = [Δ12 Outros]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( d ), "",
+			        [Principal Motivo 12 Meses] = "Outros" && ABS ( [Δ12 Posto] ) >= 0.02, "▲ principal motivo",
+			        d >= 0.01, "subiu",
+			        d <= -0.01, "caiu",
+			        "ficou estável"
+			    )
+			```
+		displayFolder: Ponte
+		lineageTag: 714e881c-93b8-55f1-8683-a826d7f6e7a9
+
 	measure 'Variação 12 Meses do Componente' = ```
 			SWITCH (
 			    SELECTEDVALUE ( componente[componente] ),

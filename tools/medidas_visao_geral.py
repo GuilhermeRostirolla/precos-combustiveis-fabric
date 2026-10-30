@@ -283,6 +283,36 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          '        IF ( eventos <> "", eventos & ". " & partes, partes )\n    )'),
     ]
     componente = [
+        # blocos da conta: preço há 12 meses + refinaria + impostos + outros = preço hoje
+        ("Principal Motivo 12 Meses", "Ponte", None,
+         "VAR d = [Δ12 Posto]\nVAR s = IF ( d < 0, -1, 1 )\nVAR r = [Δ12 Refinaria] * s\nVAR i = [Δ12 Impostos] * s\n"
+         "VAR o = [Δ12 Outros] * s\nRETURN\n    SWITCH ( TRUE (), o >= r && o >= i, \"Outros\", r >= i, \"Refinaria\", "
+         "\"Impostos\" )"),
+        ("Manchete 12 Meses", "Ponte", None,
+         "VAR d = [Δ12 Posto]\nVAR r = [Δ12 Refinaria]\nVAR m = [Principal Motivo 12 Meses]\n"
+         "VAR motivo = SWITCH ( m, \"Refinaria\", \"da refinaria\", \"Impostos\", \"dos impostos\", "
+         "\"de etanol, frete e margens\" )\n"
+         "VAR refinaria =\n    SWITCH ( TRUE (), r <= -0.01, \"A refinaria baixou R$ \" & FORMAT ( -r, \"0.00\" ),\n"
+         "        r >= 0.01, \"A refinaria subiu R$ \" & FORMAT ( r, \"0.00\" ), \"A refinaria ficou estável\" )\n"
+         "RETURN\n    IF (\n        ISBLANK ( d ),\n        \"\",\n        [Conclusão 12 Meses] & \" \" & refinaria & \"; \"\n"
+         "            & IF ( d >= 0, \"o aumento\", \"a queda\" ) & \" veio principalmente \" & motivo & \".\"\n    )"),
+        ("Texto Preço 12 Meses Antes", "Ponte", None,
+         'IF ( ISBLANK ( [Ponte Posto 12 Meses Antes] ), "", "R$ " & FORMAT ( [Ponte Posto 12 Meses Antes], "0.00" ) )'),
+        ("Texto Preço Hoje", "Ponte", None,
+         'IF ( ISBLANK ( [Ponte Posto Hoje] ), "", "R$ " & FORMAT ( [Ponte Posto Hoje], "0.00" ) )'),
+        ("Data 12 Meses Antes", "Ponte", None, '"semana de " & FORMAT ( [Semana de Referência] - 364, "dd/MM/yy" )'),
+        ("Data Hoje", "Ponte", None, '"semana de " & FORMAT ( [Semana de Referência], "dd/MM/yy" )'),
+        *[x for parte in ("Refinaria", "Impostos", "Outros") for x in (
+            (f"Texto Δ12 {parte}", "Ponte", None,
+             f"VAR d = [Δ12 {parte}]\nRETURN\n    IF ( ISBLANK ( d ), \"\", {com_sinal('d')} )"),
+            (f"Cor Δ12 {parte}", "Cores", None,
+             f'VAR d = [Δ12 {parte}]\nRETURN\n    IF ( d >= 0.01, "{CORES["alta"]}", IF ( d <= -0.01, "{CORES["baixa"]}", '
+             f'"{CORES["neutra"]}" ) )'),
+            (f"Legenda Δ12 {parte}", "Ponte", None,
+             f"VAR d = [Δ12 {parte}]\nRETURN\n    SWITCH (\n        TRUE (),\n        ISBLANK ( d ), \"\",\n"
+             f"        [Principal Motivo 12 Meses] = \"{parte}\" && ABS ( [Δ12 Posto] ) >= 0.02, \"▲ principal motivo\",\n"
+             "        d >= 0.01, \"subiu\",\n        d <= -0.01, \"caiu\",\n        \"ficou estável\"\n    )"),
+        )],
         ("Variação 12 Meses do Componente", "Ponte", VARIACAO_REAIS,
          "SWITCH (\n    SELECTEDVALUE ( componente[componente] ),\n    \"Refinaria\", [Δ12 Refinaria],\n"
          "    \"Impostos\", [Δ12 Impostos],\n    [Δ12 Outros]\n)"),
