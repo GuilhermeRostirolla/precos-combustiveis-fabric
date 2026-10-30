@@ -2,37 +2,18 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "4c75e0a8833d882cb6dc",
   "position": {
-    "x": 1032,
-    "y": 209,
+    "x": 1030,
+    "y": 215,
     "z": 1700,
-    "height": 30,
-    "width": 203,
+    "height": 20,
+    "width": 243,
     "tabOrder": 1700
   },
   "visual": {
-    "visualType": "hundredPercentStackedBarChart",
+    "visualType": "multiRowCard",
     "query": {
       "queryState": {
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_produto"
-                    }
-                  },
-                  "Property": "nome"
-                }
-              },
-              "queryRef": "dim_produto.nome",
-              "nativeQueryRef": "nome",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
+        "Values": {
           "projections": [
             {
               "field": {
@@ -42,94 +23,35 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Barra Etanol"
+                  "Property": "Texto Barra Etanol"
                 }
               },
-              "queryRef": "composicao_preco_semana.Barra Etanol",
-              "nativeQueryRef": "Barra Etanol"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "composicao_preco_semana"
-                    }
-                  },
-                  "Property": "Resto Barra Etanol"
-                }
-              },
-              "queryRef": "composicao_preco_semana.Resto Barra Etanol",
-              "nativeQueryRef": "Resto Barra Etanol"
+              "queryRef": "composicao_preco_semana.Texto Barra Etanol",
+              "nativeQueryRef": "Texto Barra Etanol"
             }
           ]
         }
       }
     },
     "objects": {
-      "categoryAxis": [
+      "dataLabels": [
         {
           "properties": {
-            "show": {
+            "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "valueAxis": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
+                  "Value": "7.0D"
                 }
               }
             },
-            "gridlineShow": {
+            "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "'Segoe UI'"
                 }
               }
-            }
-          }
-        }
-      ],
-      "labels": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "legend": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "dataPoint": [
-        {
-          "properties": {
-            "fill": {
+            },
+            "color": {
               "solid": {
                 "color": {
                   "expr": {
@@ -140,37 +62,85 @@
                 }
               }
             }
-          },
-          "selector": {
-            "metadata": "composicao_preco_semana.Barra Etanol"
           }
-        },
+        }
+      ],
+      "categoryLabels": [
         {
           "properties": {
-            "fill": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "cardTitle": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "7.0D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "color": {
               "solid": {
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F2A40'"
+                      "Value": "'#4CC38A'"
                     }
                   }
                 }
               }
             }
-          },
-          "selector": {
-            "metadata": "composicao_preco_semana.Resto Barra Etanol"
           }
         }
       ],
-      "layout": [
+      "card": [
         {
           "properties": {
-            "innerPadding": {
+            "outline": {
               "expr": {
                 "Literal": {
-                  "Value": "50.0D"
+                  "Value": "'None'"
+                }
+              }
+            },
+            "barShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "cardPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
+                }
+              }
+            },
+            "cardBackground": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#111A2B'"
+                    }
+                  }
                 }
               }
             }

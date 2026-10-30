@@ -2,37 +2,18 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "ce4bb0d709692be7b991",
   "position": {
-    "x": 785,
-    "y": 209,
+    "x": 783,
+    "y": 215,
     "z": 1400,
-    "height": 30,
-    "width": 203,
+    "height": 20,
+    "width": 243,
     "tabOrder": 1400
   },
   "visual": {
-    "visualType": "hundredPercentStackedBarChart",
+    "visualType": "multiRowCard",
     "query": {
       "queryState": {
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_produto"
-                    }
-                  },
-                  "Property": "nome"
-                }
-              },
-              "queryRef": "dim_produto.nome",
-              "nativeQueryRef": "nome",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
+        "Values": {
           "projections": [
             {
               "field": {
@@ -42,94 +23,35 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Barra Repasse 4 Semanas"
+                  "Property": "Texto Barra Repasse"
                 }
               },
-              "queryRef": "composicao_preco_semana.Barra Repasse 4 Semanas",
-              "nativeQueryRef": "Barra Repasse 4 Semanas"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "composicao_preco_semana"
-                    }
-                  },
-                  "Property": "Resto Barra Repasse"
-                }
-              },
-              "queryRef": "composicao_preco_semana.Resto Barra Repasse",
-              "nativeQueryRef": "Resto Barra Repasse"
+              "queryRef": "composicao_preco_semana.Texto Barra Repasse",
+              "nativeQueryRef": "Texto Barra Repasse"
             }
           ]
         }
       }
     },
     "objects": {
-      "categoryAxis": [
+      "dataLabels": [
         {
           "properties": {
-            "show": {
+            "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "valueAxis": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
+                  "Value": "7.0D"
                 }
               }
             },
-            "gridlineShow": {
+            "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "'Segoe UI'"
                 }
               }
-            }
-          }
-        }
-      ],
-      "labels": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "legend": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "dataPoint": [
-        {
-          "properties": {
-            "fill": {
+            },
+            "color": {
               "solid": {
                 "color": {
                   "expr": {
@@ -140,37 +62,85 @@
                 }
               }
             }
-          },
-          "selector": {
-            "metadata": "composicao_preco_semana.Barra Repasse 4 Semanas"
           }
-        },
+        }
+      ],
+      "categoryLabels": [
         {
           "properties": {
-            "fill": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "cardTitle": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "7.0D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "color": {
               "solid": {
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F2A40'"
+                      "Value": "'#3BA3D9'"
                     }
                   }
                 }
               }
             }
-          },
-          "selector": {
-            "metadata": "composicao_preco_semana.Resto Barra Repasse"
           }
         }
       ],
-      "layout": [
+      "card": [
         {
           "properties": {
-            "innerPadding": {
+            "outline": {
               "expr": {
                 "Literal": {
-                  "Value": "50.0D"
+                  "Value": "'None'"
+                }
+              }
+            },
+            "barShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "cardPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
+                }
+              }
+            },
+            "cardBackground": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#111A2B'"
+                    }
+                  }
                 }
               }
             }

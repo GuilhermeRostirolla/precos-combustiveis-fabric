@@ -21,7 +21,7 @@ SEMANA = {"x": 428, "y": 91, "w": 176, "h": 30, "rotulo": "Semana", "rotulo_w": 
 CARTAO_Y, CARTAO_W, CARTAO_H, CARTAO_GAP = 138, 235, 150, 12
 CARTOES = ["Preço médio no posto", "Variação em 12 meses", "Diferença posto − refinaria",
            "Refinaria nas últimas 4 semanas", "Etanol ÷ gasolina"]
-BARRA_Y, BARRA_H = 80, 12         # barras de progresso (relativo ao cartão)
+BARRA_Y, BARRA_H = 82, 8          # trilho das barras de progresso (relativo ao cartão)
 BARRA_X, BARRA_W = 16, 203
 SUFIXO_LITRO_X = 128              # "/litro" depois de "R$ 0,00" (largura fixa: um dígito antes da vírgula)
 

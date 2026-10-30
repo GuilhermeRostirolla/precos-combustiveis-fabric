@@ -41,6 +41,9 @@ def html() -> str:
         if i == 1:
             partes += [texto("no posto", x + 16, y + 76, 11, 400, C["suave"]),
                        texto("na refinaria", x + 112, y + 76, 11, 400, C["suave"])]
+        if i in (3, 4):
+            partes.append(caixa(x + L.BARRA_X, y + L.BARRA_Y, L.BARRA_W, L.BARRA_H, fundo=C["trilho"],
+                                borda=False, raio=4))
         if i == 4:
             marca = x + L.BARRA_X + round(0.7 * L.BARRA_W)
             partes.append(f'<div style="position:absolute;left:{marca}px;top:{y + L.BARRA_Y - 4}px;width:2px;'

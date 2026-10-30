@@ -330,7 +330,8 @@ def visao_geral() -> Pagina:
     ], start=3):
         x = L.cartao_x(i)
         p.texto_dinamico(valor, x + 12, y + 34, 211, 40, 22.0, medida_cor=cor_valor, forte=True)
-        p.barra(barra, resto, x + L.BARRA_X, y + L.BARRA_Y, L.BARRA_W, L.BARRA_H, cor_barra)
+        p.texto_dinamico("Texto " + barra.replace("Barra ", "Barra ").replace(" 4 Semanas", ""), x + L.BARRA_X - 2,
+                         y + L.BARRA_Y - 5, L.BARRA_W + 40, 20, 7.0, cor_texto=cor_barra)
         p.texto_dinamico(apoio, x + 12, y + 114, 211, 24, 8.5, cor_texto=COR["suave"])
     # o que aconteceu com o preço, mês a mês
     g = L.GRAFICO
