@@ -168,7 +168,8 @@ class Pagina:
                    "selection": [{"properties": selecao}],
                    "header": [{"properties": {"show": lit(False)}}],
                    "items": [{"properties": {"fontColor": cor(COR["texto"]), "background": cor(COR["cartao"]),
-                                             "textSize": lit(10.0), "fontFamily": lit(FONTE), "outline": lit("None")}}]}
+                                             "textSize": lit(10.0), "fontFamily": lit(FONTE), "outline": lit("None"),
+                                             "outlineColor": cor(COR["cartao"])}}]}
         if padrao is not None:
             tabela, col = coluna.split(".", 1)
             objetos["general"][0]["properties"]["filter"] = {"filter": condicao_em(tabela, col, [padrao])}
@@ -207,7 +208,7 @@ class Pagina:
         objetos = {
             "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(10.0), "labelColor": cor(COR["texto"]),
                                              "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
-                                             "maxMarginFactor": lit(30), "innerPadding": lit(35.0)}}],
+                                             "maxMarginFactor": lit(45), "innerPadding": lit(35.0)}}],
             "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
             "labels": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "color": cor(COR["texto"]),
                                        "fontFamily": lit(FONTE_FORTE)}}],
@@ -340,6 +341,7 @@ class Pagina:
                 {"textRuns": [{"value": texto, "textStyle": estilo}]}]}}]}})
 
     def linhas(self, x, y, w, h, eixo, medidas, cores):
+        """Duas linhas, cada uma no seu eixo (a primeira à esquerda, a segunda à direita)."""
         pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
                   for m, c in zip([m[0] for m in medidas], cores, strict=True)]
         objetos = {
@@ -349,7 +351,11 @@ class Pagina:
             "valueAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
                                           "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
                                           "gridlineShow": lit(True), "gridlineColor": cor(COR["grade"]),
-                                          "labelDisplayUnits": lit(1.0), "labelPrecision": lit(2)}}],
+                                          "labelDisplayUnits": lit(1.0), "labelPrecision": lit(2),
+                                          "secShow": lit(True), "secFontSize": lit(8.5),
+                                          "secLabelColor": cor(cores[1]), "secFontFamily": lit(FONTE),
+                                          "secShowAxisTitle": lit(False), "secLabelDisplayUnits": lit(1.0),
+                                          "secLabelPrecision": lit(2), "labelColor": cor(cores[0])}}],
             "legend": [{"properties": {"show": lit(True), "position": lit("TopRight"), "showTitle": lit(False),
                                        "fontSize": lit(9.0), "labelColor": cor(COR["suave"]),
                                        "fontFamily": lit(FONTE)}}],
@@ -360,7 +366,8 @@ class Pagina:
         return self._add(x, y, w, h, {
             "visualType": "lineChart",
             "query": {"queryState": {"Category": {"projections": [projecao(eixo, ativo=True)]},
-                                     "Y": {"projections": campos(medidas)}},
+                                     "Y": {"projections": campos(medidas[:1])},
+                                     "Y2": {"projections": campos(medidas[1:])}},
                       "sortDefinition": {"sort": [{"field": campo(eixo), "direction": "Ascending"}]}},
             "objects": objetos})
 

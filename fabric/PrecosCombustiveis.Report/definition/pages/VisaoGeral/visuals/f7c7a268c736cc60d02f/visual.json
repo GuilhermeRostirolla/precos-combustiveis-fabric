@@ -48,7 +48,11 @@
               "queryRef": "componente.Posto na Semana",
               "nativeQueryRef": "Posto",
               "displayName": "Posto"
-            },
+            }
+          ]
+        },
+        "Y2": {
+          "projections": [
             {
               "field": {
                 "Measure": {
@@ -160,7 +164,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#8B95A9'"
+                      "Value": "'#E8833A'"
                     }
                   }
                 }
@@ -206,6 +210,59 @@
               }
             },
             "labelPrecision": {
+              "expr": {
+                "Literal": {
+                  "Value": "2L"
+                }
+              }
+            },
+            "secShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "secFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8.5D"
+                }
+              }
+            },
+            "secLabelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#3BA3D9'"
+                    }
+                  }
+                }
+              }
+            },
+            "secFontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "secShowAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "secLabelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1.0D"
+                }
+              }
+            },
+            "secLabelPrecision": {
               "expr": {
                 "Literal": {
                   "Value": "2L"
