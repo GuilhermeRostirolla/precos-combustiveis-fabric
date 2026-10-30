@@ -197,8 +197,8 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Barra Etanol", "Visão geral", "0%", "MAX ( 0, MIN ( 1, [Etanol ÷ Gasolina] ) )"),
         ("Texto Barra Repasse", "Visão geral", None,
          "// barra de progresso feita de traços (o trilho está na imagem de fundo)\n"
-         'REPT ( "█", ROUND ( [Barra Repasse 4 Semanas] * 36, 0 ) )'),
-        ("Texto Barra Etanol", "Visão geral", None, 'REPT ( "█", ROUND ( COALESCE ( [Barra Etanol], 0 ) * 36, 0 ) )'),
+         'REPT ( "█", ROUND ( [Barra Repasse 4 Semanas] * 30, 0 ) )'),
+        ("Texto Barra Etanol", "Visão geral", None, 'REPT ( "█", ROUND ( COALESCE ( [Barra Etanol], 0 ) * 30, 0 ) )'),
         ("Resto Barra Repasse", "Visão geral", "0%", "1 - [Barra Repasse 4 Semanas]"),
         ("Resto Barra Etanol", "Visão geral", "0%", "1 - COALESCE ( [Barra Etanol], 0 )"),
         ("Variação Mensal Posto", "Gráfico", "+0.0%;-0.0%;0.0%", variacao_mensal(f"AVERAGE ( {C}[preco_posto] )")),
