@@ -1,0 +1,19 @@
+table uf_ranking
+	lineageTag: fc4c8a34-038d-5f02-81bd-fe55b83d9a43
+	sourceLineageTag: [gold].[uf_ranking]
+
+	column uf
+		dataType: string
+		lineageTag: 9d50a01b-274e-51b1-bc40-d7c9fabacc4d
+		sourceLineageTag: uf
+		summarizeBy: none
+		sourceColumn: uf
+
+		annotation SummarizationSetBy = Automatic
+
+	partition uf_ranking = entity
+		mode: directLake
+		source
+			entityName: uf_ranking
+			schemaName: gold
+			expressionSource: DatabaseQuery

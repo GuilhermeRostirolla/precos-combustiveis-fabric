@@ -21,6 +21,7 @@ TABELAS = {
                    ("ano_mes", "string"), ("rotulo", "string"), ("mes_inicio", "date"), ("mes_rotulo", "string")],
     "dim_uf": [("uf", "string"), ("estado", "string"), ("regiao", "string"), ("ordem", "int")],
     "semana_referencia": [("semana", "date"), ("rotulo", "string")],
+    "uf_ranking": [("uf", "string")],
     "componente": [("componente", "string"), ("ordem", "int")],
     "evento": [("data", "date"), ("semana", "date"), ("produto", "string"), ("tipo", "string"),
                ("descricao", "string")],

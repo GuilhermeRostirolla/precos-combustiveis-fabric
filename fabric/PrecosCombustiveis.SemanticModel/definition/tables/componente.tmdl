@@ -209,6 +209,77 @@ table componente
 		displayFolder: Cores
 		lineageTag: edf5d765-c486-5afb-b5bd-98b8f6c7405e
 
+	measure 'Variação Semana Posto' = ```
+			VAR a = [Preço no Posto]
+			VAR b = [Preço no Posto Semana Anterior]
+			RETURN
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )
+			```
+		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		displayFolder: Visão geral
+		lineageTag: 4680876e-5738-59bb-924e-846045859913
+
+	measure 'Variação Semana Posto %' = ```
+			VAR a = [Preço no Posto]
+			VAR b = [Preço no Posto Semana Anterior]
+			RETURN
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), a / b - 1 )
+			```
+		formatString: +0.0%;-0.0%
+		displayFolder: Visão geral
+		lineageTag: ad257903-2569-5d7e-81b0-f418cf1921af
+
+	measure 'Cor Variação Semana' = ```
+			VAR d = [Variação Semana Posto]
+			RETURN
+			    IF ( d > 0, "#E8833A", IF ( d < 0, "#3BA3D9", "#8B95A9" ) )
+			```
+		displayFolder: Cores
+		lineageTag: 5c436e4a-1613-5336-910b-c2b1b6fb2ecb
+
+	measure 'Impostos % do Preço' = DIVIDE ( [Impostos no Litro], [Preço no Posto] )
+		formatString: "0% ""do preço"""
+		displayFolder: Visão geral
+		lineageTag: e5eb5e43-3c4f-5574-9521-15ce10487cde
+
+	measure 'Posto na Semana' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR ref = [Semana de Referência]
+			VAR s = MAX ( dim_semana[semana] )
+			RETURN
+			    IF ( s > ref - 364 && s <= ref, CALCULATE ( AVERAGE ( composicao_preco_semana[preco_posto] ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u ) )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Gráfico
+		lineageTag: eabb445c-4f41-5fc0-b0f6-fdc66ef7e6cb
+
+	measure 'Refinaria na Semana' = ```
+			// parte da refinaria dentro do litro vendido no posto
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR ref = [Semana de Referência]
+			VAR s = MAX ( dim_semana[semana] )
+			RETURN
+			    IF ( s > ref - 364 && s <= ref, CALCULATE ( AVERAGE ( composicao_preco_semana[refinaria] ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u ) )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Gráfico
+		lineageTag: a0f79096-e848-55cd-9cc3-37f64caf9208
+
+	measure 'Preço no Posto por Estado' = ```
+			VAR u = SELECTEDVALUE ( uf_ranking[uf] )
+			VAR s = [Semana de Referência]
+			RETURN
+			    CALCULATE ( AVERAGE ( composicao_preco_semana[preco_posto] ), REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u, composicao_preco_semana[semana] = s )
+			```
+		formatString: #,0.00
+		displayFolder: Gráfico
+		lineageTag: fa5285e2-87a7-5395-8a1f-b1c3f9fdf809
+
+	measure 'Cor do Estado' = IF ( SELECTEDVALUE ( uf_ranking[uf] ) = SELECTEDVALUE ( dim_uf[uf], "BR" ), "#E8833A", "#3A4660" )
+		displayFolder: Cores
+		lineageTag: 66e535f4-87f3-5d1e-a0b4-006298bed536
+
 	column componente
 		dataType: string
 		lineageTag: dad13dd1-4acf-5013-886a-4481cf6bda88

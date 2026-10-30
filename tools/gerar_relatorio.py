@@ -331,6 +331,59 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo(categoria), "direction": "Ascending"}]}},
             "objects": objetos})
 
+    def rotulo(self, texto, x, y, w, h, tamanho, cor_texto=COR["suave"], forte=False):
+        """Texto fixo (caixa de texto), na mesma fonte dos visuais."""
+        estilo = {"fontFamily": FONTE_FORTE if forte else FONTE, "fontSize": f"{tamanho}pt", "color": cor_texto}
+        return self._add(x, y, w, h, {
+            "visualType": "textbox",
+            "objects": {"general": [{"properties": {"paragraphs": [
+                {"textRuns": [{"value": texto, "textStyle": estilo}]}]}}]}})
+
+    def linhas(self, x, y, w, h, eixo, medidas, cores):
+        pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
+                  for m, c in zip([m[0] for m in medidas], cores, strict=True)]
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                             "gridlineShow": lit(False)}}],
+            "valueAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
+                                          "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                          "gridlineShow": lit(True), "gridlineColor": cor(COR["grade"]),
+                                          "labelDisplayUnits": lit(1.0), "labelPrecision": lit(2)}}],
+            "legend": [{"properties": {"show": lit(True), "position": lit("TopRight"), "showTitle": lit(False),
+                                       "fontSize": lit(9.0), "labelColor": cor(COR["suave"]),
+                                       "fontFamily": lit(FONTE)}}],
+            "lineStyles": [{"properties": {"strokeWidth": lit(3)}}],
+            "labels": [{"properties": {"show": lit(False)}}],
+            "dataPoint": pontos,
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "lineChart",
+            "query": {"queryState": {"Category": {"projections": [projecao(eixo, ativo=True)]},
+                                     "Y": {"projections": campos(medidas)}},
+                      "sortDefinition": {"sort": [{"field": campo(eixo), "direction": "Ascending"}]}},
+            "objects": objetos})
+
+    def ranking(self, x, y, w, h, categoria, medida, medida_cor):
+        """Colunas do maior para o menor, coloridas por medida."""
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.0), "labelColor": cor(COR["suave"]),
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                             "gridlineShow": lit(False), "innerPadding": lit(25.0)}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
+            "labels": [{"properties": {"show": lit(True), "fontSize": lit(7.0), "color": cor(COR["suave"]),
+                                       "fontFamily": lit(FONTE), "labelPosition": lit("OutsideEnd"),
+                                       "labelOrientation": lit("Vertical")}}],
+            "dataPoint": [{"properties": {"fill": cor_da_medida(medida_cor)},
+                           "selector": {"data": [{"dataViewWildcard": {"matchingOption": 1}}]}}],
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "clusteredColumnChart",
+            "query": {"queryState": {"Category": {"projections": [projecao(categoria, ativo=True)]},
+                                     "Y": {"projections": campos([medida])}},
+                      "sortDefinition": {"sort": [{"field": campo(medida), "direction": "Descending"}]}},
+            "objects": objetos})
+
     def interacao(self, origem, destino, tipo="DataFilter"):
         self.interacoes.append({"source": origem, "target": destino, "type": tipo})
 
@@ -339,37 +392,58 @@ class Pagina:
 
 def visao_geral() -> Pagina:
     p = Pagina("VisaoGeral", "Visão geral", fundo=FUNDO)
-    # filtros
+    p.rotulo(L.TITULO, 22, 14, 600, 44, 20, COR["texto"], forte=True)
+    # filtros: rótulo à esquerda e lista suspensa à direita, dentro da mesma moldura
     for f, coluna, extra in [(L.COMBUSTIVEL, "dim_produto.nome",
                               {"padrao": "Gasolina comum", "filtros": [("dim_produto.produto", ["GASOLINA", "DIESEL S10"])]}),
                              (L.ESTADO, "dim_uf.estado", {"padrao": "Brasil"}),
                              (L.SEMANA, "semana_referencia.rotulo", {"obrigatorio": False, "decrescente": True})]:
+        p.rotulo(f["rotulo"], f["x"] + 4, f["y"] + 3, f["rotulo_w"], f["h"] - 6, 9)
         p.lista(coluna, f["x"] + f["rotulo_w"], f["y"] + 2, f["w"] - f["rotulo_w"] - 4, f["h"] - 4, **extra)
-    # cartões: título na imagem de fundo; só o número
+    d = L.DADOS_ATE
+    p.rotulo(d["rotulo"], d["x"], d["y"] - 6, 70, 26, 9)
+    p.texto_dinamico("Semana de Referência", d["x"] + 66, d["y"] - 1, 130, 20, 10.0, forte=True, fundo=COR["pagina"])
+    # cartões: título, número e um detalhe pequeno
     y = L.CARTAO_Y
-    for i, valor, cor_valor in [(0, "Preço no Posto", None), (2, "Diferença Posto Refinaria", None),
-                                (3, "Variação Refinaria 4 Semanas", "Cor Refinaria 4 Semanas"),
-                                (4, "Etanol ÷ Gasolina", "Cor Etanol")]:
-        p.texto_dinamico(valor, L.cartao_x(i) + 12, y + 32, 211 if i > 2 else 110, 40, 22.0, medida_cor=cor_valor,
-                         forte=True)
-    x = L.cartao_x(1)
+    for i, titulo in enumerate(L.CARTOES):
+        p.rotulo(titulo, L.cartao_x(i) + 8, y + 6, 220, 26, 9)
+    for i in (0, 3):
+        p.rotulo("/litro", L.cartao_x(i) + 122, y + 42, 60, 24, 10)
+    p.texto_dinamico("Preço no Posto", L.cartao_x(0) + 12, y + 32, 110, 40, 22.0, forte=True)
+    p.texto_dinamico("Variação Semana Posto", L.cartao_x(1) + 12, y + 32, 211, 40, 22.0,
+                     medida_cor="Cor Variação Semana", forte=True)
+    p.texto_dinamico("Variação Semana Posto %", L.cartao_x(1) + 12, y + 70, 211, 20, 9.0,
+                     medida_cor="Cor Variação Semana")
+    x = L.cartao_x(2)
     p.texto_dinamico("Variação 12 Meses Posto", x + 12, y + 34, 96, 36, 20.0, medida_cor="Cor Variação 12 Meses",
                      forte=True)
     p.texto_dinamico("Variação 12 Meses Refinaria", x + 108, y + 34, 115, 36, 20.0,
                      medida_cor="Cor Variação 12 Meses Refinaria", forte=True)
-    # etanol ÷ gasolina: barra de blocos "█" sobre o trilho, com a marca de 70% na imagem de fundo
+    p.rotulo("posto", x + 8, y + 66, 80, 24, 8.5)
+    p.rotulo("refinaria", x + 104, y + 66, 90, 24, 8.5)
+    p.texto_dinamico("Impostos no Litro", L.cartao_x(3) + 12, y + 32, 110, 40, 22.0, forte=True)
+    p.texto_dinamico("Impostos % do Preço", L.cartao_x(3) + 12, y + 70, 211, 20, 9.0, cor_texto=COR["suave"])
     x = L.cartao_x(4)
+    p.texto_dinamico("Etanol ÷ Gasolina", x + 12, y + 32, 211, 40, 22.0, medida_cor="Cor Etanol", forte=True)
+    # barra de blocos "█" sobre o trilho; a marca de 70% está na imagem de fundo
     p.texto_dinamico("Texto Barra Etanol", x + L.BARRA_X, y + L.BARRA_Y - 3, L.BARRA_W, 14, 7.0,
                      cor_texto=COR["etanol"], fundo=COR["trilho"])
-    # variação mensal
+    # preço do litro semana a semana
     g = L.GRAFICO
-    p.colunas_lado_a_lado(g["x"] + 12, g["y"] + 40, g["w"] - 24, g["h"] - 48, "dim_semana.mes_rotulo",
-                          [("Variação Mensal Posto R$", "Posto"), ("Variação Mensal Refinaria R$", "Refinaria (no litro)")],
-                          [COR["posto"], COR["refinaria"]], rotulos_em="Variação Mensal Posto R$")
-    # variação de cada parte do litro em 12 meses
+    p.rotulo(g["titulo"], g["x"] + 8, g["y"] + 6, 600, 28, 11, COR["texto"], forte=True)
+    p.linhas(g["x"] + 12, g["y"] + 36, g["w"] - 24, g["h"] - 44, "dim_semana.semana",
+             [("Posto na Semana", "Posto"), ("Refinaria na Semana", "Refinaria (no litro)")],
+             [COR["posto"], COR["refinaria"]])
+    # o que mudou em cada parte do litro em 12 meses
     b = L.PONTE
+    p.rotulo(b["titulo"], b["x"] + 8, b["y"] + 6, 560, 28, 11, COR["texto"], forte=True)
     p.barras_coloridas(b["x"] + 12, b["y"] + 40, b["w"] - 24, b["h"] - 48, "componente.componente",
                        "Variação 12 Meses do Componente", "Cor Variação 12 Meses do Componente")
+    # ranking dos estados (o estado escolhido fica em destaque)
+    r = L.RANKING
+    p.rotulo(r["titulo"], r["x"] + 8, r["y"] + 6, 560, 28, 11, COR["texto"], forte=True)
+    p.ranking(r["x"] + 12, r["y"] + 36, r["w"] - 24, r["h"] - 44, "uf_ranking.uf",
+              "Preço no Posto por Estado", "Cor do Estado")
     return p
 
 

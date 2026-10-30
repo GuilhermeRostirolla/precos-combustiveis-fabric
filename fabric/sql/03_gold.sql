@@ -142,7 +142,7 @@ BEGIN
     FROM (
         SELECT p.semana, p.uf, p.produto, p.preco_posto, s.fracao_fossil, t.icms,
                s.fracao_fossil * (s.preco_produtor - t.federal_fossil) AS refinaria,
-               s.fracao_fossil * t.federal_fossil + (1 - s.fracao_fossil) * t.federal_bio AS tributos_federais
+               s.fracao_fossil * t.federal_fossil_cobrado + (1 - s.fracao_fossil) * t.federal_bio AS tributos_federais
         FROM #posto AS p
         JOIN config.uf_regiao AS r ON r.uf = p.uf
         JOIN #produtor_suavizado AS s ON s.produto = p.produto AND s.regiao = r.regiao AND s.semana = p.semana
@@ -162,6 +162,11 @@ BEGIN
     SELECT uf, CASE WHEN uf = 'BR' THEN 'Brasil' ELSE uf END AS estado, regiao,
            CASE WHEN uf = 'BR' THEN 0 ELSE ROW_NUMBER() OVER (ORDER BY uf) END AS ordem
     FROM config.uf_regiao;
+
+    -- Estados para o ranking (sem relação com as tabelas: o filtro de estado só destaca a barra escolhida).
+    DROP TABLE IF EXISTS gold.uf_ranking;
+    CREATE TABLE gold.uf_ranking AS
+    SELECT uf FROM config.uf_regiao WHERE uf <> 'BR';
 
     DROP TABLE IF EXISTS gold.componente;
     CREATE TABLE gold.componente AS

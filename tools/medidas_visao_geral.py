@@ -43,6 +43,12 @@ def no_grafico(expr: str) -> str:
             f"        CALCULATE ( {expr}, REMOVEFILTERS ( dim_uf ), {C}[uf] = u, {C}[semana] <= ref )\n    )")
 
 
+def na_linha(expr: str) -> str:
+    """Valor da semana no eixo do gráfico, só nas 52 semanas que terminam na semana de referência."""
+    return (f"{UF}\nVAR ref = [Semana de Referência]\nVAR s = MAX ( dim_semana[semana] )\nRETURN\n"
+            f"    IF ( s > ref - 364 && s <= ref, CALCULATE ( {expr}, REMOVEFILTERS ( dim_uf ), {C}[uf] = u ) )")
+
+
 def no_mes(expr: str, anterior: bool = False) -> str:
     """Média das semanas do mês explicado (ou do mês anterior a ele)."""
     mes = "EDATE ( [Mês Explicado], -1 )" if anterior else "[Mês Explicado]"
@@ -339,5 +345,23 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Cor do Componente", "Cores", None,
          f"SWITCH (\n    SELECTEDVALUE ( componente[componente] ),\n    \"Refinaria\", \"{CORES['refinaria']}\",\n"
          f"    \"Impostos\", \"{CORES['impostos']}\",\n    \"{CORES['outros']}\"\n)"),
+        # página limpa: cartões, linha semanal e ranking de estados
+        ("Variação Semana Posto", "Visão geral", VARIACAO_REAIS,
+         "VAR a = [Preço no Posto]\nVAR b = [Preço no Posto Semana Anterior]\nRETURN\n"
+         "    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )"),
+        ("Variação Semana Posto %", "Visão geral", PCT_SINAL,
+         variacao("[Preço no Posto]", "[Preço no Posto Semana Anterior]")),
+        ("Cor Variação Semana", "Cores", None,
+         f'VAR d = [Variação Semana Posto]\nRETURN\n    IF ( d > 0, "{CORES["alta"]}", IF ( d < 0, "{CORES["baixa"]}", "{CORES["neutra"]}" ) )'),
+        ("Impostos % do Preço", "Visão geral", '0% "do preço"', "DIVIDE ( [Impostos no Litro], [Preço no Posto] )"),
+        ("Posto na Semana", "Gráfico", REAIS, na_linha(f"AVERAGE ( {C}[preco_posto] )")),
+        ("Refinaria na Semana", "Gráfico", REAIS,
+         "// parte da refinaria dentro do litro vendido no posto\n" + na_linha(f"AVERAGE ( {C}[refinaria] )")),
+        ("Preço no Posto por Estado", "Gráfico", '#,0.00',
+         "VAR u = SELECTEDVALUE ( uf_ranking[uf] )\nVAR s = [Semana de Referência]\nRETURN\n"
+         f"    CALCULATE ( AVERAGE ( {C}[preco_posto] ), REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ),\n"
+         f"        {C}[uf] = u, {C}[semana] = s )"),
+        ("Cor do Estado", "Cores", None,
+         f'IF ( SELECTEDVALUE ( uf_ranking[uf] ) = SELECTEDVALUE ( dim_uf[uf], "BR" ), "{CORES["alta"]}", "#3A4660" )'),
     ]
     return {C: composicao, "componente": componente}

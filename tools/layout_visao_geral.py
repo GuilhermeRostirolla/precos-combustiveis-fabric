@@ -15,12 +15,12 @@ TITULO = "Preço dos combustíveis"
 COMBUSTIVEL = {"x": 28, "y": 72, "w": 230, "h": 30, "rotulo": "Combustível", "rotulo_w": 88}
 ESTADO = {"x": 268, "y": 72, "w": 150, "h": 30, "rotulo": "Estado", "rotulo_w": 54}
 SEMANA = {"x": 428, "y": 72, "w": 176, "h": 30, "rotulo": "Semana", "rotulo_w": 62}
+DADOS_ATE = {"x": 1060, "y": 78, "rotulo": "Dados até"}
 
 # cartões
 CARTAO_Y, CARTAO_W, CARTAO_H, CARTAO_GAP = 118, 235, 100, 12
-CARTOES = ["Preço no posto", "Variação em 12 meses", "Posto − refinaria",
-           "Refinaria · 4 semanas", "Etanol ÷ gasolina"]
-BARRA_Y, BARRA_H = 76, 8          # trilho das barras de progresso (relativo ao cartão)
+CARTOES = ["Preço no posto", "Variação na semana", "Variação em 12 meses", "Impostos no litro", "Etanol ÷ gasolina"]
+BARRA_Y, BARRA_H = 76, 8          # trilho da barra do etanol (relativo ao cartão)
 BARRA_X, BARRA_W = 16, 203
 SUFIXO_LITRO_X = 128              # "/litro" depois de "R$ 0,00" (largura fixa: um dígito antes da vírgula)
 
@@ -29,8 +29,9 @@ def cartao_x(i: int) -> int:
     return 28 + i * (CARTAO_W + CARTAO_GAP)
 
 
-# gráfico
-GRAFICO = {"x": 28, "y": 230, "w": 1224, "h": 234, "titulo": "Variação mensal · R$/litro"}
+# gráfico de linha: preço do litro semana a semana
+GRAFICO = {"x": 28, "y": 230, "w": 1224, "h": 234, "titulo": "Preço do litro nas últimas 52 semanas · R$"}
 
-# variação de cada parte do litro em 12 meses
-PONTE = {"x": 28, "y": 476, "w": 1224, "h": 220, "titulo": "Variação em 12 meses por parte do preço · R$/litro"}
+# faixa de baixo: o que mudou em cada parte do litro e o ranking dos estados
+PONTE = {"x": 28, "y": 476, "w": 606, "h": 220, "titulo": "O que mudou em 12 meses · R$/litro"}
+RANKING = {"x": 646, "y": 476, "w": 606, "h": 220, "titulo": "Preço no posto por estado · R$/litro"}
