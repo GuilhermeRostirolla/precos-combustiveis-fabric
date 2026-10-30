@@ -133,7 +133,8 @@ class Pagina:
         self.visuais.append(conteiner)
         return nome
 
-    def texto_dinamico(self, medida, x, y, w, h, tamanho, cor_texto=COR["texto"], medida_cor=None, forte=False):
+    def texto_dinamico(self, medida, x, y, w, h, tamanho, cor_texto=COR["texto"], medida_cor=None, forte=False,
+                       fundo=COR["cartao"]):
         """Texto alinhado à esquerda (cartão de várias linhas, sem moldura nem rótulo)."""
         rotulos = {"fontSize": lit(float(tamanho)), "fontFamily": lit(FONTE_FORTE if forte else FONTE),
                    "color": cor_da_medida(medida_cor) if medida_cor else cor(cor_texto)}
@@ -146,7 +147,7 @@ class Pagina:
                         "categoryLabels": [{"properties": {"show": lit(False)}}],
                         "cardTitle": [{"properties": rotulos}],
                         "card": [{"properties": {"outline": lit("None"), "barShow": lit(False),
-                                                 "cardPadding": lit(0.0), "cardBackground": cor(COR["cartao"])}}]}})
+                                                 "cardPadding": lit(0.0), "cardBackground": cor(fundo)}}]}})
 
     def texto_longo(self, medida, x, y, w, h, tamanho, cor_texto):
         """Texto com quebra de linha (cartão simples)."""
@@ -237,8 +238,8 @@ def visao_geral() -> Pagina:
     ]:
         p.lista(coluna, f["x"] + f["rotulo_w"], f["y"] + 3, f["w"] - f["rotulo_w"] - 6, f["h"] - 6, **extra)
     n = L.NOTA
-    p.texto_dinamico("Texto Semana de Referência", n["x"] + n["w"] - 330, n["y"], 330, n["h"], 9.0,
-                     cor_texto=COR["suave"])
+    p.texto_dinamico("Texto Semana de Referência", n["x"] + n["w"] - 300, n["y"], 300, n["h"], 9.0,
+                     cor_texto=COR["suave"], fundo=COR["pagina"])
     # cartões: título na imagem de fundo; número e linha de apoio por cima
     for i, (medida, apoio) in enumerate([
         ("Preço no Posto", "Apoio Preço no Posto"),
@@ -264,7 +265,7 @@ def visao_geral() -> Pagina:
     p.texto_dinamico("Texto De Para", x, pn["y"] + 110, w, 22, 9.0, cor_texto=COR["suave"])
     barras = p.barras_coloridas(x, pn["y"] + 140, w, 160, "componente.componente", "Variação do Componente",
                                 "Cor do Componente")
-    p.texto_dinamico("Conclusão", c["x"] + 8, c["y"] + 8, c["w"] - 16, 26, 11.0, forte=True)
+    p.texto_dinamico("Conclusão", c["x"] + 8, c["y"] + 8, c["w"] - 16, 26, 11.0, forte=True, fundo=COR["caixa"])
     p.texto_longo("Conclusão Detalhe", c["x"] + 8, c["y"] + 34, c["w"] - 16, c["h"] - 40, 9.0, COR["suave"])
     # o mês clicado no gráfico filtra as barras do "por quê" (em vez de só destacar)
     p.interacao(grafico, barras)
