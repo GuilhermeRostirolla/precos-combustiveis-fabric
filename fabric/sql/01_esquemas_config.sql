@@ -94,10 +94,10 @@ GO
 -- planilha da ANP, então também não entram aqui: ficam registradas em config.evento.
 DROP TABLE IF EXISTS config.tributo;
 GO
--- Tributos por litro (R$). A planilha de produtores e importadores da ANP soma ao preço os tributos federais
--- pela alíquota cheia (federal_fossil), mesmo quando o governo corta o tributo; federal_fossil_cobrado é o que de
--- fato está sendo cobrado no período. A refinaria sai do preço da planilha menos a alíquota cheia, e os impostos
--- do litro usam o valor cobrado.
+-- Tributos por litro (R$). federal_fossil é a alíquota cheia e federal_fossil_cobrado é o que de fato está sendo
+-- cobrado no período (os cortes de 2026). A planilha de produtores e importadores da ANP traz o preço com o tributo
+-- cobrado: quando a gasolina teve os tributos federais zerados (10/10/2026), o preço caiu R$ 0,28, quase o valor
+-- que saiu (R$ 0,26). Por isso a refinaria é o preço da planilha menos o tributo cobrado.
 CREATE TABLE config.tributo (
     produto varchar(40) NOT NULL,
     vigente_de date NOT NULL,

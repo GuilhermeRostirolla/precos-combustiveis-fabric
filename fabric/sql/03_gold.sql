@@ -141,7 +141,7 @@ BEGIN
            CAST(x.preco_posto - x.refinaria - x.tributos_federais - x.icms AS decimal(8,4)) AS outros
     FROM (
         SELECT p.semana, p.uf, p.produto, p.preco_posto, s.fracao_fossil, t.icms,
-               s.fracao_fossil * (s.preco_produtor - t.federal_fossil) AS refinaria,
+               s.fracao_fossil * (s.preco_produtor - t.federal_fossil_cobrado) AS refinaria,
                s.fracao_fossil * t.federal_fossil_cobrado + (1 - s.fracao_fossil) * t.federal_bio AS tributos_federais
         FROM #posto AS p
         JOIN config.uf_regiao AS r ON r.uf = p.uf
