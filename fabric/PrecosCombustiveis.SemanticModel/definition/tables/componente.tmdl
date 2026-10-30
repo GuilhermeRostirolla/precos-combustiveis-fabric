@@ -377,7 +377,7 @@ table componente
 			// a ANP publica o preço da refinaria só por região: um estado usa o da região dele
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			RETURN
-			    IF ( u = "BR", "Brasil", "região " & LOOKUPVALUE ( regiao_comparacao[regiao], regiao_comparacao[uf], u ) )
+			    IF ( u = "BR", "média do Brasil", "região " & LOOKUPVALUE ( regiao_comparacao[regiao], regiao_comparacao[uf], u ) )
 			```
 		displayFolder: Visão geral
 		lineageTag: 84531576-57d8-5fd0-aa3a-f54108c11e68

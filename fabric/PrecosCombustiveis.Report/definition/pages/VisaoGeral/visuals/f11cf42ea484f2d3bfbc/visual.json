@@ -3,10 +3,10 @@
   "name": "f11cf42ea484f2d3bfbc",
   "position": {
     "x": 322,
-    "y": 74,
+    "y": 72,
     "z": 400,
-    "height": 26,
-    "width": 92,
+    "height": 30,
+    "width": 94,
     "tabOrder": 400
   },
   "visual": {
@@ -152,6 +152,13 @@
                   "Value": "false"
                 }
               }
+            },
+            "outlineStyle": {
+              "expr": {
+                "Literal": {
+                  "Value": "0L"
+                }
+              }
             }
           }
         }
@@ -195,21 +202,10 @@
                 }
               }
             },
-            "outline": {
+            "outlineStyle": {
               "expr": {
                 "Literal": {
-                  "Value": "'None'"
-                }
-              }
-            },
-            "outlineColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#111A2B'"
-                    }
-                  }
+                  "Value": "0L"
                 }
               }
             }

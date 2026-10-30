@@ -170,10 +170,9 @@ class Pagina:
         objetos = {"data": [{"properties": {"mode": lit("Dropdown")}}],
                    "general": [{"properties": {"outlineColor": cor(COR["cartao"]), "outlineWeight": lit(0.0)}}],
                    "selection": [{"properties": selecao}],
-                   "header": [{"properties": {"show": lit(False)}}],
+                   "header": [{"properties": {"show": lit(False), "outlineStyle": lit(0)}}],
                    "items": [{"properties": {"fontColor": cor(COR["texto"]), "background": cor(COR["cartao"]),
-                                             "textSize": lit(10.0), "fontFamily": lit(FONTE), "outline": lit("None"),
-                                             "outlineColor": cor(COR["cartao"])}}]}
+                                             "textSize": lit(10.0), "fontFamily": lit(FONTE), "outlineStyle": lit(0)}}]}
         if padrao is not None:
             tabela, col = coluna.split(".", 1)
             objetos["general"][0]["properties"]["filter"] = {"filter": condicao_em(tabela, col, [padrao])}
@@ -410,9 +409,9 @@ class Pagina:
             "legend": [{"properties": {"show": lit(True), "position": lit("TopRight"), "showTitle": lit(False),
                                        "fontSize": lit(9.0), "labelColor": cor(COR["suave"]),
                                        "fontFamily": lit(FONTE)}}],
-            "lineStyles": [{"properties": {"strokeWidth": lit(1), "areaTransparency": lit(15)}}],
+            "lineStyles": [{"properties": {"strokeWidth": lit(1)}}],
             "labels": [{"properties": {"show": lit(False)}}],
-            "dataPoint": pontos,
+            "dataPoint": [{"properties": {"transparency": lit(15)}}] + pontos,
         }
         return self._add(x, y, w, h, {
             "visualType": "stackedAreaChart",
@@ -445,9 +444,12 @@ class Pagina:
         objetos = {
             "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["suave"]),
                                              "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
-                                             "gridlineShow": lit(False), "innerPadding": lit(45.0),
+                                             "gridlineShow": lit(False), "innerPadding": lit(30.0),
                                              "axisType": lit("Categorical")}}],
             "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
+            "y1AxisReferenceLine": [{"properties": {"show": lit(True), "value": lit(0.0), "lineColor": cor(COR["suave"]),
+                                                    "transparency": lit(40.0), "style": lit("solid")},
+                                     "selector": {"id": "1"}}],
             "labels": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "color": cor(COR["texto"]),
                                        "fontFamily": lit(FONTE_FORTE), "labelPosition": lit("OutsideEnd")}}],
             "dataPoint": [{"properties": {"fill": cor_da_medida(medida_cor)},
@@ -474,8 +476,8 @@ def visao_geral() -> Pagina:
                               {"padrao": "Gasolina comum", "filtros": [("dim_produto.produto", ["GASOLINA", "DIESEL S10"])]}),
                              # só os estados e o Brasil (o Direct Lake às vezes guarda um membro em branco)
                              (L.ESTADO, "dim_uf.estado", {"padrao": "Brasil", "filtros": [("dim_uf.uf", UFS)]})]:
-        p.rotulo(f["rotulo"], f["x"] + 4, f["y"] + 3, f["rotulo_w"], f["h"] - 6, 9)
-        p.lista(coluna, f["x"] + f["rotulo_w"], f["y"] + 2, f["w"] - f["rotulo_w"] - 4, f["h"] - 4, **extra)
+        p.rotulo(f["rotulo"], f["x"] + 4, f["y"] + 4, f["rotulo_w"], f["h"] - 6, 9)
+        p.lista(coluna, f["x"] + f["rotulo_w"], f["y"], f["w"] - f["rotulo_w"] - 2, f["h"], **extra)
     r = L.REFINARIA
     p.rotulo(r["rotulo"], r["x"], r["y"] - 6, 70, 26, 9)
     p.texto_dinamico("Região da Refinaria", r["x"] + 62, r["y"] - 1, 140, 20, 10.0, forte=True, fundo=COR["pagina"])

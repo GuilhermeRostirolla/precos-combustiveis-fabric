@@ -399,7 +399,7 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Região da Refinaria", "Visão geral", None,
          "// a ANP publica o preço da refinaria só por região: um estado usa o da região dele\n"
          'VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )\nRETURN\n'
-         '    IF ( u = "BR", "Brasil", "região " & LOOKUPVALUE ( regiao_comparacao[regiao], regiao_comparacao[uf], u ) )'),
+         '    IF ( u = "BR", "média do Brasil", "região " & LOOKUPVALUE ( regiao_comparacao[regiao], regiao_comparacao[uf], u ) )'),
         ("Diferença para o Brasil", "Gráfico", VARIACAO_REAIS,
          "// preço da região (ou do estado escolhido) menos o do Brasil, na semana de referência\n"
          "VAR escolha = SELECTEDVALUE ( comparacao_item[item] )\nVAR tipo = SELECTEDVALUE ( comparacao_item[tipo] )\n"

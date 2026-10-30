@@ -291,13 +291,6 @@
                   "Value": "1L"
                 }
               }
-            },
-            "areaTransparency": {
-              "expr": {
-                "Literal": {
-                  "Value": "15L"
-                }
-              }
             }
           }
         }
@@ -316,6 +309,17 @@
         }
       ],
       "dataPoint": [
+        {
+          "properties": {
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "15L"
+                }
+              }
+            }
+          }
+        },
         {
           "properties": {
             "fill": {
