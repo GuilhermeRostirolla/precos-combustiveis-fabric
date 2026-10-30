@@ -279,7 +279,8 @@ table componente
 			// média dos postos pesquisados nos estados da região (ou do Brasil), na semana de referência
 			VAR r = SELECTEDVALUE ( regiao_comparacao[regiao] )
 			VAR s = [Semana de Referência]
-			VAR ufs = IF ( r = "Brasil", ALL ( regiao_comparacao[uf] ), VALUES ( regiao_comparacao[uf] ) )
+			VAR atuais = VALUES ( regiao_comparacao[uf] )
+			VAR ufs = FILTER ( ALL ( regiao_comparacao[uf] ), r = "Brasil" || regiao_comparacao[uf] IN atuais )
 			RETURN
 			    CALCULATE (
 			        DIVIDE (

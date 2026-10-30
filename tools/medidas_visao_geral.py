@@ -360,7 +360,8 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Preço por Região", "Gráfico", '#,0.00',
          "// média dos postos pesquisados nos estados da região (ou do Brasil), na semana de referência\n"
          "VAR r = SELECTEDVALUE ( regiao_comparacao[regiao] )\nVAR s = [Semana de Referência]\n"
-         'VAR ufs = IF ( r = "Brasil", ALL ( regiao_comparacao[uf] ), VALUES ( regiao_comparacao[uf] ) )\nRETURN\n'
+         "VAR atuais = VALUES ( regiao_comparacao[uf] )\n"
+         'VAR ufs = FILTER ( ALL ( regiao_comparacao[uf] ), r = "Brasil" || regiao_comparacao[uf] IN atuais )\nRETURN\n'
          "    CALCULATE (\n        DIVIDE (\n            SUMX ( fato_preco_uf_semana, fato_preco_uf_semana[preco_medio] "
          "* fato_preco_uf_semana[coletas] ),\n            SUM ( fato_preco_uf_semana[coletas] )\n        ),\n"
          "        REMOVEFILTERS ( dim_semana ),\n        REMOVEFILTERS ( dim_uf ),\n"
