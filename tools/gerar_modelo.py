@@ -318,6 +318,10 @@ def gerar(endpoint: str = ENDPOINT, warehouse_id: str = WAREHOUSE_ID, destino: P
     }
     for nome, colunas in TABELAS.items():
         arquivos[f"definition/tables/{nome}.tmdl"] = tabela(nome, colunas)
+    # tabelas que saíram do modelo não podem ficar para trás na pasta
+    for antigo in (destino / "definition" / "tables").glob("*.tmdl"):
+        if f"definition/tables/{antigo.name}" not in arquivos:
+            antigo.unlink()
     for caminho, conteudo in arquivos.items():
         (destino / caminho).parent.mkdir(parents=True, exist_ok=True)
         (destino / caminho).write_text(conteudo, encoding="utf-8")
