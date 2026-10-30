@@ -415,7 +415,7 @@ table componente
 	measure 'Cor Diferença para o Brasil' = ```
 			VAR d = [Diferença para o Brasil]
 			RETURN
-			    IF ( SELECTEDVALUE ( comparacao_item[tipo] ) = "Estado", "#E8833A", IF ( d > 0, "#E5534B", "#3FB950" ) )
+			    IF ( NOT ISBLANK ( d ), IF ( SELECTEDVALUE ( comparacao_item[tipo] ) = "Estado", "#E8833A", IF ( d > 0, "#E5534B", "#3FB950" ) ) )
 			```
 		displayFolder: Cores
 		lineageTag: c3175233-140c-5b3f-a9aa-2771de0eba10

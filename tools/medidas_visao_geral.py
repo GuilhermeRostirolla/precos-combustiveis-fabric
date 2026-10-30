@@ -418,8 +418,8 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          '    IF ( tipo = "Estado" && escolha <> escolhido, BLANK (), IF ( NOT ISBLANK ( preco ), ROUND ( preco - brasil, 2 ) ) )'),
         ("Cor Diferença para o Brasil", "Cores", None,
          'VAR d = [Diferença para o Brasil]\nRETURN\n'
-         f'    IF ( SELECTEDVALUE ( comparacao_item[tipo] ) = "Estado", "{CORES["outros"]}", '
-         f'IF ( d > 0, "{CORES["alta"]}", "{CORES["baixa"]}" ) )'),
+         f'    IF ( NOT ISBLANK ( d ), IF ( SELECTEDVALUE ( comparacao_item[tipo] ) = "Estado", "{CORES["outros"]}", '
+         f'IF ( d > 0, "{CORES["alta"]}", "{CORES["baixa"]}" ) ) )'),
         ("Texto Preço Brasil", "Visão geral", None,
          '"Brasil R$ " & FORMAT ( CALCULATE ( [Preço no Posto], REMOVEFILTERS ( dim_uf ) ), "0.00" )'),
         ("Cor Fundo Barra", "Cores", None,
