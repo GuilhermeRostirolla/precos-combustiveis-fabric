@@ -252,6 +252,22 @@ table composicao_preco_semana
 		displayFolder: Visão geral
 		lineageTag: 06d28c98-5337-5cc9-970e-c34381c41caa
 
+	measure 'Refinaria no Litro 4 Semanas Antes' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR s = [Semana de Referência] - 28
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( composicao_preco_semana[refinaria] ),
+			        REMOVEFILTERS ( dim_semana ),
+			        REMOVEFILTERS ( dim_uf ),
+			        composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] = s
+			    )
+			```
+		formatString: """R$"" #,0.00"
+		displayFolder: Visão geral
+		lineageTag: 8d60e162-5937-5dc5-9a7f-53075bdcbf53
+
 	measure 'Diferença Posto Refinaria' = ```
 			// tudo o que vem depois da refinaria: impostos, etanol ou biodiesel, frete e margens
 			VAR p = [Preço no Posto]
@@ -313,9 +329,9 @@ table composicao_preco_semana
 		lineageTag: 95986c42-1acc-534c-8f62-3a3190afdab8
 
 	measure 'Apoio Refinaria' = ```
-			VAR d = [Refinaria por Litro] - [Refinaria 4 Semanas Antes]
+			VAR d = [Refinaria no Litro do Posto] - [Refinaria no Litro 4 Semanas Antes]
 			RETURN
-			    IF ( ISBLANK ( [Refinaria 4 Semanas Antes] ), "", IF ( d > 0.005, "▲ ", IF ( d < -0.005, "▼ ", "= " ) ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ) & " vs 4 semanas atrás" )
+			    IF ( ISBLANK ( [Refinaria no Litro 4 Semanas Antes] ), "", IF ( d > 0.005, "▲ ", IF ( d < -0.005, "▼ ", "= " ) ) & "R$ " & FORMAT ( ABS ( d ), "0.00" ) & " vs 4 semanas atrás" )
 			```
 		displayFolder: Visão geral
 		lineageTag: bf3cafb9-c823-5c40-9b00-8cd2eaac023c

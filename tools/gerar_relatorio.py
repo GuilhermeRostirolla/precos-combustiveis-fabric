@@ -352,7 +352,7 @@ def visao_geral() -> Pagina:
     x, y, w, h, gap = 24, 140, 301, 88, 9
     for i, (titulo, medida, apoio, medida_cor, c) in enumerate([
         ("Preço médio no posto (R$/litro)", "Preço no Posto", "Apoio Preço no Posto", None, COR["texto"]),
-        ("Preço na refinaria (R$/litro, sem impostos)", "Refinaria por Litro", "Apoio Refinaria", None,
+        ("Refinaria no litro (R$, sem impostos)", "Refinaria no Litro do Posto", "Apoio Refinaria", None,
          COR["texto"]),
         ("Diferença posto − refinaria (R$/litro)", "Diferença Posto Refinaria", "Apoio Diferença", None,
          COR["texto"]),

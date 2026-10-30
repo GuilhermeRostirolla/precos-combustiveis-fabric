@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Refinaria por Litro"
+                  "Property": "Refinaria no Litro do Posto"
                 }
               },
-              "queryRef": "composicao_preco_semana.Refinaria por Litro",
-              "nativeQueryRef": "Refinaria por Litro"
+              "queryRef": "composicao_preco_semana.Refinaria no Litro do Posto",
+              "nativeQueryRef": "Refinaria no Litro do Posto"
             }
           ]
         }

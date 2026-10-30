@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Preço na refinaria (R$/litro, sem impostos)",
+                    "value": "Refinaria no litro (R$, sem impostos)",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "9.0pt",

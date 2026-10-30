@@ -110,6 +110,7 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Refinaria no Litro do Posto", "Visão geral", REAIS,
          "// parte da refinaria em um litro vendido no posto (só a parcela fóssil, sem tributos)\n"
          + na_semana(f"AVERAGE ( {C}[refinaria] )")),
+        ("Refinaria no Litro 4 Semanas Antes", "Visão geral", REAIS, na_semana(f"AVERAGE ( {C}[refinaria] )", 28)),
         ("Diferença Posto Refinaria", "Visão geral", REAIS,
          "// tudo o que vem depois da refinaria: impostos, etanol ou biodiesel, frete e margens\n"
          "VAR p = [Preço no Posto]\nVAR r = [Refinaria no Litro do Posto]\nRETURN\n"
@@ -122,8 +123,8 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
         ("Postos Pesquisados", "Visão geral", "#,0", postos("postos")),
         ("Municípios Pesquisados", "Visão geral", "#,0", postos("municipios")),
         ("Apoio Refinaria", "Visão geral", None,
-         "VAR d = [Refinaria por Litro] - [Refinaria 4 Semanas Antes]\nRETURN\n"
-         f'    IF ( ISBLANK ( [Refinaria 4 Semanas Antes] ), "", {seta("d")} & " vs 4 semanas atrás" )'),
+         "VAR d = [Refinaria no Litro do Posto] - [Refinaria no Litro 4 Semanas Antes]\nRETURN\n"
+         f'    IF ( ISBLANK ( [Refinaria no Litro 4 Semanas Antes] ), "", {seta("d")} & " vs 4 semanas atrás" )'),
         ("Apoio Diferença", "Visão geral", None,
          'IF ( ISBLANK ( [Diferença Média 12 Meses] ), "", "Média de 12 meses: R$ " '
          '& FORMAT ( [Diferença Média 12 Meses], "0.00" ) )'),
