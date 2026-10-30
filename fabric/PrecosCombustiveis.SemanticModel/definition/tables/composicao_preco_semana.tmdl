@@ -201,6 +201,7 @@ table composicao_preco_semana
 			        ),
 			        REMOVEFILTERS ( dim_semana ),
 			        REMOVEFILTERS ( dim_uf ),
+			        REMOVEFILTERS ( dim_produto ),
 			        dim_produto[produto] = "ETANOL",
 			        fato_preco_uf_semana[semana] = s,
 			        FILTER ( ALL ( fato_preco_uf_semana[uf] ), u = "BR" || fato_preco_uf_semana[uf] = u )
@@ -221,6 +222,7 @@ table composicao_preco_semana
 			        ),
 			        REMOVEFILTERS ( dim_semana ),
 			        REMOVEFILTERS ( dim_uf ),
+			        REMOVEFILTERS ( dim_produto ),
 			        dim_produto[produto] = "GASOLINA",
 			        fato_preco_uf_semana[semana] = s,
 			        FILTER ( ALL ( fato_preco_uf_semana[uf] ), u = "BR" || fato_preco_uf_semana[uf] = u )

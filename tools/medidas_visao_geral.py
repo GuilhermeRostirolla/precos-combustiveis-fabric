@@ -56,7 +56,7 @@ def preco_uf(produto: str) -> str:
     return (f"{UF}\nVAR s = [Semana de Referência]\nRETURN\n    CALCULATE (\n"
             "        DIVIDE (\n            SUMX ( fato_preco_uf_semana, fato_preco_uf_semana[preco_medio] "
             "* fato_preco_uf_semana[coletas] ),\n            SUM ( fato_preco_uf_semana[coletas] )\n        ),\n"
-            "        REMOVEFILTERS ( dim_semana ),\n        REMOVEFILTERS ( dim_uf ),\n"
+            "        REMOVEFILTERS ( dim_semana ),\n        REMOVEFILTERS ( dim_uf ),\n        REMOVEFILTERS ( dim_produto ),\n"
             f'        dim_produto[produto] = "{produto}",\n        fato_preco_uf_semana[semana] = s,\n'
             '        FILTER ( ALL ( fato_preco_uf_semana[uf] ), u = "BR" || fato_preco_uf_semana[uf] = u )\n    )')
 

@@ -14,8 +14,8 @@ SUBTITULO = "Quanto custa hoje, quanto mudou e quanto da refinaria chega ao post
 
 # filtros
 COMBUSTIVEL = {"x": 28, "y": 91, "w": 214, "h": 30}
-ESTADO = {"x": 252, "y": 91, "w": 124, "h": 30, "rotulo": "Estado", "rotulo_w": 54}
-SEMANA = {"x": 387, "y": 91, "w": 168, "h": 30, "rotulo": "Semana", "rotulo_w": 62}
+ESTADO = {"x": 252, "y": 91, "w": 150, "h": 30, "rotulo": "Estado", "rotulo_w": 54}
+SEMANA = {"x": 412, "y": 91, "w": 176, "h": 30, "rotulo": "Semana", "rotulo_w": 62}
 
 # cartões
 CARTAO_Y, CARTAO_W, CARTAO_H, CARTAO_GAP = 138, 235, 150, 12

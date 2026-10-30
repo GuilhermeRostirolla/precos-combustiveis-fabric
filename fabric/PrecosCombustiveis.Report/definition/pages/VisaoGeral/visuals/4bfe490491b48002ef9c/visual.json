@@ -273,17 +273,6 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        },
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
                   "Value": "true"
                 }
               }
@@ -320,9 +309,20 @@
                 }
               }
             }
+          }
+        },
+        {
+          "properties": {
+            "showSeries": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
           },
           "selector": {
-            "metadata": "composicao_preco_semana.Variação Mensal Posto"
+            "metadata": "composicao_preco_semana.Variação Mensal Refinaria"
           }
         }
       ],

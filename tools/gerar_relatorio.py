@@ -229,8 +229,8 @@ class Pagina:
                                                   if padrao else {})}}],
                    "selection": [{"properties": {"strictSingleSelect": lit(True)}}],
                    "header": [{"properties": {"show": lit(False)}}],
-                   "items": [{"properties": {"fontColor": cor(COR["suave"]), "background": cor(COR["cartao"]),
-                                             "textSize": lit(9.0), "fontFamily": lit(FONTE_FORTE),
+                   "items": [{"properties": {"fontColor": cor(COR["texto"]), "background": cor(COR["cartao"]),
+                                             "textSize": lit(8.5), "fontFamily": lit(FONTE_FORTE),
                                              "outline": lit("None")}}]}
         return self._add(x, y, w, h, {
             "visualType": "slicer",
@@ -258,11 +258,14 @@ class Pagina:
     def colunas_lado_a_lado(self, x, y, w, h, eixo, medidas, cores, rotulos_em=None):
         pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
                   for m, c in zip([m[0] for m in medidas], cores, strict=True)]
-        rotulos = [{"properties": {"show": lit(False)}}]
-        if rotulos_em:
-            rotulos.append({"properties": {"show": lit(True), "color": cor(COR["posto"]), "fontSize": lit(8.0),
-                                           "fontFamily": lit(FONTE_FORTE), "labelPosition": lit("OutsideEnd")},
-                            "selector": {"metadata": projecao(rotulos_em)["queryRef"]}})
+        rotulos = [{"properties": {"show": lit(bool(rotulos_em)), "color": cor(COR["posto"]), "fontSize": lit(8.0),
+                                   "fontFamily": lit(FONTE_FORTE), "labelPosition": lit("OutsideEnd")}}]
+        if rotulos_em:  # rótulos só na série escolhida
+            rotulos += [{"properties": {"showSeries": lit(m != rotulos_em)},
+                         "selector": {"metadata": projecao(m)["queryRef"]}} for m in [x[0] for x in medidas]]
+            rotulos = [rotulos[0]] + [{"properties": {"showSeries": lit(False)},
+                                       "selector": {"metadata": projecao(m)["queryRef"]}}
+                                      for m in [x[0] for x in medidas] if m != rotulos_em]
         objetos = {
             "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
                                              "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
@@ -297,7 +300,7 @@ def visao_geral() -> Pagina:
     p.texto_dinamico("Texto Postos e Fonte", 948, 39, 310, 18, 8.0, cor_texto=COR["nota"], fundo=COR["pagina"])
     # filtros
     c = L.COMBUSTIVEL
-    p.botoes("dim_produto.nome", c["x"] + 2, c["y"] + 2, c["w"] - 4, c["h"] - 4, padrao="Gasolina comum",
+    p.botoes("dim_produto.nome", c["x"], c["y"], c["w"], c["h"], padrao="Gasolina comum",
              filtros=[("dim_produto.produto", ["GASOLINA", "DIESEL S10"])])
     for f, coluna, extra in [(L.ESTADO, "dim_uf.estado", {"padrao": "Brasil"}),
                              (L.SEMANA, "semana_referencia.rotulo", {"obrigatorio": False, "decrescente": True})]:
@@ -305,7 +308,7 @@ def visao_geral() -> Pagina:
     # cartões
     y = L.CARTAO_Y
     x = L.cartao_x(0)
-    p.texto_dinamico("Preço no Posto", x + 12, y + 34, 120, 40, 22.0, forte=True)
+    p.texto_dinamico("Preço no Posto", x + 12, y + 34, 110, 40, 22.0, forte=True)
     p.texto_dinamico("Apoio Preço no Posto", x + 12, y + 114, 211, 24, 8.5, medida_cor="Cor Apoio Preço no Posto")
     x = L.cartao_x(1)
     p.texto_dinamico("Variação 12 Meses Posto", x + 12, y + 36, 96, 36, 20.0, medida_cor="Cor Variação 12 Meses",
@@ -314,7 +317,7 @@ def visao_geral() -> Pagina:
                      medida_cor="Cor Variação 12 Meses Refinaria", forte=True)
     p.texto_dinamico("Posto x Refinaria 12 Meses", x + 12, y + 114, 211, 24, 8.5, cor_texto=COR["suave"])
     x = L.cartao_x(2)
-    p.texto_dinamico("Diferença Posto Refinaria", x + 12, y + 34, 120, 40, 22.0, forte=True)
+    p.texto_dinamico("Diferença Posto Refinaria", x + 12, y + 34, 110, 40, 22.0, forte=True)
     p.texto_dinamico("Apoio Diferença Refinaria", x + 12, y + 98, 211, 20, 8.5, cor_texto=COR["suave"])
     p.texto_dinamico("Apoio Diferença Média", x + 12, y + 116, 211, 20, 8.5, cor_texto=COR["suave"])
     for i, (valor, cor_valor, barra, cor_barra, apoio) in enumerate([
@@ -342,7 +345,8 @@ def paginas() -> list[Pagina]:
 def tema() -> dict:
     return {"name": "TemaPrecosCombustiveis",
             "dataColors": [COR[c] for c in ("posto", "refinaria", "etanol", "texto", "suave")],
-            "foreground": COR["texto"], "foregroundNeutralSecondary": COR["suave"],
+            # o botão selecionado do filtro de combustível usa a cor de primeiro plano do tema
+            "foreground": COR["alta"], "foregroundNeutralSecondary": COR["suave"],
             "foregroundNeutralTertiary": COR["apagado"], "background": COR["cartao"], "backgroundLight": COR["cartao"],
             "backgroundNeutral": COR["borda"], "tableAccent": COR["alta"],
             "textClasses": {"callout": {"fontFace": FONTE_FORTE, "color": COR["texto"]},
