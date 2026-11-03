@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "regiao_comparacao"
+                      "Entity": "comparacao_item"
                     }
                   },
-                  "Property": "regiao"
+                  "Property": "item"
                 }
               },
-              "queryRef": "regiao_comparacao.regiao",
-              "nativeQueryRef": "regiao",
+              "queryRef": "comparacao_item.item",
+              "nativeQueryRef": "item",
               "active": true
             }
           ]

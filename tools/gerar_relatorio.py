@@ -524,7 +524,7 @@ class Pagina:
             "objects": objetos}, [("repasse_resumo.h", [0, 1, 2, 3, 4])])
 
     def regioes_repasse(self, x, y, w, h):
-        """Para cada região e o Brasil: quanto chegou ao posto em 2 semanas nas altas (vermelho) e nas baixas (verde)."""
+        """Para cada região (e o estado escolhido): quanto chegou ao posto em 2 semanas nas altas (vermelho) e nas baixas (verde)."""
         medidas = [("Alta 2 Semanas na Região", "quando a refinaria sobe"),
                    ("Baixa 2 Semanas na Região", "quando a refinaria cai")]
         pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
@@ -546,7 +546,7 @@ class Pagina:
         }
         return self._add(x, y, w, h, {
             "visualType": "clusteredColumnChart",
-            "query": {"queryState": {"Category": {"projections": [projecao("regiao_comparacao.regiao", ativo=True)]},
+            "query": {"queryState": {"Category": {"projections": [projecao("comparacao_item.item", ativo=True)]},
                                      "Y": {"projections": campos(medidas)}},
                       "sortDefinition": {"sort": [{"field": campo("Alta 2 Semanas na Região"),
                                                    "direction": "Descending"}]}},

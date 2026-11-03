@@ -462,11 +462,16 @@ def _no_evento(coluna: str) -> str:
 
 
 def _na_regiao(direcao: str) -> str:
-    """Repasse em 2 semanas na região do eixo (ou no Brasil), junto os estados dela."""
-    return ("VAR r = SELECTEDVALUE ( regiao_comparacao[regiao] )\n"
-            'VAR e = IF ( r = "Brasil", "Brasil", "Região " & r )\nRETURN\n'
-            "    CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), REMOVEFILTERS ( dim_uf ),\n"
-            f'        repasse_resumo[escopo] = e, repasse_resumo[direcao] = "{direcao}", repasse_resumo[h] = 2 )')
+    """Repasse em 2 semanas em cada região do eixo e, com um estado escolhido, nele também (os outros ficam vazios)."""
+    return ("VAR escolha = SELECTEDVALUE ( comparacao_item[item] )\n"
+            "VAR tipo = SELECTEDVALUE ( comparacao_item[tipo] )\n"
+            "VAR u = SELECTEDVALUE ( dim_uf[uf], \"BR\" )\n"
+            "VAR e =\n    SWITCH ( TRUE (),\n"
+            '        tipo = "Região", "Região " & escolha,\n'
+            '        escolha = u, escolha & " (estado)" )\nRETURN\n'
+            "    IF ( NOT ISBLANK ( e ),\n"
+            "        CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), REMOVEFILTERS ( dim_uf ),\n"
+            f'            repasse_resumo[escopo] = e, repasse_resumo[direcao] = "{direcao}", repasse_resumo[h] = 2 ) )')
 
 
 def medidas_repasse() -> list[tuple]:
