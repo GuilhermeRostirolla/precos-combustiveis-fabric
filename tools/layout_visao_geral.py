@@ -7,7 +7,7 @@ Segue o desenho do Figma (arquivo "Preços de Combustíveis · Relatório"). A i
 
 COR = {"pagina": "#090E1A", "cartao": "#111A2B", "borda": "#1F2A40", "texto": "#E6EAF2", "suave": "#8B95A9",
        "nota": "#6B7590", "apagado": "#4A5570", "trilho": "#1F2A40", "grade": "#1A2438",
-       "alta": "#E8833A", "baixa": "#3BA3D9", "etanol": "#4CC38A", "posto": "#E8833A", "refinaria": "#3BA3D9"}
+       "alta": "#E8833A", "baixa": "#3BA3D9", "aumento": "#E5534B", "reducao": "#3FB950", "etanol": "#4CC38A", "posto": "#E8833A", "refinaria": "#3BA3D9"}
 
 TITULO = "Preço dos combustíveis"
 
@@ -40,8 +40,8 @@ RANKING = {"x": 646, "y": 476, "w": 606, "h": 220, "titulo": "Diferença para a 
 # --- página 2: repasse da refinaria ao posto ---------------------------------------------------------------------
 REPASSE_TITULO = "Repasse da refinaria ao posto"
 REPASSE_CARTAO_W, REPASSE_CARTAO_GAP = 297, 12
-REPASSE_CARTOES = ["Reajustes na refinaria", "Alta: chegou ao posto em 2 semanas",
-                   "Baixa: chegou ao posto em 2 semanas", "Assimetria"]
+REPASSE_CARTOES = ["Reajustes na refinaria", "Repasse dos aumentos em 2 semanas",
+                   "Repasse das reduções em 2 semanas", "Aumentos ÷ reduções"]
 
 
 def repasse_cartao_x(i: int) -> int:
@@ -49,6 +49,6 @@ def repasse_cartao_x(i: int) -> int:
 
 
 CURVA = {"x": 28, "y": 230, "w": 1224, "h": 234,
-         "titulo": "Quanto do reajuste chegou ao posto, semana a semana · % do que a refinaria explicaria"}
+         "titulo": "Repasse semana a semana · % do reajuste da refinaria que chegou ao posto"}
 EVENTOS = {"x": 28, "y": 476, "w": 1224, "h": 220,
-           "titulo": "Em cada região · % do reajuste que chegou ao posto em 2 semanas"}
+           "titulo": "Repasse em 2 semanas por região · %"}

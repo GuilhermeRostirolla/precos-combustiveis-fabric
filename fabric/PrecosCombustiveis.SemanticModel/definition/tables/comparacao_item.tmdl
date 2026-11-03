@@ -2,7 +2,7 @@ table comparacao_item
 	lineageTag: b45cf0c8-b36b-5c3d-833d-260937fcbbb6
 	sourceLineageTag: [gold].[comparacao_item]
 
-	measure 'Reajustes no Escopo' = ```
+	measure Reajustes = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR e = IF ( u = "BR", "Brasil", u & " (estado)" )
 			RETURN
@@ -19,13 +19,13 @@ table comparacao_item
 			```
 		formatString: #,0
 		displayFolder: Repasse
-		lineageTag: 21cdc36f-6c37-5029-abbd-7b7b37876419
+		lineageTag: fa5061a9-3e31-536b-b500-34e2b60ce5f1
 
-	measure 'Texto Altas e Baixas' = FORMAT ( [Altas no Escopo], "0" ) & " altas · " & FORMAT ( [Baixas no Escopo], "0" ) & " baixas"
+	measure 'Texto Aumentos e Reduções' = FORMAT ( [Reajustes de Aumento], "0" ) & " aumentos · " & FORMAT ( [Reajustes de Redução], "0" ) & " reduções"
 		displayFolder: Repasse
-		lineageTag: d821dbf8-68ae-5de6-9ecc-dd4ae2294955
+		lineageTag: c4048704-fea1-515f-9630-594361f69e67
 
-	measure 'Altas no Escopo' = ```
+	measure 'Reajustes de Aumento' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR e = IF ( u = "BR", "Brasil", u & " (estado)" )
 			RETURN
@@ -42,9 +42,9 @@ table comparacao_item
 			```
 		formatString: #,0
 		displayFolder: Repasse
-		lineageTag: 274778c2-95cd-5e9e-9836-f290904eb0f7
+		lineageTag: 0fa9a472-c2f7-5697-892a-967a55d11e58
 
-	measure 'Baixas no Escopo' = ```
+	measure 'Reajustes de Redução' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR e = IF ( u = "BR", "Brasil", u & " (estado)" )
 			RETURN
@@ -61,9 +61,9 @@ table comparacao_item
 			```
 		formatString: #,0
 		displayFolder: Repasse
-		lineageTag: d4a8caaf-6f34-5c79-a9ca-ffcb8034f0ba
+		lineageTag: 7348a9f2-a440-51cd-aa8d-ae5259048233
 
-	measure 'Repasse Alta 2 Semanas' = ```
+	measure 'Repasse dos Aumentos em 2 Semanas' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR e = IF ( u = "BR", "Brasil", u & " (estado)" )
 			RETURN
@@ -72,9 +72,9 @@ table comparacao_item
 			```
 		formatString: 0%
 		displayFolder: Repasse
-		lineageTag: 87399f03-150a-55a3-aa50-e637d5681507
+		lineageTag: 8c627191-185d-501e-9ffa-de2e1a4ea513
 
-	measure 'Repasse Baixa 2 Semanas' = ```
+	measure 'Repasse das Reduções em 2 Semanas' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR e = IF ( u = "BR", "Brasil", u & " (estado)" )
 			RETURN
@@ -83,23 +83,23 @@ table comparacao_item
 			```
 		formatString: 0%
 		displayFolder: Repasse
-		lineageTag: 211dd980-9d05-56b0-91dd-941bf34c38c3
+		lineageTag: d0950413-6e49-548f-a2bd-a532ed4a57a7
 
-	measure 'Assimetria do Repasse' = ```
-			VAR a = [Repasse Alta 2 Semanas]
-			VAR b = [Repasse Baixa 2 Semanas]
+	measure 'Aumentos ÷ Reduções' = ```
+			VAR a = [Repasse dos Aumentos em 2 Semanas]
+			VAR b = [Repasse das Reduções em 2 Semanas]
 			RETURN
 			    IF ( b > 0.05, a / b )
 			```
 		formatString: "0.0""×"""
 		displayFolder: Repasse
-		lineageTag: 9cf383d0-6610-5936-b2c6-605c8542ad96
+		lineageTag: c9d7b0bb-22de-5349-9294-38ae92fc4d7b
 
-	measure 'Texto Assimetria' = IF ( ISBLANK ( [Assimetria do Repasse] ), "", "a alta chega " & FORMAT ( [Assimetria do Repasse], "0.0" ) & " vezes mais" )
+	measure 'Texto Aumentos ÷ Reduções' = IF ( ISBLANK ( [Aumentos ÷ Reduções] ), "", "repasse dos aumentos ÷ repasse das reduções" )
 		displayFolder: Repasse
-		lineageTag: 18f116cb-fe2b-5bb7-81e9-5a16a48c0384
+		lineageTag: 11390e7f-31c9-5a6a-bbe1-ee0350ac3971
 
-	measure 'Curva Alta' = ```
+	measure 'Repasse dos Aumentos' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR e = IF ( u = "BR", "Brasil", u & " (estado)" )
 			RETURN
@@ -108,9 +108,9 @@ table comparacao_item
 			```
 		formatString: 0%
 		displayFolder: Repasse
-		lineageTag: 551ddbe9-b7f2-5a48-aba8-6bbac2bd1d53
+		lineageTag: 6770aa87-1b92-5ce3-9d6c-2b99385fce98
 
-	measure 'Curva Baixa' = ```
+	measure 'Repasse das Reduções' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
 			VAR e = IF ( u = "BR", "Brasil", u & " (estado)" )
 			RETURN
@@ -119,9 +119,9 @@ table comparacao_item
 			```
 		formatString: 0%
 		displayFolder: Repasse
-		lineageTag: 4dfae807-1c97-57f1-a1c5-797b4d6b3671
+		lineageTag: 90f0dff4-11b0-5276-b2a0-7995ca29b099
 
-	measure 'Alta 2 Semanas na Região' = ```
+	measure 'Repasse dos Aumentos na Região' = ```
 			VAR escolha = SELECTEDVALUE ( comparacao_item[item] )
 			VAR tipo = SELECTEDVALUE ( comparacao_item[tipo] )
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
@@ -136,9 +136,9 @@ table comparacao_item
 			```
 		formatString: 0%
 		displayFolder: Repasse
-		lineageTag: e8f79880-29b2-5a1f-9ea8-c06077709f6a
+		lineageTag: db7219d9-3933-517c-ad4e-ac97e9e33469
 
-	measure 'Baixa 2 Semanas na Região' = ```
+	measure 'Repasse das Reduções na Região' = ```
 			VAR escolha = SELECTEDVALUE ( comparacao_item[item] )
 			VAR tipo = SELECTEDVALUE ( comparacao_item[tipo] )
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
@@ -153,7 +153,7 @@ table comparacao_item
 			```
 		formatString: 0%
 		displayFolder: Repasse
-		lineageTag: 556d9928-bfd5-5441-81d3-bda66cb3647b
+		lineageTag: 1da32c0c-2da1-52a0-b097-f9620e81727a
 
 	column item
 		dataType: string

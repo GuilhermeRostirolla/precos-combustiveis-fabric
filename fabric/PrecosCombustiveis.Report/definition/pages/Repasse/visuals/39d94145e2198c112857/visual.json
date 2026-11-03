@@ -42,12 +42,12 @@
                       "Entity": "comparacao_item"
                     }
                   },
-                  "Property": "Curva Alta"
+                  "Property": "Repasse dos Aumentos"
                 }
               },
-              "queryRef": "comparacao_item.Curva Alta",
-              "nativeQueryRef": "Quando a refinaria sobe",
-              "displayName": "Quando a refinaria sobe"
+              "queryRef": "comparacao_item.Repasse dos Aumentos",
+              "nativeQueryRef": "Aumentos",
+              "displayName": "Aumentos"
             },
             {
               "field": {
@@ -57,12 +57,12 @@
                       "Entity": "comparacao_item"
                     }
                   },
-                  "Property": "Curva Baixa"
+                  "Property": "Repasse das Reduções"
                 }
               },
-              "queryRef": "comparacao_item.Curva Baixa",
-              "nativeQueryRef": "Quando a refinaria cai",
-              "displayName": "Quando a refinaria cai"
+              "queryRef": "comparacao_item.Repasse das Reduções",
+              "nativeQueryRef": "Reduções",
+              "displayName": "Reduções"
             }
           ]
         }
@@ -336,7 +336,7 @@
             "displayName": {
               "expr": {
                 "Literal": {
-                  "Value": "'100% = chegou tudo'"
+                  "Value": "'100% = reajuste inteiro no posto'"
                 }
               }
             },
@@ -365,7 +365,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E8833A'"
+                      "Value": "'#E5534B'"
                     }
                   }
                 }
@@ -373,7 +373,7 @@
             }
           },
           "selector": {
-            "metadata": "comparacao_item.Curva Alta"
+            "metadata": "comparacao_item.Repasse dos Aumentos"
           }
         },
         {
@@ -383,7 +383,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#3BA3D9'"
+                      "Value": "'#3FB950'"
                     }
                   }
                 }
@@ -391,7 +391,7 @@
             }
           },
           "selector": {
-            "metadata": "comparacao_item.Curva Baixa"
+            "metadata": "comparacao_item.Repasse das Reduções"
           }
         }
       ]

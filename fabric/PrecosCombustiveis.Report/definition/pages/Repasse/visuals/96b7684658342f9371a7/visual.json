@@ -23,11 +23,11 @@
                       "Entity": "comparacao_item"
                     }
                   },
-                  "Property": "Repasse Baixa 2 Semanas"
+                  "Property": "Repasse das Reduções em 2 Semanas"
                 }
               },
-              "queryRef": "comparacao_item.Repasse Baixa 2 Semanas",
-              "nativeQueryRef": "Repasse Baixa 2 Semanas"
+              "queryRef": "comparacao_item.Repasse das Reduções em 2 Semanas",
+              "nativeQueryRef": "Repasse das Reduções em 2 Semanas"
             }
           ]
         }
@@ -56,7 +56,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#3BA3D9'"
+                      "Value": "'#3FB950'"
                     }
                   }
                 }
@@ -100,7 +100,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#3BA3D9'"
+                      "Value": "'#3FB950'"
                     }
                   }
                 }

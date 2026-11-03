@@ -23,11 +23,11 @@
                       "Entity": "comparacao_item"
                     }
                   },
-                  "Property": "Reajustes no Escopo"
+                  "Property": "Reajustes"
                 }
               },
-              "queryRef": "comparacao_item.Reajustes no Escopo",
-              "nativeQueryRef": "Reajustes no Escopo"
+              "queryRef": "comparacao_item.Reajustes",
+              "nativeQueryRef": "Reajustes"
             }
           ]
         }

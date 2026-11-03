@@ -23,11 +23,11 @@
                       "Entity": "comparacao_item"
                     }
                   },
-                  "Property": "Assimetria do Repasse"
+                  "Property": "Aumentos ÷ Reduções"
                 }
               },
-              "queryRef": "comparacao_item.Assimetria do Repasse",
-              "nativeQueryRef": "Assimetria do Repasse"
+              "queryRef": "comparacao_item.Aumentos ÷ Reduções",
+              "nativeQueryRef": "Aumentos ÷ Reduções"
             }
           ]
         }

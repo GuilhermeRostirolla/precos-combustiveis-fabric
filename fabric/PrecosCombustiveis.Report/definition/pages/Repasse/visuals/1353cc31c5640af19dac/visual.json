@@ -23,11 +23,11 @@
                       "Entity": "comparacao_item"
                     }
                   },
-                  "Property": "Texto Altas e Baixas"
+                  "Property": "Texto Aumentos e Reduções"
                 }
               },
-              "queryRef": "comparacao_item.Texto Altas e Baixas",
-              "nativeQueryRef": "Texto Altas e Baixas"
+              "queryRef": "comparacao_item.Texto Aumentos e Reduções",
+              "nativeQueryRef": "Texto Aumentos e Reduções"
             }
           ]
         }

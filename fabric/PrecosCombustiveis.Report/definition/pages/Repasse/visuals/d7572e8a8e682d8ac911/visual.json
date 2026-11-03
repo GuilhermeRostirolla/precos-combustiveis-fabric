@@ -42,12 +42,12 @@
                       "Entity": "comparacao_item"
                     }
                   },
-                  "Property": "Alta 2 Semanas na Região"
+                  "Property": "Repasse dos Aumentos na Região"
                 }
               },
-              "queryRef": "comparacao_item.Alta 2 Semanas na Região",
-              "nativeQueryRef": "quando a refinaria sobe",
-              "displayName": "quando a refinaria sobe"
+              "queryRef": "comparacao_item.Repasse dos Aumentos na Região",
+              "nativeQueryRef": "aumentos",
+              "displayName": "aumentos"
             },
             {
               "field": {
@@ -57,12 +57,12 @@
                       "Entity": "comparacao_item"
                     }
                   },
-                  "Property": "Baixa 2 Semanas na Região"
+                  "Property": "Repasse das Reduções na Região"
                 }
               },
-              "queryRef": "comparacao_item.Baixa 2 Semanas na Região",
-              "nativeQueryRef": "quando a refinaria cai",
-              "displayName": "quando a refinaria cai"
+              "queryRef": "comparacao_item.Repasse das Reduções na Região",
+              "nativeQueryRef": "reduções",
+              "displayName": "reduções"
             }
           ]
         }
@@ -77,7 +77,7 @@
                     "Entity": "comparacao_item"
                   }
                 },
-                "Property": "Alta 2 Semanas na Região"
+                "Property": "Repasse dos Aumentos na Região"
               }
             },
             "direction": "Descending"
@@ -332,7 +332,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E8833A'"
+                      "Value": "'#E5534B'"
                     }
                   }
                 }
@@ -340,7 +340,7 @@
             }
           },
           "selector": {
-            "metadata": "comparacao_item.Alta 2 Semanas na Região"
+            "metadata": "comparacao_item.Repasse dos Aumentos na Região"
           }
         },
         {
@@ -350,7 +350,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#3BA3D9'"
+                      "Value": "'#3FB950'"
                     }
                   }
                 }
@@ -358,7 +358,7 @@
             }
           },
           "selector": {
-            "metadata": "comparacao_item.Baixa 2 Semanas na Região"
+            "metadata": "comparacao_item.Repasse das Reduções na Região"
           }
         }
       ]

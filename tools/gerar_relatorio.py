@@ -493,10 +493,10 @@ class Pagina:
             "objects": objetos})
 
     def curva_repasse(self, x, y, w, h):
-        """Repasse ponderado semana a semana, uma linha para as altas e outra para as baixas, com a linha dos 100%."""
-        medidas = [("Curva Alta", "Quando a refinaria sobe"), ("Curva Baixa", "Quando a refinaria cai")]
+        """Repasse ponderado semana a semana, uma linha para os aumentos e outra para as reduções, com a linha dos 100%."""
+        medidas = [("Repasse dos Aumentos", "Aumentos"), ("Repasse das Reduções", "Reduções")]
         pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
-                  for m, c in zip([m[0] for m in medidas], [COR["alta"], COR["baixa"]], strict=True)]
+                  for m, c in zip([m[0] for m in medidas], [COR["aumento"], COR["reducao"]], strict=True)]
         objetos = {
             "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["suave"]),
                                              "fontFamily": lit(FONTE), "showAxisTitle": lit(True),
@@ -511,7 +511,7 @@ class Pagina:
             "y1AxisReferenceLine": [{"properties": {"show": lit(True), "value": lit(1.0), "lineColor": cor(COR["suave"]),
                                                     "transparency": lit(30.0), "style": lit("dashed"),
                                                     "dataLabelShow": lit(True), "dataLabelText": lit("Name"),
-                                                    "displayName": lit("100% = chegou tudo"),
+                                                    "displayName": lit("100% = reajuste inteiro no posto"),
                                                     "dataLabelColor": cor(COR["suave"])},
                                      "selector": {"id": "1"}}],
             "dataPoint": pontos,
@@ -524,11 +524,11 @@ class Pagina:
             "objects": objetos}, [("repasse_resumo.h", [0, 1, 2, 3, 4])])
 
     def regioes_repasse(self, x, y, w, h):
-        """Para cada região (e o estado escolhido): quanto chegou ao posto em 2 semanas nas altas (vermelho) e nas baixas (verde)."""
-        medidas = [("Alta 2 Semanas na Região", "quando a refinaria sobe"),
-                   ("Baixa 2 Semanas na Região", "quando a refinaria cai")]
+        """Para cada região (e o estado escolhido): quanto chegou ao posto em 2 semanas nos aumentos (vermelho) e nas reduções (verde)."""
+        medidas = [("Repasse dos Aumentos na Região", "aumentos"),
+                   ("Repasse das Reduções na Região", "reduções")]
         pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
-                  for m, c in zip([m[0] for m in medidas], [COR["alta"], COR["baixa"]], strict=True)]
+                  for m, c in zip([m[0] for m in medidas], [COR["aumento"], COR["reducao"]], strict=True)]
         objetos = {
             "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.5), "labelColor": cor(COR["texto"]),
                                              "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
@@ -548,7 +548,7 @@ class Pagina:
             "visualType": "clusteredColumnChart",
             "query": {"queryState": {"Category": {"projections": [projecao("comparacao_item.item", ativo=True)]},
                                      "Y": {"projections": campos(medidas)}},
-                      "sortDefinition": {"sort": [{"field": campo("Alta 2 Semanas na Região"),
+                      "sortDefinition": {"sort": [{"field": campo("Repasse dos Aumentos na Região"),
                                                    "direction": "Descending"}]}},
             "objects": objetos})
 
@@ -622,7 +622,7 @@ def visao_geral() -> Pagina:
 
 
 def repasse() -> Pagina:
-    """Página 2: quando a refinaria muda de preço, quanto chega ao posto, na alta e na baixa."""
+    """Página 2: quando a refinaria muda de preço, quanto chega ao posto, nos aumentos e nas reduções."""
     p = Pagina("Repasse", "Repasse", fundo=FUNDO_REPASSE)
     p.rotulo(L.REPASSE_TITULO, 22, 14, 700, 44, 20, COR["texto"], forte=True)
     for f, coluna, extra in [(L.COMBUSTIVEL, "dim_produto.nome",
@@ -641,17 +641,17 @@ def repasse() -> Pagina:
     for i, titulo in enumerate(L.REPASSE_CARTOES):
         p.rotulo(titulo, L.repasse_cartao_x(i) + 8, y + 6, 280, 26, 9)
     for i, (valor, cor_valor, apoio) in enumerate([
-        ("Reajustes no Escopo", COR["texto"], "Texto Altas e Baixas"),
-        ("Repasse Alta 2 Semanas", COR["alta"], None),
-        ("Repasse Baixa 2 Semanas", COR["baixa"], None),
-        ("Assimetria do Repasse", COR["texto"], "Texto Assimetria"),
+        ("Reajustes", COR["texto"], "Texto Aumentos e Reduções"),
+        ("Repasse dos Aumentos em 2 Semanas", COR["aumento"], None),
+        ("Repasse das Reduções em 2 Semanas", COR["reducao"], None),
+        ("Aumentos ÷ Reduções", COR["texto"], "Texto Aumentos ÷ Reduções"),
     ]):
         x = L.repasse_cartao_x(i)
         p.texto_dinamico(valor, x + 12, y + 32, 270, 40, 22.0, cor_texto=cor_valor, forte=True)
         if apoio:
             p.texto_dinamico(apoio, x + 12, y + 70, 270, 20, 9.0, cor_texto=COR["suave"])
         else:
-            p.rotulo("do que a refinaria explicaria", x + 8, y + 66, 270, 24, 8.5)
+            p.rotulo("do reajuste chegou ao posto", x + 8, y + 66, 270, 24, 8.5)
     # curva: quanto chegou ao posto, semana a semana (só até 4 semanas: depois sobram poucos reajustes)
     c = L.CURVA
     p.rotulo(c["titulo"], c["x"] + 8, c["y"] + 6, 900, 28, 11, COR["texto"], forte=True)

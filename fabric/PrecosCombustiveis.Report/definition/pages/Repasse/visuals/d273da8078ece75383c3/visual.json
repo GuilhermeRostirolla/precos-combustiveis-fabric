@@ -23,11 +23,11 @@
                       "Entity": "comparacao_item"
                     }
                   },
-                  "Property": "Texto Assimetria"
+                  "Property": "Texto Aumentos ÷ Reduções"
                 }
               },
-              "queryRef": "comparacao_item.Texto Assimetria",
-              "nativeQueryRef": "Texto Assimetria"
+              "queryRef": "comparacao_item.Texto Aumentos ÷ Reduções",
+              "nativeQueryRef": "Texto Aumentos ÷ Reduções"
             }
           ]
         }
