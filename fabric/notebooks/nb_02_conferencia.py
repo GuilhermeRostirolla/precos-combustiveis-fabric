@@ -125,6 +125,8 @@ cand["grupo"] = ((cand["semana"] - pd.Timestamp("1900-01-01")).dt.days // 7
 sequencias = cand.groupby(["produto", "sinal", "grupo"]).agg(inicio=("semana", "min"), fim=("semana", "max"))
 suave = p.set_index(["produto", "semana"])
 inicio_bomba = pd.Timestamp(sql("SELECT MIN(semana) AS s FROM gold.fato_preco_uf_semana")["s"].iloc[0])
+fim_bomba = pd.Timestamp(sql("SELECT MAX(semana) AS s FROM gold.fato_preco_uf_semana "
+                             "WHERE fonte = 'Série histórica'")["s"].iloc[0])
 horizonte = int(parametros["horizonte_semanas"])
 eventos = []
 for (produto, sinal, _), s in sequencias.iterrows():
@@ -132,7 +134,8 @@ for (produto, sinal, _), s in sequencias.iterrows():
     if chave_antes not in suave.index or chave_depois not in suave.index:
         continue
     antes, depois = suave.loc[chave_antes, "suave"], suave.loc[chave_depois, "suave"]
-    if (s.inicio < inicio_bomba + pd.Timedelta(days=7) or np.sign(depois - antes) != sinal
+    if (s.inicio < inicio_bomba + pd.Timedelta(days=7) or s.inicio > fim_bomba + pd.Timedelta(days=7)
+            or np.sign(depois - antes) != sinal
             or abs(depois / antes - 1) < parametros["limiar_reajuste"]):
         continue
     m = mudancas[mudancas["produto"] == produto]
