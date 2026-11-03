@@ -35,7 +35,7 @@ BEGIN
     DECLARE @limiar decimal(18,6) = (SELECT valor FROM config.parametro WHERE nome = 'limiar_reajuste');
     DECLARE @horizonte int = (SELECT CAST(valor AS int) FROM config.parametro WHERE nome = 'horizonte_semanas');
     DECLARE @inicio_bomba date = (SELECT MIN(semana) FROM gold.fato_preco_uf_semana);
-    -- só reajustes com a semana anterior já na série posto a posto (a refinaria sai antes)
+    -- só reajustes cuja semana já está na série posto a posto (a refinaria sai antes)
     DECLARE @fim_bomba date = (SELECT MAX(semana) FROM gold.fato_preco_uf_semana WHERE fonte = 'Série histórica');
 
     -- 1. Série da refinaria de cada região, sem os tributos federais cobrados na semana (média dos dias), suavizada
@@ -116,7 +116,7 @@ BEGIN
     JOIN gold.refinaria_suavizada AS depois
       ON depois.produto = q.produto AND depois.regiao = q.regiao AND depois.semana = DATEADD(day, 7, q.fim)
     WHERE q.inicio >= DATEADD(day, 7, @inicio_bomba)
-      AND q.inicio <= DATEADD(day, 7, @fim_bomba)
+      AND q.inicio <= @fim_bomba
       AND SIGN(depois.preco_suavizado - antes.preco_suavizado) = q.sinal
       AND ABS(depois.preco_suavizado / antes.preco_suavizado - 1) >= @limiar
       -- fora os que coincidem com uma mudança de tributo anterior a 2024 (semana antes até a semana depois)
