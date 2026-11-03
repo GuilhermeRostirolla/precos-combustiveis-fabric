@@ -39,15 +39,15 @@ TABELAS = {
     "fato_preco_produtor_semana": [("semana", "date"), ("semana_fim", "date"), ("produto", "string"),
                                    ("regiao", "string"), ("preco_produtor", "dec"), ("fracao_fossil", "dec"),
                                    ("mandato", "string"), ("custo_fossil_por_litro", "dec")],
-    "refinaria_suavizada": [("produto", "string"), ("semana", "date"), ("preco_produtor", "dec"),
+    "refinaria_suavizada": [("produto", "string"), ("regiao", "string"), ("semana", "date"), ("preco_produtor", "dec"),
                             ("fracao_fossil", "dec"), ("preco_suavizado", "dec")],
-    "repasse_evento": [("produto", "string"), ("semana_evento", "date"), ("semana_fim_reajuste", "date"),
+    "repasse_evento": [("produto", "string"), ("regiao", "string"), ("semana_evento", "date"), ("semana_fim_reajuste", "date"),
                        ("semanas_reajuste", "int"), ("direcao", "string"), ("preco_antes", "dec"),
                        ("preco_depois", "dec"), ("variacao_refinaria", "dec"), ("variacao_refinaria_pct", "double"),
                        ("fracao_fossil", "dec"), ("repasse_esperado", "dec"), ("proximo_reajuste", "date"),
                        ("semanas_acompanhadas", "int")],
-    "repasse_curva": [("produto", "string"), ("semana_evento", "date"), ("direcao", "string"), ("escopo", "string"),
-                      ("municipio", "string"), ("h", "int"), ("semana", "date"), ("preco_bomba_antes", "dec"),
+    "repasse_curva": [("produto", "string"), ("regiao", "string"), ("semana_evento", "date"), ("direcao", "string"),
+                      ("escopo", "string"), ("uf", "string"), ("municipio", "string"), ("h", "int"), ("semana", "date"), ("preco_bomba_antes", "dec"),
                       ("preco_bomba", "dec"), ("variacao_bomba", "dec"), ("repasse_esperado", "dec"),
                       ("repasse", "dec")],
     "repasse_resumo": [("produto", "string"), ("escopo", "string"), ("direcao", "string"), ("h", "int"),
@@ -84,6 +84,7 @@ FORMATO_COLUNA = {
     ("repasse_curva", "variacao_bomba"): '+"R$" #,0.000;-"R$" #,0.000',
     ("repasse_curva", "repasse_esperado"): '+"R$" #,0.0000;-"R$" #,0.0000',
     ("repasse_curva", "h"): "0",
+    ("repasse_curva", "semana_evento"): "mmm/yy",
     ("repasse_resumo", "repasse_ponderado"): "0%",
     ("repasse_resumo", "repasse_mediano"): "0%",
     ("repasse_resumo", "repasse_medio"): "0%",
@@ -239,9 +240,10 @@ MEDIDAS = {
     ],
 }
 
-from medidas_visao_geral import medidas_visao_geral  # noqa: E402
+from medidas_visao_geral import medidas_repasse, medidas_visao_geral  # noqa: E402
 
 MEDIDAS.update(medidas_visao_geral())
+MEDIDAS["comparacao_item"] = medidas_repasse()
 _repetidas = sorted({m[0] for ms in MEDIDAS.values() for m in ms
                      if sum(m[0] == n[0] for ns in MEDIDAS.values() for n in ns) > 1})
 assert not _repetidas, f"medidas com o mesmo nome: {_repetidas}"

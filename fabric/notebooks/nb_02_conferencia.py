@@ -80,8 +80,9 @@ diferenca = float((comparacao["py"] - comparacao["wh"]).abs().max())
 print(f"média semanal RS: {len(comparacao)} semanas x produto, {so_um_lado} só de um lado, maior diferença {diferenca:.6f}")
 
 # %%
-# 2. Reajustes na refinaria (região Sul), com a mesma regra do T-SQL: mediana de 3 semanas, semanas seguidas no
-#    mesmo sentido viram um reajuste só, e cada reajuste é acompanhado até o seguinte.
+# 2. Reajustes na refinaria (região Sul), com a mesma regra do T-SQL: preço sem os tributos federais cobrados,
+#    mediana de 3 semanas, semanas seguidas no mesmo sentido viram um reajuste só, fora os que coincidem com
+#    mudança de tributo antes de 2024, e cada reajuste é acompanhado até o seguinte.
 p = spark.table("bronze_produtor").where((F.col("regiao") == "Sul") & F.col("preco").isNotNull()
                                          & (F.col("preco") > 0)).toPandas()
 p = p.rename(columns={"produto": "produto_produtor"}).merge(produtos, on="produto_produtor")
@@ -91,7 +92,27 @@ mistura["vigente_de"] = pd.to_datetime(mistura["vigente_de"])
 mistura["vigente_ate"] = pd.to_datetime(mistura["vigente_ate"])
 p = p.merge(mistura, on="produto")
 p = p[(p["semana"] >= p["vigente_de"]) & (p["semana"] <= p["vigente_ate"])].sort_values(["produto", "semana"]).copy()
-p["preco"] = p["preco"].round(4)
+# sem os tributos federais cobrados na semana (média dos dias); antes de 2024 vale o primeiro valor da tabela
+tributo = sql("SELECT produto, vigente_de, vigente_ate, CAST(federal_fossil_cobrado AS float) AS cobrado "
+              "FROM config.tributo")
+tributo["vigente_de"] = pd.to_datetime(tributo["vigente_de"])
+tributo["vigente_ate"] = pd.to_datetime(tributo["vigente_ate"])
+
+
+def tributo_da_semana(produto, semana):
+    t = tributo[tributo["produto"] == produto].sort_values("vigente_de")
+    valores = []
+    for n in range(7):
+        dia = semana + pd.Timedelta(days=n)
+        linha = t[(t["vigente_de"] <= dia) & (t["vigente_ate"] >= dia)]
+        valores.append(linha["cobrado"].iloc[0] if len(linha) else t["cobrado"].iloc[0])
+    return sum(valores) / 7
+
+
+p["preco"] = [round(round(preco, 4) - tributo_da_semana(produto, semana), 4)
+              for preco, produto, semana in zip(p["preco"], p["produto"], p["semana"])]
+mudancas = sql("SELECT data, produto FROM config.mudanca_tributo")
+mudancas["data"] = pd.to_datetime(mudancas["data"])
 vizinhos = pd.concat([p.groupby("produto")["preco"].shift(1), p["preco"], p.groupby("produto")["preco"].shift(-1)],
                      axis=1)
 p["suave"] = np.where(vizinhos.isna().any(axis=1), p["preco"], vizinhos.median(axis=1))
@@ -103,7 +124,7 @@ cand["grupo"] = ((cand["semana"] - pd.Timestamp("1900-01-01")).dt.days // 7
                  - cand.groupby(["produto", "sinal"]).cumcount() - 1)
 sequencias = cand.groupby(["produto", "sinal", "grupo"]).agg(inicio=("semana", "min"), fim=("semana", "max"))
 suave = p.set_index(["produto", "semana"])
-inicio_bomba = pd.Timestamp(sql("SELECT MIN(semana) AS s FROM gold.fato_preco_uf_semana WHERE uf = 'RS'")["s"].iloc[0])
+inicio_bomba = pd.Timestamp(sql("SELECT MIN(semana) AS s FROM gold.fato_preco_uf_semana")["s"].iloc[0])
 horizonte = int(parametros["horizonte_semanas"])
 eventos = []
 for (produto, sinal, _), s in sequencias.iterrows():
@@ -114,6 +135,9 @@ for (produto, sinal, _), s in sequencias.iterrows():
     if (s.inicio < inicio_bomba + pd.Timedelta(days=7) or np.sign(depois - antes) != sinal
             or abs(depois / antes - 1) < parametros["limiar_reajuste"]):
         continue
+    m = mudancas[mudancas["produto"] == produto]
+    if ((m["data"] >= s.inicio - pd.Timedelta(days=7)) & (m["data"] <= s.fim + pd.Timedelta(days=13))).any():
+        continue  # coincide com uma mudança de tributo anterior a 2024
     eventos.append({"produto": produto, "semana_evento": s.inicio,
                     "esperado": round((depois - antes) * suave.loc[chave_depois, "fracao_fossil"], 4)})
 eventos = pd.DataFrame(eventos).sort_values(["produto", "semana_evento"])
@@ -122,7 +146,7 @@ eventos["acompanhadas"] = [horizonte if pd.isna(e.proximo) else min(horizonte, (
                            for e in eventos.itertuples()]
 
 eventos_wh = sql("SELECT produto, semana_evento, CAST(repasse_esperado AS float) AS esperado_wh, "
-                 "semanas_acompanhadas AS acompanhadas_wh FROM gold.repasse_evento")
+                 "semanas_acompanhadas AS acompanhadas_wh FROM gold.repasse_evento WHERE regiao = 'Sul'")
 eventos_wh["semana_evento"] = pd.to_datetime(eventos_wh["semana_evento"])
 ev = eventos.merge(eventos_wh, on=["produto", "semana_evento"], how="outer", indicator=True)
 eventos_divergentes = int((ev["_merge"] != "both").sum())
@@ -198,7 +222,7 @@ eventos_lista = sql("""
 SELECT produto, CAST(semana_evento AS varchar(10)) AS semana, direcao, semanas_reajuste,
        CAST(variacao_refinaria AS float) AS refinaria, CAST(variacao_refinaria_pct AS float) AS refinaria_pct,
        CAST(repasse_esperado AS float) AS esperado, semanas_acompanhadas
-FROM gold.repasse_evento ORDER BY produto, semana_evento""")
+FROM gold.repasse_evento WHERE regiao = 'Sul' ORDER BY produto, semana_evento""")
 municipios = sql("""
 SELECT produto, escopo, direcao, eventos, CAST(semanas_mediana_ate_50 AS float) AS ate_50,
        CAST(semanas_mediana_ate_80 AS float) AS ate_80

@@ -27,6 +27,15 @@ table repasse_evento
 
 		annotation SummarizationSetBy = Automatic
 
+	column regiao
+		dataType: string
+		lineageTag: e3fe79a9-ce6f-5be3-82c9-07c0852589d1
+		sourceLineageTag: regiao
+		summarizeBy: none
+		sourceColumn: regiao
+
+		annotation SummarizationSetBy = Automatic
+
 	column semana_evento
 		dataType: dateTime
 		formatString: dd/MM/yyyy

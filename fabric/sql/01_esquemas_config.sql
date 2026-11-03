@@ -132,6 +132,25 @@ INSERT INTO config.tributo VALUES
     ('DIESEL S10', '2027-02-01', '2099-12-31', 1.3000, 0.3515, 0.3515, 0.1480);
 GO
 
+-- Mudanças de tributo federal antes de 2024, quando config.tributo ainda não tem os valores por litro. O estudo de
+-- repasse descarta o "reajuste" da refinaria que cai em cima de uma delas: a planilha de produtores traz o preço
+-- com o tributo cobrado, então nesses casos não dá para separar refinaria e imposto.
+DROP TABLE IF EXISTS config.mudanca_tributo;
+GO
+CREATE TABLE config.mudanca_tributo (
+    data date NOT NULL,
+    produto varchar(40) NOT NULL,
+    descricao varchar(200) NOT NULL
+);
+GO
+INSERT INTO config.mudanca_tributo VALUES
+    ('2023-03-01', 'GASOLINA',   'Volta parcial do PIS/Cofins da gasolina (MP 1.163/2023)'),
+    ('2023-06-29', 'GASOLINA',   'PIS/Cofins da gasolina volta à alíquota cheia'),
+    ('2023-09-05', 'DIESEL S10', 'Volta parcial do PIS/Cofins do diesel (MP 1.175/2023)'),
+    ('2023-10-01', 'DIESEL S10', 'Nova etapa da volta do PIS/Cofins do diesel'),
+    ('2024-01-01', 'DIESEL S10', 'PIS/Cofins do diesel volta à alíquota cheia');
+GO
+
 -- Acontecimentos que ajudam a explicar as mudanças de preço (aparecem no relatório).
 DROP TABLE IF EXISTS config.evento;
 GO

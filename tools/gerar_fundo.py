@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import layout_visao_geral as L  # noqa: E402
 
 DESTINO = Path(__file__).resolve().parent / "recursos" / "fundo_visao_geral.png"
+DESTINO_REPASSE = Path(__file__).resolve().parent / "recursos" / "fundo_repasse.png"
 C = {**L.COR, "caixa": "#0D1424"}
 
 
@@ -26,14 +27,19 @@ def texto(t, x, y, tamanho, peso, cor):
             f'font-weight:{peso};color:{cor};line-height:1.2">{t}</div>')
 
 
-def html() -> str:
+def html(pagina: str = "visao_geral") -> str:
     partes = []
     for f in (L.COMBUSTIVEL, L.ESTADO):
         partes.append(caixa(f["x"], f["y"], f["w"], f["h"], raio=8))
-    for i in range(len(L.CARTOES)):
-        x, y = L.cartao_x(i), L.CARTAO_Y
-        partes.append(caixa(x, y, L.CARTAO_W, L.CARTAO_H))
-    for q in (L.GRAFICO, L.PONTE, L.RANKING):
+    if pagina == "repasse":
+        for i in range(len(L.REPASSE_CARTOES)):
+            partes.append(caixa(L.repasse_cartao_x(i), L.CARTAO_Y, L.REPASSE_CARTAO_W, L.CARTAO_H))
+        quadros = (L.CURVA, L.EVENTOS)
+    else:
+        for i in range(len(L.CARTOES)):
+            partes.append(caixa(L.cartao_x(i), L.CARTAO_Y, L.CARTAO_W, L.CARTAO_H))
+        quadros = (L.GRAFICO, L.PONTE, L.RANKING)
+    for q in quadros:
         partes.append(caixa(q["x"], q["y"], q["w"], q["h"]))
     return ('<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0}'
             f'body{{width:1280px;height:720px;background:{C["pagina"]};position:relative;'
@@ -41,17 +47,18 @@ def html() -> str:
             + "".join(partes) + "</body></html>")
 
 
-def gerar(destino: Path = DESTINO) -> Path:
+def gerar() -> list[Path]:
     from playwright.sync_api import sync_playwright
-    destino.parent.mkdir(parents=True, exist_ok=True)
+    DESTINO.parent.mkdir(parents=True, exist_ok=True)
     with sync_playwright() as p:
         navegador = p.chromium.launch()
         pagina = navegador.new_page(viewport={"width": 1280, "height": 720}, device_scale_factor=2)
-        pagina.set_content(html())
-        pagina.screenshot(path=str(destino))
+        for nome, destino in (("visao_geral", DESTINO), ("repasse", DESTINO_REPASSE)):
+            pagina.set_content(html(nome))
+            pagina.screenshot(path=str(destino))
         navegador.close()
-    return destino
+    return [DESTINO, DESTINO_REPASSE]
 
 
 if __name__ == "__main__":
-    print(f"fundo gerado em {gerar()}")
+    print("fundos gerados:", ", ".join(str(d.name) for d in gerar()))

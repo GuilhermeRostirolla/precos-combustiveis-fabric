@@ -84,8 +84,8 @@ BEGIN
         SELECT 'curva_sem_semana_zero', 'erro', COUNT(*)
         FROM gold.repasse_evento AS e
         WHERE NOT EXISTS (SELECT 1 FROM gold.repasse_curva AS c
-                          WHERE c.produto = e.produto AND c.semana_evento = e.semana_evento
-                            AND c.escopo = 'RS (estado)' AND c.h = 0)
+                          WHERE c.produto = e.produto AND c.regiao = e.regiao AND c.semana_evento = e.semana_evento
+                            AND c.municipio IS NULL AND c.h = 0)
         UNION ALL
         -- Pico de uma semana só na refinaria (sobe e volta): a suavização tira da análise, aqui só fica registrado.
         SELECT 'refinaria_pico_de_uma_semana', 'aviso', COUNT(*)

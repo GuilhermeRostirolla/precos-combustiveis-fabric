@@ -35,3 +35,20 @@ GRAFICO = {"x": 28, "y": 230, "w": 1224, "h": 234, "titulo": "As três partes do
 # faixa de baixo: o que mudou em cada parte do litro e o ranking dos estados
 PONTE = {"x": 28, "y": 476, "w": 606, "h": 220, "titulo": "O que mudou em 12 meses · R$/litro"}
 RANKING = {"x": 646, "y": 476, "w": 606, "h": 220, "titulo": "Diferença para a média do Brasil · R$/litro"}
+
+
+# --- página 2: repasse da refinaria ao posto ---------------------------------------------------------------------
+REPASSE_TITULO = "Repasse da refinaria ao posto"
+REPASSE_CARTAO_W, REPASSE_CARTAO_GAP = 297, 12
+REPASSE_CARTOES = ["Reajustes na refinaria", "Alta: chegou ao posto em 2 semanas",
+                   "Baixa: chegou ao posto em 2 semanas", "Assimetria"]
+
+
+def repasse_cartao_x(i: int) -> int:
+    return 28 + i * (REPASSE_CARTAO_W + REPASSE_CARTAO_GAP)
+
+
+CURVA = {"x": 28, "y": 230, "w": 1224, "h": 234,
+         "titulo": "Quanto do reajuste chegou ao posto, semana a semana · % do que a refinaria explicaria"}
+EVENTOS = {"x": 28, "y": 476, "w": 1224, "h": 220,
+           "titulo": "Reajuste a reajuste desde 2025 · R$/litro · o que a refinaria explicaria x o que chegou ao posto em 2 semanas"}

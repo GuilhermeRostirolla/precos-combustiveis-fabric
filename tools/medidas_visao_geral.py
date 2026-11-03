@@ -428,3 +428,57 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          'IF ( SELECTEDVALUE ( dim_produto[produto] ) = "DIESEL S10", "#111A2B", "#1F2A40" )'),
     ]
     return {C: composicao, "componente": componente}
+
+
+# --- página 2: repasse da refinaria ao posto ----------------------------------------------------------------------
+# O estado vem do filtro de dim_uf (sem escolha = Brasil); o estudo usa o escopo "UF (estado)" ou "Brasil".
+ESCOPO = ('VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )\n'
+          'VAR e = IF ( u = "BR", "Brasil", u & " (estado)" )\n')
+
+
+def _resumo(direcao: str, h: int | None = None) -> str:
+    filtro_h = f", repasse_resumo[h] = {h}" if h is not None else ""
+    return (ESCOPO + "RETURN\n    CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), REMOVEFILTERS ( dim_uf ),\n"
+            f'        repasse_resumo[escopo] = e, repasse_resumo[direcao] = "{direcao}"{filtro_h} )')
+
+
+def _reajustes(direcao: str | None = None) -> str:
+    """Reajustes acompanhados no escopo: no estado, os da região dele; no Brasil, os de todas as regiões."""
+    filtro = f' && repasse_curva[direcao] = "{direcao}"' if direcao else ""
+    return (ESCOPO + "RETURN\n    COUNTROWS (\n        SUMMARIZE (\n            CALCULATETABLE (\n"
+            "                FILTER ( repasse_curva, repasse_curva[h] = 0 && ISBLANK ( repasse_curva[municipio] )\n"
+            f'                    && ( e = "Brasil" || repasse_curva[escopo] = e ){filtro} ),\n'
+            "                REMOVEFILTERS ( dim_uf )\n            ),\n"
+            "            repasse_curva[regiao], repasse_curva[semana_evento]\n        )\n    )")
+
+
+def _no_evento(coluna: str) -> str:
+    """Média, entre os estados do escopo, de uma coluna da curva na semana 2 do reajuste (reajustes desde 2025)."""
+    return (ESCOPO + "RETURN\n    CALCULATE (\n        AVERAGE ( repasse_curva[" + coluna + "] ),\n"
+            "        REMOVEFILTERS ( dim_uf ),\n        repasse_curva[h] = 2,\n"
+            "        KEEPFILTERS ( repasse_curva[semana_evento] >= DATE ( 2025, 1, 1 ) ),\n"
+            "        ISBLANK ( repasse_curva[municipio] ),\n"
+            '        FILTER ( ALL ( repasse_curva[escopo] ), e = "Brasil" || repasse_curva[escopo] = e )\n    )')
+
+
+def medidas_repasse() -> list[tuple]:
+    return [
+        ("Reajustes no Escopo", "Repasse", "#,0", _reajustes()),
+        ("Texto Altas e Baixas", "Repasse", None,
+         'FORMAT ( [Altas no Escopo], "0" ) & " altas · " & FORMAT ( [Baixas no Escopo], "0" ) & " baixas"'),
+        ("Altas no Escopo", "Repasse", "#,0", _reajustes("alta")),
+        ("Baixas no Escopo", "Repasse", "#,0", _reajustes("baixa")),
+        ("Repasse Alta 2 Semanas", "Repasse", "0%", _resumo("alta", 2)),
+        ("Repasse Baixa 2 Semanas", "Repasse", "0%", _resumo("baixa", 2)),
+        ("Assimetria do Repasse", "Repasse", '0.0"×"',
+         "VAR a = [Repasse Alta 2 Semanas]\nVAR b = [Repasse Baixa 2 Semanas]\nRETURN\n    IF ( b > 0.05, a / b )"),
+        ("Texto Assimetria", "Repasse", None,
+         'IF ( ISBLANK ( [Assimetria do Repasse] ), "", "a alta chega " & FORMAT ( [Assimetria do Repasse], "0.0" ) '
+         '& " vezes mais" )'),
+        ("Curva Alta", "Repasse", "0%", _resumo("alta")),
+        ("Curva Baixa", "Repasse", "0%", _resumo("baixa")),
+        ("Refinaria Explicaria", "Repasse", VARIACAO_REAIS, _no_evento("repasse_esperado")),
+        ("Chegou ao Posto em 2 Semanas", "Repasse", VARIACAO_REAIS, _no_evento("variacao_bomba")),
+        ("Cor Chegou ao Posto", "Cores", None,
+         f'VAR d = [Refinaria Explicaria]\nRETURN\n    IF ( NOT ISBLANK ( d ), IF ( d > 0, "{CORES["alta"]}", "{CORES["baixa"]}" ) )'),
+    ]

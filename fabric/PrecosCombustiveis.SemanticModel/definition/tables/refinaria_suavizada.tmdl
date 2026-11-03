@@ -36,6 +36,15 @@ table refinaria_suavizada
 
 		annotation SummarizationSetBy = Automatic
 
+	column regiao
+		dataType: string
+		lineageTag: 6c4ebd2d-cd3a-583e-a393-d72b26bc0e5c
+		sourceLineageTag: regiao
+		summarizeBy: none
+		sourceColumn: regiao
+
+		annotation SummarizationSetBy = Automatic
+
 	column semana
 		dataType: dateTime
 		formatString: dd/MM/yyyy

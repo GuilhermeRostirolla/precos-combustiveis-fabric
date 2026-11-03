@@ -23,6 +23,7 @@ SCHEMA = "https://developer.microsoft.com/json-schemas/fabric/item/report/defini
 TEMA_BASE = "CY26SU04"
 TEMA = "TemaPrecosCombustiveis.json"
 FUNDO = "fundo_visao_geral.png"
+FUNDO_REPASSE = "fundo_repasse.png"
 LARGURA, ALTURA = 1280, 720
 COR = L.COR
 FONTE, FONTE_FORTE = "Segoe UI", "Segoe UI Semibold"
@@ -491,6 +492,67 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo(eixo), "direction": "Ascending"}]}},
             "objects": objetos})
 
+    def curva_repasse(self, x, y, w, h):
+        """Repasse ponderado semana a semana, uma linha para as altas e outra para as baixas, com a linha dos 100%."""
+        medidas = [("Curva Alta", "Quando a refinaria sobe"), ("Curva Baixa", "Quando a refinaria cai")]
+        pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
+                  for m, c in zip([m[0] for m in medidas], [COR["alta"], COR["baixa"]], strict=True)]
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["suave"]),
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(True),
+                                             "titleText": lit("semanas depois do reajuste"),
+                                             "titleColor": cor(COR["suave"]), "titleFontSize": lit(8.5),
+                                             "axisType": lit("Categorical"), "gridlineShow": lit(False)}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
+            "legend": [{"properties": {"show": lit(False)}}],
+            "seriesLabels": [{"properties": {"show": lit(True), "seriesMatchColor": lit(True), "textSize": lit(9.0)}}],
+            "labels": [{"properties": {"show": lit(True), "fontSize": lit(8.0), "fontFamily": lit(FONTE)}}],
+            "lineStyles": [{"properties": {"strokeWidth": lit(3)}}],
+            "y1AxisReferenceLine": [{"properties": {"show": lit(True), "value": lit(1.0), "lineColor": cor(COR["suave"]),
+                                                    "transparency": lit(30.0), "style": lit("dashed"),
+                                                    "dataLabelShow": lit(True), "dataLabelText": lit("Name"),
+                                                    "displayName": lit("100% = chegou tudo"),
+                                                    "dataLabelColor": cor(COR["suave"])},
+                                     "selector": {"id": "1"}}],
+            "dataPoint": pontos,
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "lineChart",
+            "query": {"queryState": {"Category": {"projections": [projecao("repasse_resumo.h", ativo=True)]},
+                                     "Y": {"projections": campos(medidas)}},
+                      "sortDefinition": {"sort": [{"field": campo("repasse_resumo.h"), "direction": "Ascending"}]}},
+            "objects": objetos}, [("repasse_resumo.h", [0, 1, 2, 3, 4])])
+
+    def eventos_repasse(self, x, y, w, h):
+        """Cada reajuste: o que a refinaria explicaria (cinza) e o que chegou ao posto (vermelho/verde)."""
+        medidas = [("Refinaria Explicaria", "refinaria explicaria"), ("Chegou ao Posto em 2 Semanas", "chegou ao posto")]
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                             "axisType": lit("Categorical"), "gridlineShow": lit(False),
+                                             "innerPadding": lit(25.0)}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
+            "legend": [{"properties": {"show": lit(True), "position": lit("TopRight"), "showTitle": lit(False),
+                                       "fontSize": lit(8.5), "labelColor": cor(COR["suave"]), "fontFamily": lit(FONTE)}}],
+            "labels": [{"properties": {"show": lit(True), "fontSize": lit(7.5), "color": cor(COR["texto"]),
+                                       "fontFamily": lit(FONTE), "labelPosition": lit("OutsideEnd")}}],
+            "y1AxisReferenceLine": [{"properties": {"show": lit(True), "value": lit(0.0), "lineColor": cor(COR["suave"]),
+                                                    "transparency": lit(40.0), "style": lit("solid")},
+                                     "selector": {"id": "1"}}],
+            "dataPoint": [{"properties": {"fill": cor("#3A4660")},
+                           "selector": {"metadata": projecao("Refinaria Explicaria")["queryRef"]}},
+                          {"properties": {"fill": cor_da_medida("Cor Chegou ao Posto")},
+                           "selector": {"data": [{"dataViewWildcard": {"matchingOption": 1}}],
+                                        "metadata": projecao("Chegou ao Posto em 2 Semanas")["queryRef"]}}],
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "clusteredColumnChart",
+            "query": {"queryState": {"Category": {"projections": [projecao("repasse_curva.semana_evento", ativo=True)]},
+                                     "Y": {"projections": campos(medidas)}},
+                      "sortDefinition": {"sort": [{"field": campo("repasse_curva.semana_evento"),
+                                                   "direction": "Ascending"}]}},
+            "objects": objetos})
+
     def interacao(self, origem, destino, tipo="DataFilter"):
         self.interacoes.append({"source": origem, "target": destino, "type": tipo})
 
@@ -560,8 +622,50 @@ def visao_geral() -> Pagina:
     return p
 
 
+def repasse() -> Pagina:
+    """Página 2: quando a refinaria muda de preço, quanto chega ao posto, na alta e na baixa."""
+    p = Pagina("Repasse", "Repasse", fundo=FUNDO_REPASSE)
+    p.rotulo(L.REPASSE_TITULO, 22, 14, 700, 44, 20, COR["texto"], forte=True)
+    for f, coluna, extra in [(L.COMBUSTIVEL, "dim_produto.nome",
+                              {"padrao": "Gasolina comum", "filtros": [("dim_produto.produto", ["GASOLINA", "DIESEL S10"])]}),
+                             (L.ESTADO, "dim_uf.estado", {"padrao": "Brasil", "filtros": [("dim_uf.uf", UFS)]})]:
+        p.rotulo(f["rotulo"], f["x"] + 4, f["y"] + 4, f["rotulo_w"], f["h"] - 6, 9)
+        p.lista(coluna, f["x"] + f["rotulo_w"], f["y"], f["w"] - f["rotulo_w"] - 2, f["h"], **extra)
+    r = L.REFINARIA
+    p.rotulo(r["rotulo"], r["x"], r["y"] - 6, 70, 26, 9)
+    p.texto_dinamico("Região da Refinaria", r["x"] + 62, r["y"] - 1, 140, 20, 10.0, forte=True, fundo=COR["pagina"])
+    d = L.DADOS_ATE
+    p.rotulo("Reajustes desde", d["x"] - 40, d["y"] - 6, 110, 26, 9)
+    p.rotulo("jan/2023", d["x"] + 66, d["y"] - 6, 100, 26, 10, COR["texto"], forte=True)
+    # cartões
+    y = L.CARTAO_Y
+    for i, titulo in enumerate(L.REPASSE_CARTOES):
+        p.rotulo(titulo, L.repasse_cartao_x(i) + 8, y + 6, 280, 26, 9)
+    for i, (valor, cor_valor, apoio) in enumerate([
+        ("Reajustes no Escopo", COR["texto"], "Texto Altas e Baixas"),
+        ("Repasse Alta 2 Semanas", COR["alta"], None),
+        ("Repasse Baixa 2 Semanas", COR["baixa"], None),
+        ("Assimetria do Repasse", COR["texto"], "Texto Assimetria"),
+    ]):
+        x = L.repasse_cartao_x(i)
+        p.texto_dinamico(valor, x + 12, y + 32, 270, 40, 22.0, cor_texto=cor_valor, forte=True)
+        if apoio:
+            p.texto_dinamico(apoio, x + 12, y + 70, 270, 20, 9.0, cor_texto=COR["suave"])
+        else:
+            p.rotulo("do que a refinaria explicaria", x + 8, y + 66, 270, 24, 8.5)
+    # curva: quanto chegou ao posto, semana a semana (só até 4 semanas: depois sobram poucos reajustes)
+    c = L.CURVA
+    p.rotulo(c["titulo"], c["x"] + 8, c["y"] + 6, 900, 28, 11, COR["texto"], forte=True)
+    p.curva_repasse(c["x"] + 12, c["y"] + 36, c["w"] - 24, c["h"] - 44)
+    # reajuste a reajuste
+    e = L.EVENTOS
+    p.rotulo(e["titulo"], e["x"] + 8, e["y"] + 6, 1100, 28, 11, COR["texto"], forte=True)
+    p.eventos_repasse(e["x"] + 12, e["y"] + 40, e["w"] - 24, e["h"] - 48)
+    return p
+
+
 def paginas() -> list[Pagina]:
-    return [visao_geral()]
+    return [visao_geral(), repasse()]
 
 
 def tema() -> dict:
