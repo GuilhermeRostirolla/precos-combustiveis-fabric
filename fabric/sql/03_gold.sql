@@ -241,6 +241,13 @@ BEGIN
     UNION ALL
     SELECT uf, CAST('Estado' AS varchar(10)) FROM config.uf_regiao WHERE uf <> 'BR';
 
+    -- IPCA de 12 meses (IBGE), referência de inflação dos cartões. SQL dinâmico: a tabela da bronze só passa a
+    -- existir depois da primeira ingestão, e o procedimento é criado antes.
+    DROP TABLE IF EXISTS gold.inflacao;
+    EXEC sp_executesql N'CREATE TABLE gold.inflacao AS
+        SELECT CAST(mes AS date) AS mes, CAST(ipca_12m AS decimal(6, 2)) AS ipca_12m
+        FROM lh_combustiveis.dbo.bronze_ipca WHERE ipca_12m IS NOT NULL';
+
     DROP TABLE IF EXISTS gold.evento;
     CREATE TABLE gold.evento AS
     SELECT data, DATEADD(day, -(DATEDIFF(day, '19000101', data) % 7), data) AS semana,

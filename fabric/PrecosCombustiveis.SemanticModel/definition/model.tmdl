@@ -10,6 +10,7 @@ ref table semana_referencia
 ref table regiao_comparacao
 ref table comparacao_item
 ref table componente
+ref table inflacao
 ref table evento
 ref table composicao_preco_semana
 ref table dim_produto

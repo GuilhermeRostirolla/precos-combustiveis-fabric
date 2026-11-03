@@ -1,0 +1,30 @@
+table inflacao
+	lineageTag: 31e10b13-074b-5036-8b82-01c856149537
+	sourceLineageTag: [gold].[inflacao]
+
+	column mes
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 44d48c18-abf9-58ed-b7ba-d21032d37f18
+		sourceLineageTag: mes
+		summarizeBy: none
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column ipca_12m
+		dataType: decimal
+		formatString: #,0.0000
+		lineageTag: 233a4c0d-6e54-5316-9e84-e7ff40a6efcf
+		sourceLineageTag: ipca_12m
+		summarizeBy: none
+		sourceColumn: ipca_12m
+
+		annotation SummarizationSetBy = Automatic
+
+	partition inflacao = entity
+		mode: directLake
+		source
+			entityName: inflacao
+			schemaName: gold
+			expressionSource: DatabaseQuery

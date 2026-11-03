@@ -371,6 +371,14 @@ class Pagina:
             "labels": [{"properties": {"show": lit(False)}}],
             "dataPoint": pontos,
         }
+        if marca:
+            objetos["categoryAxis"][0]["properties"]["axisType"] = lit("Scalar")
+            objetos["xAxisReferenceLine"] = [{"properties": {
+                "show": lit(True), "value": {"expr": campo(marca)}, "lineColor": cor(COR["suave"]),
+                "transparency": lit(20.0), "style": lit("dashed"), "width": lit(1),
+                "dataLabelShow": lit(True), "dataLabelText": lit("Name"), "displayName": lit("corte de imposto"),
+                "dataLabelColor": cor(COR["suave"]), "dataLabelVerticalPosition": lit("Above")},
+                "selector": {"id": "1"}}]
         return self._add(x, y, w, h, {
             "visualType": "lineChart",
             "query": {"queryState": {"Category": {"projections": [projecao(eixo, ativo=True)]},
@@ -467,8 +475,34 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo(categoria), "direction": "Ascending"}]}},
             "objects": objetos})
 
-    def linhas_rotuladas(self, x, y, w, h, eixo, medidas, cores):
-        """Uma linha por série, no mesmo eixo, com o nome da série escrito na ponta (sem legenda)."""
+    def cascata(self, x, y, w, h, categoria, medida, valores):
+        """Cascata (ponte): cada parte sobe (vermelho) ou desce (verde) a partir da anterior; o total é o posto."""
+        objetos = {
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["suave"]),
+                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
+                                             "innerPadding": lit(30.0)}}],
+            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False),
+                                          "totalsEnabled": lit(True)}}],
+            "y1AxisReferenceLine": [{"properties": {"show": lit(True), "value": lit(0.0), "lineColor": cor(COR["suave"]),
+                                                    "transparency": lit(40.0), "style": lit("solid")},
+                                     "selector": {"id": "1"}}],
+            "labels": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "color": cor(COR["texto"]),
+                                       "fontFamily": lit(FONTE_FORTE)}}],
+            "legend": [{"properties": {"show": lit(False)}}],
+            "sentimentColors": [{"properties": {"increaseFill": cor(COR["aumento"]), "decreaseFill": cor(COR["reducao"]),
+                                                "totalFill": cor(COR["suave"])}}],
+        }
+        return self._add(x, y, w, h, {
+            "visualType": "waterfallChart",
+            "query": {"queryState": {"Category": {"projections": [projecao(categoria, ativo=True)]},
+                                     "Y": {"projections": campos([medida])}},
+                      "sortDefinition": {"sort": [{"field": campo(categoria), "direction": "Ascending"}]}},
+            "objects": objetos}, [(categoria, valores)])
+
+    def linhas_rotuladas(self, x, y, w, h, eixo, medidas, cores, marca=None):
+        """Uma linha por série, no mesmo eixo, com o nome da série escrito na ponta (sem legenda).
+
+        Com ``marca`` (medida de data), uma linha vertical tracejada marca esse dia no eixo de datas."""
         pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
                   for m, c in zip([m[0] for m in medidas], cores, strict=True)]
         objetos = {
@@ -588,17 +622,13 @@ def visao_geral() -> Pagina:
                      medida_cor="Cor Variação 4 Semanas")
     x = L.cartao_x(2)
     p.texto_dinamico("Δ12 Posto", x + 12, y + 32, 211, 40, 22.0, medida_cor="Cor Variação 12 Meses", forte=True)
-    p.texto_dinamico("Variação 12 Meses Posto", x + 12, y + 70, 211, 20, 9.0, medida_cor="Cor Variação 12 Meses")
+    p.texto_dinamico("Apoio Variação 12 Meses Posto", x + 12, y + 70, 211, 20, 9.0, medida_cor="Cor Variação 12 Meses")
     p.texto_dinamico("Impostos no Litro", L.cartao_x(3) + 12, y + 32, 110, 40, 22.0, forte=True)
     p.texto_dinamico("Apoio Impostos Curto", L.cartao_x(3) + 12, y + 70, 211, 20, 9.0, cor_texto=COR["suave"])
-    # último cartão: etanol ÷ gasolina (com a barra e a marca dos 70%) ou, no diesel, a refinaria em 12 meses
+    # último cartão: o litro sem os impostos em 12 meses (refinaria + etanol/biodiesel, frete e margens)
     x = L.cartao_x(4)
-    p.texto_dinamico("Título Cartão 5", x + 12, y + 10, 211, 20, 9.0, cor_texto=COR["suave"])
-    p.texto_dinamico("Valor Cartão 5", x + 12, y + 32, 211, 40, 22.0, medida_cor="Cor Cartão 5", forte=True)
-    p.texto_dinamico("Texto Barra Etanol", x + L.BARRA_X, y + L.BARRA_Y - 3, L.BARRA_W, 14, 7.0,
-                     cor_texto=COR["etanol"], medida_fundo="Cor Fundo Barra")
-    marca = x + L.BARRA_X + round(0.7 * L.BARRA_W) - 4
-    p.texto_dinamico("Marca 70%", marca, y + L.BARRA_Y + 12, 44, 14, 7.0, cor_texto=COR["suave"])
+    p.texto_dinamico("Δ12 Sem Impostos", x + 12, y + 32, 211, 40, 22.0, medida_cor="Cor Sem Impostos", forte=True)
+    p.texto_dinamico("Apoio Sem Impostos", x + 12, y + 70, 211, 20, 9.0, medida_cor="Cor Sem Impostos")
     # as três partes do preço, cada uma na sua linha (empilhadas, não dava para ver quem subiu e quem caiu)
     g = L.GRAFICO
     p.rotulo(g["titulo"], g["x"] + 8, g["y"] + 6, 700, 28, 11, COR["texto"], forte=True)
@@ -606,12 +636,12 @@ def visao_geral() -> Pagina:
     p.linhas_rotuladas(g["x"] + 12, g["y"] + 36, g["w"] - 24, g["h"] - 44, "dim_semana.mes_inicio",
             [("Refinaria na Semana", "Refinaria"), ("Impostos na Semana", "Impostos"),
              ("Outros na Semana", "Etanol/biodiesel, frete e margens")],
-            [COR["refinaria"], "#8A7CF0", COR["alta"]])
-    # o que mudou em cada parte do litro em 12 meses; a última coluna é o resultado no posto
+            [COR["refinaria"], "#8A7CF0", COR["alta"]], marca="Semana do Corte de Imposto")
+    # o que mudou em cada parte do litro em 12 meses, em cascata; o total é o que mudou no posto
     b = L.PONTE
     p.rotulo(b["titulo"], b["x"] + 8, b["y"] + 6, 560, 28, 11, COR["texto"], forte=True)
-    p.colunas_coloridas(b["x"] + 12, b["y"] + 40, b["w"] - 24, b["h"] - 48, "componente.componente",
-                        "Variação 12 Meses do Componente", "Cor do Componente")
+    p.cascata(b["x"] + 12, b["y"] + 40, b["w"] - 24, b["h"] - 48, "componente.componente",
+              "Variação 12 Meses do Componente", ["Refinaria", "Impostos", "Etanol/biodiesel, frete e margens"])
     # diferença de cada região (e do estado escolhido, em laranja) para a média do Brasil
     r = L.RANKING
     p.rotulo(r["titulo"], r["x"] + 8, r["y"] + 6, 420, 28, 11, COR["texto"], forte=True)

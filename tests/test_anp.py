@@ -5,7 +5,7 @@ from datetime import date, datetime
 import pandas as pd
 import pytest
 
-from anp import descobrir_arquivos, ler_produtor, ler_revenda, ler_semanal_estados, selecionar_arquivos
+from anp import descobrir_arquivos, ler_ipca, ler_produtor, ler_revenda, ler_semanal_estados, selecionar_arquivos
 
 CABECALHO = ("﻿Regiao - Sigla;Estado - Sigla;Municipio;Revenda;CNPJ da Revenda;Nome da Rua;Numero Rua;"
              "Complemento;Bairro;Cep;Produto;Data da Coleta;Valor de Venda;Valor de Compra;"
@@ -140,3 +140,11 @@ def test_semanal_estados_vira_sigla_e_nome_da_serie_historica():
     assert sp["semana_inicio"] == date(2026, 10, 18)
     ap = df[df["uf"] == "AP"].iloc[0]
     assert ap["produto"] == "DIESEL S10"
+
+
+def test_ler_ipca():
+    resposta = [{"D3C": "Mês (Código)", "V": "Valor"},
+                {"D3C": "202608", "V": "4.22"}, {"D3C": "202609", "V": "4.58"}, {"D3C": "202610", "V": "..."}]
+    ipca = ler_ipca(resposta)
+    assert list(ipca["ipca_12m"]) == [4.22, 4.58]
+    assert ipca["mes"].iloc[-1] == date(2026, 9, 1)

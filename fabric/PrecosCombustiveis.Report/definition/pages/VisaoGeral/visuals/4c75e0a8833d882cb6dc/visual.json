@@ -3,9 +3,9 @@
   "name": "4c75e0a8833d882cb6dc",
   "position": {
     "x": 287,
-    "y": 188,
+    "y": 150,
     "z": 1700,
-    "height": 20,
+    "height": 40,
     "width": 211,
     "tabOrder": 1700
   },
@@ -23,11 +23,11 @@
                       "Entity": "componente"
                     }
                   },
-                  "Property": "Variação 4 Semanas Posto %"
+                  "Property": "Variação 4 Semanas Posto"
                 }
               },
-              "queryRef": "componente.Variação 4 Semanas Posto %",
-              "nativeQueryRef": "Variação 4 Semanas Posto %"
+              "queryRef": "componente.Variação 4 Semanas Posto",
+              "nativeQueryRef": "Variação 4 Semanas Posto"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -89,14 +89,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },

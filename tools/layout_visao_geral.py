@@ -19,7 +19,8 @@ REFINARIA = {"x": 850, "y": 78, "rotulo": "Refinaria"}  # a ANP só publica a re
 
 # cartões
 CARTAO_Y, CARTAO_W, CARTAO_H, CARTAO_GAP = 118, 235, 100, 12
-CARTOES = ["Preço no posto", "Variação em 4 semanas", "Variação em 12 meses", "Impostos no litro", None]  # o último muda com o combustível
+CARTOES = ["Preço no posto", "Variação em 4 semanas", "Variação em 12 meses", "Impostos no litro",
+           "Sem impostos · 12 meses"]
 BARRA_Y, BARRA_H = 72, 8          # barra do etanol (relativo ao cartão)
 BARRA_X, BARRA_W = 16, 203
 SUFIXO_LITRO_X = 128              # "/litro" depois de "R$ 0,00" (largura fixa: um dígito antes da vírgula)

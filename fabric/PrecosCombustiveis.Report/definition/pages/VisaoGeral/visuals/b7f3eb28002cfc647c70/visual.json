@@ -2,18 +2,37 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "b7f3eb28002cfc647c70",
   "position": {
-    "x": 1122,
-    "y": 488,
+    "x": 658,
+    "y": 516,
     "z": 3100,
-    "height": 20,
-    "width": 120,
+    "height": 172,
+    "width": 582,
     "tabOrder": 3100
   },
   "visual": {
-    "visualType": "multiRowCard",
+    "visualType": "clusteredBarChart",
     "query": {
       "queryState": {
-        "Values": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "comparacao_item"
+                    }
+                  },
+                  "Property": "item"
+                }
+              },
+              "queryRef": "comparacao_item.item",
+              "nativeQueryRef": "item",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
           "projections": [
             {
               "field": {
@@ -23,24 +42,59 @@
                       "Entity": "componente"
                     }
                   },
-                  "Property": "Texto Preço Brasil"
+                  "Property": "Diferença para o Brasil"
                 }
               },
-              "queryRef": "componente.Texto Preço Brasil",
-              "nativeQueryRef": "Texto Preço Brasil"
+              "queryRef": "componente.Diferença para o Brasil",
+              "nativeQueryRef": "Diferença para o Brasil"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "componente"
+                  }
+                },
+                "Property": "Diferença para o Brasil"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
       }
     },
     "objects": {
-      "dataLabels": [
+      "categoryAxis": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "10.0D"
+                }
+              }
+            },
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
+                    }
+                  }
                 }
               }
             },
@@ -51,21 +105,31 @@
                 }
               }
             },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#8B95A9'"
-                    }
-                  }
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "maxMarginFactor": {
+              "expr": {
+                "Literal": {
+                  "Value": "30L"
+                }
+              }
+            },
+            "innerPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "30.0D"
                 }
               }
             }
           }
         }
       ],
-      "categoryLabels": [
+      "valueAxis": [
         {
           "properties": {
             "show": {
@@ -74,24 +138,38 @@
                   "Value": "false"
                 }
               }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "gridlineShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
             }
           }
         }
       ],
-      "cardTitle": [
+      "labels": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "fontSize": {
               "expr": {
                 "Literal": {
                   "Value": "9.0D"
-                }
-              }
-            },
-            "fontFamily": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Segoe UI'"
                 }
               }
             },
@@ -100,50 +178,50 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#8B95A9'"
+                      "Value": "'#E6EAF2'"
                     }
                   }
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             }
           }
         }
       ],
-      "card": [
+      "dataPoint": [
         {
           "properties": {
-            "outline": {
-              "expr": {
-                "Literal": {
-                  "Value": "'None'"
-                }
-              }
-            },
-            "barShow": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "cardPadding": {
-              "expr": {
-                "Literal": {
-                  "Value": "0.0D"
-                }
-              }
-            },
-            "cardBackground": {
+            "fill": {
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#111A2B'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "componente"
+                        }
+                      },
+                      "Property": "Cor Diferença para o Brasil"
                     }
                   }
                 }
               }
             }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ]
           }
         }
       ]

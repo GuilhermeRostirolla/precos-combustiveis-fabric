@@ -3,9 +3,9 @@
   "name": "4bfe490491b48002ef9c",
   "position": {
     "x": 534,
-    "y": 188,
+    "y": 150,
     "z": 1900,
-    "height": 20,
+    "height": 40,
     "width": 211,
     "tabOrder": 1900
   },
@@ -23,11 +23,11 @@
                       "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Variação 12 Meses Posto"
+                  "Property": "Δ12 Posto"
                 }
               },
-              "queryRef": "composicao_preco_semana.Variação 12 Meses Posto",
-              "nativeQueryRef": "Variação 12 Meses Posto"
+              "queryRef": "composicao_preco_semana.Δ12 Posto",
+              "nativeQueryRef": "Δ12 Posto"
             }
           ]
         }
@@ -40,14 +40,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
@@ -89,14 +89,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
+                  "Value": "22.0D"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },

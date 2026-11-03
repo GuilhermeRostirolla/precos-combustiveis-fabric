@@ -37,6 +37,9 @@ URL_SEMANAL_ESTADOS = (
     "precos-revenda-e-de-distribuicao-combustiveis/shlp/semanal/semanal-estados-desde-2013.xlsx"
 )
 
+# IPCA acumulado em 12 meses (IBGE, tabela 1737 do SIDRA, variável 2265): a referência de inflação dos cartões.
+URL_IPCA = "https://apisidra.ibge.gov.br/values/t/1737/n1/all/v/2265/p/last%2036?formato=json"
+
 UF_POR_ESTADO = {
     "ACRE": "AC", "ALAGOAS": "AL", "AMAPA": "AP", "AMAZONAS": "AM", "BAHIA": "BA", "CEARA": "CE",
     "DISTRITO FEDERAL": "DF", "ESPIRITO SANTO": "ES", "GOIAS": "GO", "MARANHAO": "MA", "MATO GROSSO": "MT",
@@ -255,3 +258,17 @@ def ler_semanal_estados(tabela: pd.DataFrame) -> pd.DataFrame:
     saida = saida.dropna(subset=["semana_inicio", "uf", "produto", "preco_medio"])
     saida["postos"] = saida["postos"].fillna(0).astype(int)
     return saida.reset_index(drop=True)
+
+
+def ler_ipca(registros: list[dict]) -> pd.DataFrame:
+    """Converte a resposta JSON do SIDRA (a primeira linha é o cabeçalho) em mês e IPCA de 12 meses (%)."""
+    linhas = []
+    for r in registros[1:]:
+        codigo, valor = str(r.get("D3C", "")), str(r.get("V", ""))
+        if not re.fullmatch(r"\d{6}", codigo):
+            continue
+        try:
+            linhas.append({"mes": date(int(codigo[:4]), int(codigo[4:]), 1), "ipca_12m": float(valor)})
+        except ValueError:  # "..." ou "-": mês ainda sem número
+            continue
+    return pd.DataFrame(linhas, columns=["mes", "ipca_12m"])

@@ -374,7 +374,12 @@ table composicao_preco_semana
 		displayFolder: Visão geral
 		lineageTag: ed6956a9-0dc5-57c9-bcb9-8415ceef2ae6
 
-	measure 'Cor Variação 12 Meses' = IF ( [Variação 12 Meses Posto] >= 0, "#E5534B", "#3FB950" )
+	measure 'Cor Variação 12 Meses' = ```
+			VAR v = [Variação 12 Meses Posto]
+			VAR i = COALESCE ( [Inflação 12 Meses], 0 )
+			RETURN
+			    IF ( v - i >= 0.01, "#E5534B", IF ( v - i <= -0.01, "#3FB950", "#8B95A9" ) )
+			```
 		displayFolder: Cores
 		lineageTag: 9474e6d0-b174-56c4-a940-efb9fd67bc66
 

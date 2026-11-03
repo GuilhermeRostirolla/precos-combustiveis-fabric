@@ -23,11 +23,11 @@
                       "Entity": "componente"
                     }
                   },
-                  "Property": "Valor Cartão 5"
+                  "Property": "Δ12 Sem Impostos"
                 }
               },
-              "queryRef": "componente.Valor Cartão 5",
-              "nativeQueryRef": "Valor Cartão 5"
+              "queryRef": "componente.Δ12 Sem Impostos",
+              "nativeQueryRef": "Δ12 Sem Impostos"
             }
           ]
         }
@@ -61,7 +61,7 @@
                           "Entity": "componente"
                         }
                       },
-                      "Property": "Cor Cartão 5"
+                      "Property": "Cor Sem Impostos"
                     }
                   }
                 }
@@ -110,7 +110,7 @@
                           "Entity": "componente"
                         }
                       },
-                      "Property": "Cor Cartão 5"
+                      "Property": "Cor Sem Impostos"
                     }
                   }
                 }

@@ -24,6 +24,7 @@ TABELAS = {
     "regiao_comparacao": [("uf", "string"), ("regiao", "string")],
     "comparacao_item": [("item", "string"), ("tipo", "string")],
     "componente": [("componente", "string"), ("ordem", "int")],
+    "inflacao": [("mes", "date"), ("ipca_12m", "dec")],
     "evento": [("data", "date"), ("semana", "date"), ("produto", "string"), ("tipo", "string"),
                ("descricao", "string")],
     "composicao_preco_semana": [("semana", "date"), ("uf", "string"), ("produto", "string"), ("preco_posto", "dec"),

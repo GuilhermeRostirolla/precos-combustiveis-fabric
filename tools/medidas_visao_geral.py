@@ -27,6 +27,12 @@ def com_sinal(d: str) -> str:
     return f'IF ( {d} < 0, "-", "+" ) & "R$ " & FORMAT ( ABS ( {d} ), "0.00" )'
 
 
+def cor_contra_inflacao(variacao_pct: str) -> str:
+    """Vermelho acima da inflação de 12 meses, verde abaixo, cinza a menos de 1 ponto percentual dela."""
+    return (f"VAR v = {variacao_pct}\nVAR i = COALESCE ( [Inflação 12 Meses], 0 )\nRETURN\n"
+            f'    IF ( v - i >= 0.01, "{CORES["alta"]}", IF ( v - i <= -0.01, "{CORES["baixa"]}", "{CORES["neutra"]}" ) )')
+
+
 def na_semana(expr: str, dias: int = 0) -> str:
     return (f"{UF}\nVAR s = [Semana de Referência] - {dias}\nRETURN\n    CALCULATE (\n        {expr},\n"
             f"        REMOVEFILTERS ( dim_semana ),\n        REMOVEFILTERS ( dim_uf ),\n"
@@ -169,8 +175,8 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          f'    IF ( ISBLANK ( [Preço no Posto 4 Semanas Antes] ), "", "No posto: " & {seta("d")} & " no mesmo período" )'),
         ("Apoio Etanol", "Visão geral", None,
          'IF ( [Etanol ÷ Gasolina] < 0.7, "Abaixo de 70%: etanol compensa", "Acima de 70%: gasolina compensa" )'),
-        ("Cor Variação 12 Meses", "Cores", None,
-         f'IF ( [Variação 12 Meses Posto] >= 0, "{CORES["alta"]}", "{CORES["baixa"]}" )'),
+        # 12 meses: vermelho acima da inflação, verde abaixo, cinza a menos de 1 ponto dela
+        ("Cor Variação 12 Meses", "Cores", None, cor_contra_inflacao("[Variação 12 Meses Posto]")),
         ("Cor Refinaria 4 Semanas", "Cores", None,
          f'IF ( [Variação Refinaria 4 Semanas] >= 0, "{CORES["alta"]}", "{CORES["baixa"]}" )'),
         ("Cor Etanol", "Cores", None, f'IF ( [Etanol ÷ Gasolina] < 0.7, "{CORES["etanol"]}", "{CORES["outros"]}" )'),
@@ -382,8 +388,35 @@ def medidas_visao_geral() -> dict[str, list[tuple]]:
          "    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), ROUND ( a - b, 2 ) )"),
         ("Variação 4 Semanas Posto %", "Visão geral", PCT_SINAL,
          variacao("[Preço no Posto]", "[Preço no Posto 4 Semanas Antes]")),
+        # abaixo de 1% a variação é do tamanho da diferença de amostra da ANP: cinza (estável)
         ("Cor Variação 4 Semanas", "Cores", None,
-         f'VAR d = [Variação 4 Semanas Posto]\nRETURN\n    IF ( d > 0, "{CORES["alta"]}", IF ( d < 0, "{CORES["baixa"]}", "{CORES["neutra"]}" ) )'),
+         f'VAR d = [Variação 4 Semanas Posto %]\nRETURN\n    IF ( d >= 0.01, "{CORES["alta"]}", IF ( d <= -0.01, "{CORES["baixa"]}", "{CORES["neutra"]}" ) )'),
+        # inflação: IPCA de 12 meses do último mês publicado até a semana de referência
+        ("Inflação 12 Meses", "Visão geral", "0.0%",
+         "VAR s = [Semana de Referência]\nVAR m = CALCULATE ( MAX ( inflacao[mes] ), inflacao[mes] <= s )\nRETURN\n"
+         "    DIVIDE ( CALCULATE ( MAX ( inflacao[ipca_12m] ), inflacao[mes] = m ), 100 )"),
+        ("Texto Inflação", "Visão geral", None,
+         'IF ( ISBLANK ( [Inflação 12 Meses] ), "", " · inflação " & FORMAT ( [Inflação 12 Meses], "0.0%" ) )'),
+        ("Apoio Variação 12 Meses Posto", "Visão geral", None,
+         'FORMAT ( [Variação 12 Meses Posto], "+0.0%;-0.0%" ) & [Texto Inflação]'),
+        # sem impostos: o que refinaria, etanol/biodiesel, frete e margens fizeram com o litro
+        ("Δ12 Sem Impostos", "Visão geral", VARIACAO_REAIS,
+         "VAR p = [Δ12 Posto]\nVAR i = [Δ12 Impostos]\nRETURN\n    IF ( NOT ISBLANK ( p ) && NOT ISBLANK ( i ), p - i )"),
+        ("Variação 12 Meses Sem Impostos", "Visão geral", PCT_SINAL,
+         variacao("( [Ponte Posto Hoje] - [Ponte Impostos Hoje] )",
+                  "( [Ponte Posto 12 Meses Antes] - [Ponte Impostos 12 Meses Antes] )")),
+        ("Apoio Sem Impostos", "Visão geral", None,
+         'FORMAT ( [Variação 12 Meses Sem Impostos], "+0.0%;-0.0%" ) & [Texto Inflação]'),
+        ("Cor Sem Impostos", "Cores", None, cor_contra_inflacao("[Variação 12 Meses Sem Impostos]")),
+        # primeira semana dos 12 meses em que os tributos federais caíram 5 centavos ou mais (marca no gráfico)
+        ("Semana do Corte de Imposto", "Gráfico", "dd/MM/yyyy",
+         f"{UF}\nVAR ref = [Semana de Referência]\n"
+         f"VAR semanas =\n    CALCULATETABLE (\n        ADDCOLUMNS ( VALUES ( {C}[semana] ), \"@f\", CALCULATE ( AVERAGE ( {C}[tributos_federais] ) ) ),\n"
+         f"        REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), {C}[uf] = u,\n"
+         f"        {C}[semana] > ref - 364, {C}[semana] <= ref\n    )\n"
+         f"VAR cortes =\n    FILTER ( semanas,\n        VAR s = {C}[semana]\n"
+         f"        VAR antes = MAXX ( FILTER ( semanas, {C}[semana] = s - 7 ), [@f] )\n"
+         f"        RETURN NOT ISBLANK ( antes ) && antes - [@f] >= 0.05 )\nRETURN\n    MINX ( cortes, {C}[semana] )"),
         ("Impostos 12 Meses Antes", "Visão geral", REAIS, na_semana(IMPOSTOS, 364)),
         ("Apoio Impostos Curto", "Visão geral", None,
          'FORMAT ( DIVIDE ( [Impostos no Litro], [Preço no Posto] ), "0%" ) & " do preço · há 12 meses R$ " '

@@ -2,8 +2,8 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "c25651b8fdd678239c27",
   "position": {
-    "x": 1028,
-    "y": 128,
+    "x": 781,
+    "y": 188,
     "z": 2200,
     "height": 20,
     "width": 211,
@@ -23,11 +23,11 @@
                       "Entity": "componente"
                     }
                   },
-                  "Property": "Título Cartão 5"
+                  "Property": "Apoio Impostos Curto"
                 }
               },
-              "queryRef": "componente.Título Cartão 5",
-              "nativeQueryRef": "Título Cartão 5"
+              "queryRef": "componente.Apoio Impostos Curto",
+              "nativeQueryRef": "Apoio Impostos Curto"
             }
           ]
         }

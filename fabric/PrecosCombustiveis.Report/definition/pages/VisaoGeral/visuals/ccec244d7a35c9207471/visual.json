@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "ccec244d7a35c9207471",
   "position": {
-    "x": 287,
+    "x": 40,
     "y": 150,
     "z": 1600,
     "height": 40,
-    "width": 211,
+    "width": 110,
     "tabOrder": 1600
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "componente"
+                      "Entity": "composicao_preco_semana"
                     }
                   },
-                  "Property": "Variação 4 Semanas Posto"
+                  "Property": "Preço no Posto"
                 }
               },
-              "queryRef": "componente.Variação 4 Semanas Posto",
-              "nativeQueryRef": "Variação 4 Semanas Posto"
+              "queryRef": "composicao_preco_semana.Preço no Posto",
+              "nativeQueryRef": "Preço no Posto"
             }
           ]
         }
@@ -55,13 +55,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "componente"
-                        }
-                      },
-                      "Property": "Cor Variação 4 Semanas"
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }
@@ -104,13 +99,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "componente"
-                        }
-                      },
-                      "Property": "Cor Variação 4 Semanas"
+                    "Literal": {
+                      "Value": "'#E6EAF2'"
                     }
                   }
                 }

@@ -8,6 +8,7 @@
 #   Os dois arquivos mais recentes são sempre reprocessados, porque ainda recebem correções.
 # - **Produtores e importadores**: planilha semanal com o preço na saída da refinaria, sem ICMS, por região.
 #   É pequena, então é recarregada inteira a cada execução.
+# - **IPCA de 12 meses (IBGE)**: referência de inflação para as variações de preço.
 # - **Levantamento semanal por estado**: preço médio de cada estado, publicado toda semana. Cobre as semanas
 #   que a série histórica (mensal, com atraso) ainda não trouxe. Se a ANP estiver fora do ar, a carga segue
 #   sem ela e a tabela fica como estava.
@@ -131,6 +132,18 @@ except Exception as erro:  # a fonte é complementar: sem ela, o relatório usa 
     print(f"levantamento semanal não carregado: {erro}")
     if not spark.catalog.tableExists("bronze_revenda_semanal"):
         spark.createDataFrame([], ESQUEMA_SEMANAL).write.format("delta").saveAsTable("bronze_revenda_semanal")
+
+# %%
+# IPCA de 12 meses (IBGE): só a referência de inflação dos cartões. Se o IBGE estiver fora, fica o que já havia.
+try:
+    ipca = ler_ipca(sessao.get(URL_IPCA, timeout=60).json())
+    (spark.createDataFrame(ipca.assign(_data_carga=CARIMBO), "mes DATE, ipca_12m DOUBLE, _data_carga TIMESTAMP")
+     .write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("bronze_ipca"))
+    print(f"IPCA: {len(ipca)} meses, até {ipca['mes'].max()}")
+except Exception as erro:
+    print(f"IPCA não carregado: {erro}")
+    if not spark.catalog.tableExists("bronze_ipca"):
+        spark.createDataFrame([], "mes DATE, ipca_12m DOUBLE, _data_carga TIMESTAMP").write.format("delta").saveAsTable("bronze_ipca")
 
 # %%
 if novos_controles:

@@ -336,12 +336,84 @@ table componente
 		lineageTag: 0898e880-7d54-5914-bc21-83e90bb4d2a2
 
 	measure 'Cor Variação 4 Semanas' = ```
-			VAR d = [Variação 4 Semanas Posto]
+			VAR d = [Variação 4 Semanas Posto %]
 			RETURN
-			    IF ( d > 0, "#E5534B", IF ( d < 0, "#3FB950", "#8B95A9" ) )
+			    IF ( d >= 0.01, "#E5534B", IF ( d <= -0.01, "#3FB950", "#8B95A9" ) )
 			```
 		displayFolder: Cores
 		lineageTag: ac537f6d-5a70-572e-8d4d-c1e9d4129b2d
+
+	measure 'Inflação 12 Meses' = ```
+			VAR s = [Semana de Referência]
+			VAR m = CALCULATE ( MAX ( inflacao[mes] ), inflacao[mes] <= s )
+			RETURN
+			    DIVIDE ( CALCULATE ( MAX ( inflacao[ipca_12m] ), inflacao[mes] = m ), 100 )
+			```
+		formatString: 0.0%
+		displayFolder: Visão geral
+		lineageTag: 6d14ad05-66a4-569b-b3e3-241565a87ba4
+
+	measure 'Texto Inflação' = IF ( ISBLANK ( [Inflação 12 Meses] ), "", " · inflação " & FORMAT ( [Inflação 12 Meses], "0.0%" ) )
+		displayFolder: Visão geral
+		lineageTag: 09440d8b-7292-5bd5-bc48-dc288ad134cf
+
+	measure 'Apoio Variação 12 Meses Posto' = FORMAT ( [Variação 12 Meses Posto], "+0.0%;-0.0%" ) & [Texto Inflação]
+		displayFolder: Visão geral
+		lineageTag: 9ce2e977-d8e6-5ade-98d7-fe46fc488fbb
+
+	measure 'Δ12 Sem Impostos' = ```
+			VAR p = [Δ12 Posto]
+			VAR i = [Δ12 Impostos]
+			RETURN
+			    IF ( NOT ISBLANK ( p ) && NOT ISBLANK ( i ), p - i )
+			```
+		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		displayFolder: Visão geral
+		lineageTag: 0f81b600-3143-539e-a95a-ec9264db61f4
+
+	measure 'Variação 12 Meses Sem Impostos' = ```
+			VAR a = ( [Ponte Posto Hoje] - [Ponte Impostos Hoje] )
+			VAR b = ( [Ponte Posto 12 Meses Antes] - [Ponte Impostos 12 Meses Antes] )
+			RETURN
+			    IF ( NOT ISBLANK ( a ) && NOT ISBLANK ( b ), a / b - 1 )
+			```
+		formatString: +0.0%;-0.0%
+		displayFolder: Visão geral
+		lineageTag: f3d5c5ea-1f64-59f7-b4e3-f9a692b253f2
+
+	measure 'Apoio Sem Impostos' = FORMAT ( [Variação 12 Meses Sem Impostos], "+0.0%;-0.0%" ) & [Texto Inflação]
+		displayFolder: Visão geral
+		lineageTag: ddfafbbd-b836-570b-bf5e-b5562e4fb157
+
+	measure 'Cor Sem Impostos' = ```
+			VAR v = [Variação 12 Meses Sem Impostos]
+			VAR i = COALESCE ( [Inflação 12 Meses], 0 )
+			RETURN
+			    IF ( v - i >= 0.01, "#E5534B", IF ( v - i <= -0.01, "#3FB950", "#8B95A9" ) )
+			```
+		displayFolder: Cores
+		lineageTag: 30a6c790-a13c-5e34-98ad-1cef007ae9cc
+
+	measure 'Semana do Corte de Imposto' = ```
+			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
+			VAR ref = [Semana de Referência]
+			VAR semanas =
+			    CALCULATETABLE (
+			        ADDCOLUMNS ( VALUES ( composicao_preco_semana[semana] ), "@f", CALCULATE ( AVERAGE ( composicao_preco_semana[tributos_federais] ) ) ),
+			        REMOVEFILTERS ( dim_semana ), REMOVEFILTERS ( dim_uf ), composicao_preco_semana[uf] = u,
+			        composicao_preco_semana[semana] > ref - 364, composicao_preco_semana[semana] <= ref
+			    )
+			VAR cortes =
+			    FILTER ( semanas,
+			        VAR s = composicao_preco_semana[semana]
+			        VAR antes = MAXX ( FILTER ( semanas, composicao_preco_semana[semana] = s - 7 ), [@f] )
+			        RETURN NOT ISBLANK ( antes ) && antes - [@f] >= 0.05 )
+			RETURN
+			    MINX ( cortes, composicao_preco_semana[semana] )
+			```
+		formatString: dd/MM/yyyy
+		displayFolder: Gráfico
+		lineageTag: 00e6cb35-edae-522a-9c9a-433fc34b8190
 
 	measure 'Impostos 12 Meses Antes' = ```
 			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
