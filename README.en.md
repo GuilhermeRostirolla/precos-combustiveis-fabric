@@ -72,16 +72,16 @@ The second page measures, price change by price change, how much of a refinery c
 
 ![Pass-through](docs/img/repasse.jpg)
 
-Since January 2023, after two weeks:
+Pass-through = how much of the refinery price change reached the pump. Since January 2023, after two weeks:
 
-| | Refinery price changes | Increase: reached the pump | Cut: reached the pump |
+| | Refinery price changes | Pass-through of increases | Pass-through of cuts |
 |---|---|---|---|
 | Gasoline, Brazil | 113 (53 increases, 60 cuts) | **44%** | **22%** |
 | S10 diesel, Brazil | 125 | **60%** | **45%** |
 | Gasoline, RS | 11 | 75% | 53% |
 | S10 diesel, RS | 18 | 82% | 44% |
 
-- **Increases reach the pump faster than cuts** for both fuels and in almost every region: for gasoline, twice as much (1.9×) in Brazil.
+- **Increases reach the pump more than cuts** for both fuels and in almost every region: for gasoline, 1.9 times as much in Brazil.
 - **Four weeks after a gasoline increase, 73% was already at the pump; after a cut, 7%.**
 - It varies by region: in the Southeast, increases and cuts arrive almost equally (79% and 71%); in the Center-West and North, cuts barely show up.
 
@@ -107,7 +107,7 @@ The same analysis runs for each RS municipality with at least 5 surveyed station
 Two pages, dark theme, no explanatory text, with filters for fuel (regular gasoline or S10 diesel) and state:
 
 - **Overview**: five cards (pump price, change over 4 weeks and 12 months, taxes per liter and ethanol ÷ gasoline, which becomes the refinery change when diesel is selected), the three parts of the price month by month, as separate lines, what changed in each part over 12 months (ending with the pump price) and each region's difference from the Brazil average, with the selected state highlighted.
-- **Pass-through**: how many refinery price changes there were, how much reached the pump within 2 weeks for increases and cuts, the week-by-week curve up to 4 weeks, and the comparison across regions (and the selected state).
+- **Pass-through**: how many refinery price changes there were, the pass-through of increases and cuts within 2 weeks, the week-by-week pass-through up to 4 weeks, and the comparison across regions (and the selected state).
 
 ## How to run
 

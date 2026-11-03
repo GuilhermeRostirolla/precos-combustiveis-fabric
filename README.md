@@ -72,18 +72,18 @@ A segunda página mede, reajuste a reajuste, quanto da mudança na refinaria che
 
 ![Repasse](docs/img/repasse.jpg)
 
-Desde janeiro de 2023, em duas semanas:
+Repasse = quanto do reajuste da refinaria chegou ao posto. Desde janeiro de 2023, em duas semanas:
 
-| | Reajustes na refinaria | Alta: chegou ao posto | Baixa: chegou ao posto |
+| | Reajustes na refinaria | Repasse dos aumentos | Repasse das reduções |
 |---|---|---|---|
-| Gasolina, Brasil | 113 (53 altas, 60 baixas) | **44%** | **22%** |
+| Gasolina, Brasil | 113 (53 aumentos, 60 reduções) | **44%** | **22%** |
 | Diesel S10, Brasil | 125 | **60%** | **45%** |
 | Gasolina, RS | 11 | 75% | 53% |
 | Diesel S10, RS | 18 | 82% | 44% |
 
-- **A alta chega mais rápido que a baixa** nos dois combustíveis e em quase todas as regiões: na gasolina, o dobro (1,9×) no Brasil.
-- **Quatro semanas depois de uma alta da gasolina, 73% já estava no posto; depois de uma baixa, 7%.**
-- A diferença varia por região: no Sudeste, alta e baixa chegam quase iguais (79% e 71%); no Centro-Oeste e no Norte, a baixa quase não aparece.
+- **O aumento chega ao posto mais que a redução** nos dois combustíveis e em quase todas as regiões: na gasolina, 1,9 vez no Brasil.
+- **Quatro semanas depois de um aumento da gasolina, 73% já estava no posto; depois de uma redução, 7%.**
+- A diferença varia por região: no Sudeste, aumento e redução chegam quase iguais (79% e 71%); no Centro-Oeste e no Norte, a redução quase não aparece.
 
 ### Como o repasse é medido
 
@@ -107,7 +107,7 @@ A mesma análise roda para cada município do RS com pelo menos 5 postos pesquis
 Duas páginas, em tema escuro, sem textos de apoio, com filtros de combustível (gasolina comum ou diesel S10) e de estado:
 
 - **Visão geral**: cinco cartões (preço no posto, variação em 4 semanas e em 12 meses, impostos no litro e etanol ÷ gasolina, que vira a variação da refinaria quando o diesel é escolhido), as três partes do preço mês a mês, em linhas separadas, o que mudou em cada parte em 12 meses (com o resultado no posto) e a diferença de cada região para a média do Brasil, com o estado escolhido em destaque.
-- **Repasse**: quantos reajustes houve na refinaria, quanto chegou ao posto em 2 semanas nas altas e nas baixas, a curva semana a semana até 4 semanas e a comparação entre as regiões (e o estado escolhido).
+- **Repasse**: quantos reajustes houve na refinaria, o repasse dos aumentos e das reduções em 2 semanas, o repasse semana a semana até 4 semanas e a comparação entre as regiões (e o estado escolhido).
 
 ## Como rodar
 
@@ -142,7 +142,7 @@ No Fabric:
 - **Cortes de imposto no meio da semana.** Os cortes de 2026 começaram numa quinta (10/09) e num sábado (10/10). Com o imposto da semana inteira, uma semana aparecia com R$ 0,40 a mais de margem; o tributo passou a ser a média dos dias.
 - **A planilha da refinaria traz o imposto cobrado, não o cheio.** A primeira versão descontava a alíquota cheia, e o corte de setembro aparecia como queda da refinaria. A queda de R$ 0,28 quando os tributos foram zerados em outubro mostrou o contrário.
 - **Dados com um mês de atraso.** A série posto a posto sai por mês; o levantamento semanal por estado completa as semanas mais recentes. A última semana de cada mês da série vem incompleta e é substituída pelo levantamento semanal.
-- **Repasse acima de 100% em 2023.** A primeira versão mostrava, no RS, 150% de repasse nas altas: eram as semanas em que o PIS/Cofins voltou a ser cobrado e o posto subiu por causa do imposto, não da refinaria. Esses reajustes saíram do estudo (tabela `config.mudanca_tributo`).
+- **Repasse acima de 100% em 2023.** A primeira versão mostrava, no RS, 150% de repasse nos aumentos: eram as semanas em que o PIS/Cofins voltou a ser cobrado e o posto subiu por causa do imposto, não da refinaria. Esses reajustes saíram do estudo (tabela `config.mudanca_tributo`).
 - **Tabela antiga presa no modelo.** Uma tabela removida da gold continuava como arquivo no modelo gerado e fazia a atualização falhar; o gerador agora apaga arquivos de tabelas que saíram.
 
 ## Limitações

@@ -49,26 +49,26 @@ Preço médio de cada região (média dos postos pesquisados nos estados dela) m
 
 ## Página "Repasse"
 
-Mede quanto de cada reajuste da refinaria chegou ao posto. Exemplos: gasolina comum, Brasil, reajustes desde jan/2023.
+**Repasse** = quanto do reajuste da refinaria chegou ao posto, em %. 100% = o reajuste chegou inteiro. Exemplos: gasolina comum, Brasil, reajustes desde jan/2023.
 
-### Reajustes na refinaria: 113 (53 altas · 60 baixas)
+### Reajustes na refinaria: 113 (53 aumentos · 60 reduções)
 Semanas em que o preço da refinaria da região (sem tributos federais, mediana de 3 semanas) variou 2% ou mais; semanas seguidas no mesmo sentido contam como um reajuste. Para o Brasil, soma dos reajustes das cinco regiões. Ficam de fora os reajustes perto de uma mudança de tributo federal (tabela `config.mudanca_tributo`).
 
-### Alta / Baixa: chegou ao posto em 2 semanas: 44% / 22%
-Repasse observado ÷ repasse esperado, duas semanas depois do reajuste:
-- esperado = variação na refinaria × parcela fóssil do litro (68% na gasolina E32);
-- observado = preço médio do posto duas semanas depois − o da semana anterior ao reajuste.
+### Repasse dos aumentos / das reduções em 2 semanas: 44% / 22%
+Variação no posto ÷ variação esperada, duas semanas depois do reajuste:
+- variação esperada = variação na refinaria × parcela fóssil do litro (68% na gasolina E32);
+- variação no posto = preço médio do posto duas semanas depois − o da semana anterior ao reajuste.
 
-Para o Brasil e as regiões, soma do observado de todos os estados ÷ soma do esperado. 100% = o reajuste chegou inteiro.
+Para o Brasil e as regiões, soma das variações no posto de todos os estados ÷ soma das esperadas.
 
-### Assimetria: 1,9×
-Alta em 2 semanas ÷ baixa em 2 semanas: 44% ÷ 22%.
+### Aumentos ÷ reduções: 1,9×
+Repasse dos aumentos ÷ repasse das reduções, em 2 semanas: 44% ÷ 22%.
 
-### Quanto do reajuste chegou ao posto, semana a semana
-A mesma conta para 0 a 4 semanas depois do reajuste, uma linha para as altas e outra para as baixas. Gasolina, Brasil: altas 10%, 38%, 44%, 81%, 73%; baixas 4%, 19%, 22%, 8%, 7%.
+### Repasse semana a semana
+O mesmo repasse de 0 a 4 semanas depois do reajuste, uma linha para os aumentos e outra para as reduções. Gasolina, Brasil: aumentos 10%, 38%, 44%, 81%, 73%; reduções 4%, 19%, 22%, 8%, 7%.
 
-### Em cada região
-O repasse em 2 semanas de cada região (os estados dela juntos) e, com um estado escolhido, o dele ao lado. Gasolina: Sudeste 79% / 71%, Sul 76% / 53%, Centro-Oeste 61% / 22%, Norte 36% / −4%, Nordeste 34% / 30%.
+### Repasse em 2 semanas por região
+O repasse de cada região (os estados dela juntos) e, com um estado escolhido, o dele ao lado. Gasolina (aumentos / reduções): Sudeste 79% / 71%, Sul 76% / 53%, Centro-Oeste 61% / 22%, Norte 36% / −4%, Nordeste 34% / 30%.
 
 ## Método e conferência
 
