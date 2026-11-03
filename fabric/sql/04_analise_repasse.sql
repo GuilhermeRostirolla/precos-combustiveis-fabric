@@ -19,6 +19,15 @@
 -- 6. Cada reajuste é acompanhado por até `horizonte_semanas`, mas só até a semana anterior ao reajuste seguinte,
 --    para um reajuste não contaminar a medição do outro.
 
+-- As tabelas do estudo são recriadas pela procedure a cada carga. Apagá-las aqui deixa a procedure ser criada mesmo
+-- quando a estrutura delas muda (o Warehouse confere as colunas de tabelas que já existem ao criar a procedure).
+DROP TABLE IF EXISTS gold.repasse_velocidade;
+DROP TABLE IF EXISTS gold.repasse_resumo;
+DROP TABLE IF EXISTS gold.repasse_curva;
+DROP TABLE IF EXISTS gold.repasse_evento;
+DROP TABLE IF EXISTS gold.refinaria_suavizada;
+GO
+
 CREATE OR ALTER PROCEDURE gold.sp_analise_repasse
 AS
 BEGIN
