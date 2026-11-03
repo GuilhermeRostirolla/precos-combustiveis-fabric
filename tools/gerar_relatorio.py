@@ -319,27 +319,6 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo(categoria), "direction": "Ascending"}]}},
             "objects": objetos})
 
-    def cascata(self, x, y, w, h, categoria, medida):
-        """Gráfico em cascata: cada parte que subiu (laranja) ou caiu (azul) e o total no fim."""
-        objetos = {
-            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "labelColor": cor(COR["texto"]),
-                                             "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
-                                             "concatenateLabels": lit(False)}}],
-            "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
-            "labels": [{"properties": {"show": lit(True), "fontSize": lit(9.0), "color": cor(COR["texto"]),
-                                       "fontFamily": lit(FONTE_FORTE)}}],
-            "legend": [{"properties": {"show": lit(False)}}],
-            "breakdown": [{"properties": {"totalLabel": lit("Total no posto")}}],
-            "sentimentColors": [{"properties": {"increaseFill": cor(COR["alta"]), "decreaseFill": cor(COR["baixa"]),
-                                                "totalFill": cor(COR["suave"])}}],
-        }
-        return self._add(x, y, w, h, {
-            "visualType": "waterfallChart",
-            "query": {"queryState": {"Category": {"projections": [projecao(categoria, ativo=True)]},
-                                     "Y": {"projections": campos([medida])}},
-                      "sortDefinition": {"sort": [{"field": campo(categoria), "direction": "Ascending"}]}},
-            "objects": objetos})
-
     def rotulo(self, texto, x, y, w, h, tamanho, cor_texto=COR["suave"], forte=False):
         """Texto fixo (caixa de texto), na mesma fonte dos visuais."""
         estilo = {"fontFamily": FONTE_FORTE if forte else FONTE, "fontSize": f"{tamanho}pt", "color": cor_texto}
@@ -371,14 +350,6 @@ class Pagina:
             "labels": [{"properties": {"show": lit(False)}}],
             "dataPoint": pontos,
         }
-        if marca:
-            objetos["categoryAxis"][0]["properties"]["axisType"] = lit("Scalar")
-            objetos["xAxisReferenceLine"] = [{"properties": {
-                "show": lit(True), "value": {"expr": campo(marca)}, "lineColor": cor(COR["suave"]),
-                "transparency": lit(20.0), "style": lit("dashed"), "width": lit(1),
-                "dataLabelShow": lit(True), "dataLabelText": lit("Name"), "displayName": lit("corte de imposto"),
-                "dataLabelColor": cor(COR["suave"]), "dataLabelVerticalPosition": lit("Above")},
-                "selector": {"id": "1"}}]
         return self._add(x, y, w, h, {
             "visualType": "lineChart",
             "query": {"queryState": {"Category": {"projections": [projecao(eixo, ativo=True)]},
@@ -519,6 +490,14 @@ class Pagina:
             "labels": [{"properties": {"show": lit(False)}}],
             "dataPoint": pontos,
         }
+        if marca:
+            objetos["categoryAxis"][0]["properties"]["axisType"] = lit("Scalar")
+            objetos["xAxisReferenceLine"] = [{"properties": {
+                "show": lit(True), "value": {"expr": campo(marca)}, "lineColor": cor(COR["suave"]),
+                "transparency": lit(20.0), "style": lit("dashed"),
+                "dataLabelShow": lit(True), "dataLabelText": lit("Name"), "displayName": lit("corte de imposto"),
+                "dataLabelColor": cor(COR["suave"])},
+                "selector": {"id": "1"}}]
         return self._add(x, y, w, h, {
             "visualType": "lineChart",
             "query": {"queryState": {"Category": {"projections": [projecao(eixo, ativo=True)]},
