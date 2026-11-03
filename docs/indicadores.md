@@ -11,11 +11,13 @@ Média simples dos preços pesquisados pela ANP na semana, no estado escolhido. 
 ### Variação em 4 semanas: −R$ 0,08 (−1,2%)
 Se o preço está subindo ou caindo agora.
 Preço desta semana − preço de 4 semanas antes (28 dias): 6,49 − 6,57 = −0,08; 6,49 ÷ 6,57 − 1 = −1,2%.
+Cor: vermelho se subiu 1% ou mais, verde se caiu 1% ou mais, cinza entre os dois (variação do tamanho da diferença de amostra da ANP).
 
-### Variação em 12 meses: +R$ 0,28 (+4,5%)
-Quanto o preço mudou em um ano.
+### Variação em 12 meses: +R$ 0,28 (+4,5% · inflação 4,6%)
+Quanto o preço mudou em um ano, comparado com a inflação.
 Preço desta semana − preço de 52 semanas antes (20/10/2025): 6,49 − 6,21 = +0,28; 6,49 ÷ 6,21 − 1 = +4,5%.
-É o mesmo total do gráfico "O que mudou em 12 meses": 0,24 − 0,52 + 0,56 = 0,28.
+A referência é o IPCA acumulado em 12 meses do último mês publicado pelo IBGE (setembro/2026: 4,6%). Cor: vermelho se a variação passou a inflação em 1 ponto ou mais, verde se ficou 1 ponto ou mais abaixo, cinza no meio. A gasolina subiu o mesmo que a inflação (cinza); o diesel, +19%, mais de quatro vezes (vermelho).
+É o mesmo total da cascata "O que mudou em 12 meses": 0,24 − 0,52 + 0,56 = 0,28.
 
 ### Impostos no litro: R$ 1,63 (25% do preço)
 Quanto do litro é imposto.
@@ -26,23 +28,20 @@ ICMS + tributos federais por litro, nos valores fixos em R$ definidos por lei, c
 
 "Há 12 meses R$ 2,15": a mesma conta em 20/10/2025 (ICMS R$ 1,47 + federais sem corte R$ 0,68).
 
-### Etanol ÷ gasolina: 67% (gasolina escolhida)
-Se compensa abastecer com etanol.
-Preço médio do etanol hidratado ÷ preço médio da gasolina comum, no mesmo estado e semana. Abaixo de 70%, o etanol compensa (verde). A barra mostra o percentual e a marca ▲ indica os 70%.
-
-### Refinaria em 12 meses: +13,9% (Diesel S10 escolhido)
-Quanto o preço da refinaria mudou em um ano.
-Preço da refinaria por litro de diesel A hoje ÷ o de 52 semanas antes − 1.
+### Sem impostos · 12 meses: +R$ 0,80 (+19,7% · inflação 4,6%)
+O que aconteceu com o litro tirando os impostos: refinaria + etanol/biodiesel, frete e margens.
+(preço − impostos) hoje − o mesmo há 12 meses: (6,49 − 1,63) − (6,21 − 2,15) = 4,86 − 4,06 = +0,80; 4,86 ÷ 4,06 − 1 = +19,7%. Mesma regra de cor da variação em 12 meses.
+É o cartão que mostra que o corte de impostos foi absorvido: sem ele, o litro teria subido R$ 0,80. No diesel: +R$ 1,43 (+31%).
 
 ### As três partes do preço do litro (média de cada mês)
-Uma linha para cada parte do preço, nos últimos 12 meses, com o nome escrito na ponta. Em linhas separadas (e não empilhadas) dá para ver na hora quem subiu e quem caiu. A média do mês evita os "dentes" de uma semana que a série da refinaria tem quando muda a proporção de importadores. Somadas, as três partes dão o preço médio no posto:
+Uma linha para cada parte do preço, nos últimos 12 meses, com o nome escrito na ponta. A linha tracejada marca a primeira semana em que os tributos federais caíram 5 centavos ou mais (gasolina: setembro/2026; diesel: março/2026). Em linhas separadas (e não empilhadas) dá para ver na hora quem subiu e quem caiu. A média do mês evita os "dentes" de uma semana que a série da refinaria tem quando muda a proporção de importadores. Somadas, as três partes dão o preço médio no posto:
 - **Refinaria**: preço de produtores e importadores (planilha semanal da ANP) da semana anterior, menos os tributos federais cobrados naquela semana, vezes a parcela fóssil do litro (68% na gasolina E32, 85% no diesel B15). Mediana de 3 semanas, porque a série oscila quando muda a proporção de importadores.
   Cada estado usa o preço da sua região; o Brasil é a média dos estados ponderada pelas coletas (a série "Brasil" da planilha dispara quando o Nordeste importa caro e não combina com a média dos postos).
 - **Impostos**: ICMS + tributos federais efetivamente cobrados.
 - **Etanol/biodiesel, frete e margens**: o que sobra (preço no posto − refinaria − impostos).
 
-### O que mudou em 12 meses
-Variação de cada parte entre a semana de referência e a de 52 semanas antes, e na última coluna o resultado no posto. Gasolina, Brasil: refinaria +R$ 0,24, impostos −R$ 0,52, etanol/biodiesel, frete e margens +R$ 0,56; preço no posto +R$ 0,28.
+### O que mudou em 12 meses (cascata)
+Variação de cada parte entre a semana de referência e a de 52 semanas antes, uma depois da outra; a coluna "Total" é o que mudou no posto. Vermelho: a parte encareceu o litro; verde: barateou. Gasolina, Brasil: refinaria +R$ 0,24, impostos −R$ 0,52, etanol/biodiesel, frete e margens +R$ 0,56; preço no posto +R$ 0,28.
 
 ### Diferença para a média do Brasil
 Preço médio de cada região (média dos postos pesquisados nos estados dela) menos o do Brasil, na semana de referência. Vermelho: mais caro que a média; verde: mais barato. Com um estado escolhido, ele aparece em laranja. Gasolina: Norte +R$ 0,42, Nordeste +R$ 0,24, Centro-Oeste −R$ 0,02, Sudeste −R$ 0,11, Sul −R$ 0,15; SP −R$ 0,14.

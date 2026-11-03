@@ -19,6 +19,7 @@ Week of Oct 19, 2026, Brazil average, compared with the same week of 2025:
 | Taxes | −R$ 0.52 | −R$ 0.25 |
 | Ethanol/biodiesel, freight and margins | +R$ 0.56 | +R$ 1.04 |
 
+- **Without taxes, the liter rose 20% for gasoline and 31% for diesel.** At the pump, gasoline rose as much as inflation (4.6% over 12 months); diesel more than four times as much (+19%).
 - **The government cut taxes, and the price still went up.** Federal taxes on gasoline were reduced in September and zeroed in October 2026; a liter carried R$ 0.52 less in taxes, and the pump price still rose R$ 0.28.
 - **Most of the increase happens after the refinery.** For diesel, R$ 1.04 of the R$ 1.19 increase is in biodiesel, freight and margins. For gasoline, that part rose R$ 0.56, more than the tax cut.
 - **The September tax cut did not reach the pump.** After Sep 10, gasoline stayed between R$ 6.56 and R$ 6.57 for three weeks.
@@ -33,6 +34,7 @@ What each indicator computes, the check against ANP and the taxes considered are
 | [Historical fuel price series](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis) (ANP) | Selling price at each surveyed station, by product and collection date | Zipped half-year files since 2023 and, for the current half-year, the monthly files. Only new or resized files are downloaded again |
 | [Weekly weighted average prices of producers and importers](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/ppidp/precos-medios-ponderados-semanais-2013.xls) (ANP) | Weekly average price, without ICMS, of gasoline A and S10 diesel A, by region | One .xls spreadsheet, fully reloaded |
 | Weekly price survey by state (ANP) | Average retail price of each state and product, every week | One .xlsx spreadsheet; covers the weeks the station-level series has not published yet (it comes out monthly, with a lag) |
+| [12-month IPCA](https://sidra.ibge.gov.br/tabela/1737) (IBGE) | Reference inflation for price changes | SIDRA API, fully reloaded |
 | Decrees and agreements (`config.tributo` table) | ICMS and federal taxes per liter, including the 2026 cuts | Configuration versioned in the repository |
 
 The gasoline sold at the pump is gasoline A blended with anhydrous ethanol (27% until Jul 2025, 30% from Aug 2025 to Jul 2026 and 32% since Aug 2026), and S10 diesel is diesel A blended with biodiesel (B10 to B15). The blend in force each week lives in a configuration table and defines the fossil share of the liter.
@@ -106,7 +108,7 @@ The same analysis runs for each RS municipality with at least 5 surveyed station
 
 Two pages, dark theme, no explanatory text, with filters for fuel (regular gasoline or S10 diesel) and state:
 
-- **Overview**: five cards (pump price, change over 4 weeks and 12 months, taxes per liter and ethanol ÷ gasoline, which becomes the refinery change when diesel is selected), the three parts of the price month by month, as separate lines, what changed in each part over 12 months (ending with the pump price) and each region's difference from the Brazil average, with the selected state highlighted.
+- **Overview**: five cards (pump price, change over 4 weeks, change over 12 months against inflation, taxes per liter and the liter without taxes over 12 months), the three parts of the price month by month, with the tax-cut week marked, a waterfall of what changed in each part over 12 months and each region's difference from the Brazil average, with the selected state highlighted.
 - **Pass-through**: how many refinery price changes there were, the pass-through of increases and cuts within 2 weeks, the week-by-week pass-through up to 4 weeks, and the comparison across regions (and the selected state).
 
 ## How to run

@@ -20,6 +20,7 @@ Semana de 19/10/2026, média do Brasil, comparada com a mesma semana de 2025:
 | Etanol/biodiesel, frete e margens | +R$ 0,56 | +R$ 1,04 |
 
 - **O governo cortou impostos, mas o preço subiu mesmo assim.** Na gasolina, os tributos federais foram reduzidos em setembro e zerados em outubro de 2026; o litro pagou R$ 0,52 a menos de imposto, e o preço no posto ainda subiu R$ 0,28.
+- **Sem os impostos, o litro subiu 20% na gasolina e 31% no diesel.** No posto, a gasolina subiu o mesmo que a inflação (4,6% em 12 meses); o diesel, mais de quatro vezes (+19%).
 - **A maior parte da alta está depois da refinaria.** No diesel, R$ 1,04 dos R$ 1,19 de aumento estão em biodiesel, frete e margens. Na gasolina, essa parte subiu R$ 0,56, mais que o corte de impostos.
 - **O corte de setembro não chegou à bomba.** Depois de 10/09, a gasolina continuou entre R$ 6,56 e R$ 6,57 por três semanas.
 - **Diferenças regionais:** a gasolina custa R$ 6,91 no Norte e R$ 6,34 no Sul.
@@ -33,6 +34,7 @@ O que cada indicador calcula, a conferência com a ANP e os impostos considerado
 | [Série histórica de preços de combustíveis](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis) (ANP) | Preço de venda de cada posto pesquisado, por produto e data da coleta | Arquivos semestrais compactados desde 2023 e, para o semestre corrente, os mensais. Só baixa de novo o que é novo ou mudou de tamanho |
 | [Preços médios ponderados semanais de produtores e importadores](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/ppidp/precos-medios-ponderados-semanais-2013.xls) (ANP) | Preço médio semanal, sem ICMS, de gasolina A e diesel S10 A, por região | Uma planilha .xls, recarregada inteira |
 | Levantamento semanal de preços por estado (ANP) | Preço médio de revenda de cada estado e produto, toda semana | Uma planilha .xlsx; cobre as semanas que a série posto a posto ainda não trouxe (ela sai por mês, com atraso) |
+| [IPCA acumulado em 12 meses](https://sidra.ibge.gov.br/tabela/1737) (IBGE) | Inflação de referência para as variações de preço | API do SIDRA, recarregada inteira |
 | Decretos e convênios (tabela `config.tributo`) | ICMS e tributos federais por litro, inclusive os cortes de 2026 | Configuração versionada no repositório |
 
 A gasolina vendida no posto é a gasolina A com etanol anidro (27% até jul/2025, 30% de ago/2025 a jul/2026 e 32% desde ago/2026), e o diesel S10 é o diesel A com biodiesel (B10 a B15). A mistura vigente em cada semana fica numa tabela de configuração e define a parcela fóssil do litro.
@@ -106,7 +108,7 @@ A mesma análise roda para cada município do RS com pelo menos 5 postos pesquis
 
 Duas páginas, em tema escuro, sem textos de apoio, com filtros de combustível (gasolina comum ou diesel S10) e de estado:
 
-- **Visão geral**: cinco cartões (preço no posto, variação em 4 semanas e em 12 meses, impostos no litro e etanol ÷ gasolina, que vira a variação da refinaria quando o diesel é escolhido), as três partes do preço mês a mês, em linhas separadas, o que mudou em cada parte em 12 meses (com o resultado no posto) e a diferença de cada região para a média do Brasil, com o estado escolhido em destaque.
+- **Visão geral**: cinco cartões (preço no posto, variação em 4 semanas, variação em 12 meses contra a inflação, impostos no litro e o litro sem impostos em 12 meses), as três partes do preço mês a mês, com a semana do corte de imposto marcada, a cascata do que mudou em cada parte em 12 meses e a diferença de cada região para a média do Brasil, com o estado escolhido em destaque.
 - **Repasse**: quantos reajustes houve na refinaria, o repasse dos aumentos e das reduções em 2 semanas, o repasse semana a semana até 4 semanas e a comparação entre as regiões (e o estado escolhido).
 
 ## Como rodar
