@@ -54,7 +54,7 @@ flowchart LR
 - **Bronze (`nb_01_ingestao`)**: lê a página da ANP, descobre os arquivos (o nome dos arquivos mensais mudou ao longo do tempo) e grava cada um como veio, com o arquivo de origem e a hora da carga. Uma tabela de controle guarda tamanho e hash de cada arquivo; os dois mais recentes são sempre reprocessados porque a ANP ainda os corrige.
 - **Silver (T-SQL)**: tipa datas e valores, fica só com combustível líquido vendido por litro e deduplica (o mesmo posto, produto e dia pode vir em dois arquivos). Registro inválido não some: vai para a quarentena com o motivo (`data_invalida`, `valor_fora_da_faixa`, `unidade_inesperada`…).
 - **Gold (T-SQL)**: preço médio, mediano e faixa por semana, município e estado; preço da refinaria com a parcela fóssil de cada semana; a divisão do preço do litro em refinaria, impostos e o restante, por estado e para o Brasil; calendário semanal.
-- **Análise (T-SQL)**: estudo de eventos do repasse da refinaria à bomba no RS (abaixo).
+- **Análise (T-SQL)**: estudo de eventos do repasse da refinaria ao posto, em cada estado (abaixo).
 - **Modelo e relatório**: o modelo semântico (TMDL, Direct Lake sobre o Warehouse) e o relatório (PBIR) são gerados por código em `tools/` e publicados pelo instalador. A imagem de fundo da página (molduras) é desenhada em HTML e gerada com Playwright.
 - **Orquestração**: um pipeline do Data Factory roda tudo toda quarta às 8h. A ANP atualiza a planilha de refinaria com cerca de 12 dias de atraso.
 
@@ -66,17 +66,33 @@ A diferença em relação à Síntese é que os **tributos federais são os efet
 
 O Brasil é a média dos estados, ponderada pelas coletas, e cada estado usa a refinaria da sua região. A série "Brasil" da planilha de produtores pesa pelo volume vendido e dispara quando o Nordeste importa caro (maio/2026: R$ 5,26 contra R$ 3,47 a R$ 3,64 no Sul, Sudeste e Centro-Oeste), enquanto a média dos postos é dominada pelo Sul e pelo Sudeste.
 
-## Análise complementar: repasse da refinaria à bomba no RS
+## Repasse da refinaria ao posto
 
-O warehouse também mede, reajuste a reajuste, quanto da mudança na refinaria chega aos postos do Rio Grande do Sul. Desde janeiro de 2023 foram 31 reajustes na refinaria da região Sul: na gasolina, as altas chegaram inteiras ao posto em uma semana, e nas baixas menos de 40% chegou em duas semanas.
+A segunda página mede, reajuste a reajuste, quanto da mudança na refinaria chegou ao posto, para o Brasil e para cada estado.
+
+![Repasse](docs/img/repasse.jpg)
+
+Desde janeiro de 2023, em duas semanas:
+
+| | Reajustes na refinaria | Alta: chegou ao posto | Baixa: chegou ao posto |
+|---|---|---|---|
+| Gasolina, Brasil | 113 (53 altas, 60 baixas) | **44%** | **22%** |
+| Diesel S10, Brasil | 125 | **60%** | **45%** |
+| Gasolina, RS | 11 | 75% | 53% |
+| Diesel S10, RS | 18 | 82% | 44% |
+
+- **A alta chega mais rápido que a baixa** nos dois combustíveis e em quase todas as regiões: na gasolina, o dobro (1,9×) no Brasil.
+- **Quatro semanas depois de uma alta da gasolina, 73% já estava no posto; depois de uma baixa, 7%.**
+- A diferença varia por região: no Sudeste, alta e baixa chegam quase iguais (79% e 71%); no Centro-Oeste e no Norte, a baixa quase não aparece.
 
 ### Como o repasse é medido
 
-1. **Série da refinaria**: preço médio de produtores e importadores da região Sul, **suavizado pela mediana de 3 semanas**. A planilha mistura refinarias e importadores, e a proporção muda de uma semana para outra; sem a suavização, um pico de uma semana (gasolina: 3,50 → 4,53 → 3,50 em agosto/2026) virava um falso reajuste de −23%.
-2. **Reajuste**: semana em que a série suavizada varia 2% ou mais. Semanas seguidas no mesmo sentido contam como um reajuste só (a alta do diesel em 2026 veio ao longo de três semanas).
-3. **Repasse esperado** = variação na refinaria × parcela fóssil do litro. O ICMS virou um valor fixo por litro em 2023 (diesel em maio, gasolina em junho), então a partir daí não amplia o repasse.
-4. **Repasse observado** em h semanas = preço médio dos postos do RS em t+h menos o da semana anterior ao reajuste.
+1. **Série da refinaria** de cada região: preço de produtores e importadores menos os tributos federais cobrados, **suavizado pela mediana de 3 semanas**. A planilha mistura refinarias e importadores, e a proporção muda de uma semana para outra; sem a suavização, um pico de uma semana (gasolina: 3,50 → 4,53 → 3,50 em agosto/2026) virava um falso reajuste de −23%.
+2. **Reajuste**: semana em que a série suavizada varia 2% ou mais. Semanas seguidas no mesmo sentido contam como um reajuste só. Ficam de fora os reajustes perto de uma mudança de tributo federal (a volta do PIS/Cofins em 2023), em que o preço do posto mudou por outro motivo.
+3. **Repasse esperado** = variação na refinaria × parcela fóssil do litro. O ICMS é um valor fixo por litro desde 2023, então não amplia o repasse.
+4. **Repasse observado** em h semanas = preço médio dos postos de cada estado em t+h menos o da semana anterior ao reajuste. Cada estado usa a refinaria da sua região.
 5. Cada reajuste é acompanhado por até 8 semanas, **mas só até o reajuste seguinte**, para um não contaminar a medição do outro.
+6. **Brasil e regiões**: soma do repasse observado de todos os estados ÷ soma do esperado (média ponderada pelo tamanho de cada reajuste).
 
 A mesma análise roda para cada município do RS com pelo menos 5 postos pesquisados na semana.
 
@@ -88,7 +104,10 @@ A mesma análise roda para cada município do RS com pelo menos 5 postos pesquis
 
 ## Relatório
 
-Uma página, em tema escuro, sem textos de apoio: cinco cartões (preço no posto, variação em 4 semanas e em 12 meses, impostos no litro e etanol ÷ gasolina, que vira a variação da refinaria quando o diesel é escolhido), as três partes do preço mês a mês, em linhas separadas, o que mudou em cada parte em 12 meses (com o resultado no posto) e a diferença de cada região para a média do Brasil, com o estado escolhido em destaque. Filtros de combustível (gasolina comum ou diesel S10) e de estado.
+Duas páginas, em tema escuro, sem textos de apoio, com filtros de combustível (gasolina comum ou diesel S10) e de estado:
+
+- **Visão geral**: cinco cartões (preço no posto, variação em 4 semanas e em 12 meses, impostos no litro e etanol ÷ gasolina, que vira a variação da refinaria quando o diesel é escolhido), as três partes do preço mês a mês, em linhas separadas, o que mudou em cada parte em 12 meses (com o resultado no posto) e a diferença de cada região para a média do Brasil, com o estado escolhido em destaque.
+- **Repasse**: quantos reajustes houve na refinaria, quanto chegou ao posto em 2 semanas nas altas e nas baixas, a curva semana a semana até 4 semanas e a comparação entre as regiões (e o estado escolhido).
 
 ## Como rodar
 
@@ -113,7 +132,7 @@ No Fabric:
 
 ## Problemas que apareceram no caminho
 
-- **Picos na planilha de refinaria.** A média de produtores e importadores oscila de uma semana para outra quando entra ou sai um importador. A primeira versão da análise encontrava 65 "reajustes", muitos deles picos de uma semana; com a mediana de 3 semanas e o agrupamento de semanas seguidas, ficaram 31.
+- **Picos na planilha de refinaria.** A média de produtores e importadores oscila de uma semana para outra quando entra ou sai um importador. A primeira versão da análise encontrava 65 "reajustes", muitos deles picos de uma semana; com a mediana de 3 semanas e o agrupamento de semanas seguidas, sobraram só os reajustes de verdade.
 - **Reajustes "isolados" demais.** A primeira regra só aceitava reajustes sem outro nas 6 semanas seguintes. Com reajustes frequentes, isso descartava quase todo o diesel. Acompanhar cada um até o seguinte aproveita todos sem misturar efeitos.
 - **Mistura configurada só em parte do histórico.** A planilha de refinaria começa em 2013, mas a tabela de mistura começava em 2015 (gasolina) e 2018 (diesel); a regra de qualidade acusava 2.201 semanas sem mistura. Como a análise começa em 2023, a regra passou a exigir mistura só no período analisado.
 - **Limite de sessões Spark na capacidade de avaliação (erro 430).** O instalador dispara o pipeline e encerra a própria sessão; a ingestão tem uma nova tentativa depois de 2 minutos.
@@ -123,6 +142,7 @@ No Fabric:
 - **Cortes de imposto no meio da semana.** Os cortes de 2026 começaram numa quinta (10/09) e num sábado (10/10). Com o imposto da semana inteira, uma semana aparecia com R$ 0,40 a mais de margem; o tributo passou a ser a média dos dias.
 - **A planilha da refinaria traz o imposto cobrado, não o cheio.** A primeira versão descontava a alíquota cheia, e o corte de setembro aparecia como queda da refinaria. A queda de R$ 0,28 quando os tributos foram zerados em outubro mostrou o contrário.
 - **Dados com um mês de atraso.** A série posto a posto sai por mês; o levantamento semanal por estado completa as semanas mais recentes. A última semana de cada mês da série vem incompleta e é substituída pelo levantamento semanal.
+- **Repasse acima de 100% em 2023.** A primeira versão mostrava, no RS, 150% de repasse nas altas: eram as semanas em que o PIS/Cofins voltou a ser cobrado e o posto subiu por causa do imposto, não da refinaria. Esses reajustes saíram do estudo (tabela `config.mudanca_tributo`).
 - **Tabela antiga presa no modelo.** Uma tabela removida da gold continuava como arquivo no modelo gerado e fazia a atualização falhar; o gerador agora apaga arquivos de tabelas que saíram.
 
 ## Limitações

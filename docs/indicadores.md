@@ -1,8 +1,8 @@
-# Indicadores da página "Visão geral"
+# Indicadores do relatório
+
+## Página "Visão geral"
 
 Todos os números usam a **semana de referência** (a última semana com dados, de segunda a domingo), o **combustível** e o **estado** escolhidos nos filtros. Exemplos: gasolina comum, Brasil, semana de 19/10/2026.
-
-## Cartões
 
 ### Preço no posto: R$ 6,49/litro
 Quanto custa o litro hoje.
@@ -34,8 +34,6 @@ Preço médio do etanol hidratado ÷ preço médio da gasolina comum, no mesmo e
 Quanto o preço da refinaria mudou em um ano.
 Preço da refinaria por litro de diesel A hoje ÷ o de 52 semanas antes − 1.
 
-## Gráficos
-
 ### As três partes do preço do litro (média de cada mês)
 Uma linha para cada parte do preço, nos últimos 12 meses, com o nome escrito na ponta. Em linhas separadas (e não empilhadas) dá para ver na hora quem subiu e quem caiu. A média do mês evita os "dentes" de uma semana que a série da refinaria tem quando muda a proporção de importadores. Somadas, as três partes dão o preço médio no posto:
 - **Refinaria**: preço de produtores e importadores (planilha semanal da ANP) da semana anterior, menos os tributos federais cobrados naquela semana, vezes a parcela fóssil do litro (68% na gasolina E32, 85% no diesel B15). Mediana de 3 semanas, porque a série oscila quando muda a proporção de importadores.
@@ -48,6 +46,29 @@ Variação de cada parte entre a semana de referência e a de 52 semanas antes, 
 
 ### Diferença para a média do Brasil
 Preço médio de cada região (média dos postos pesquisados nos estados dela) menos o do Brasil, na semana de referência. Vermelho: mais caro que a média; verde: mais barato. Com um estado escolhido, ele aparece em laranja. Gasolina: Norte +R$ 0,42, Nordeste +R$ 0,24, Centro-Oeste −R$ 0,02, Sudeste −R$ 0,11, Sul −R$ 0,15; SP −R$ 0,14.
+
+## Página "Repasse"
+
+Mede quanto de cada reajuste da refinaria chegou ao posto. Exemplos: gasolina comum, Brasil, reajustes desde jan/2023.
+
+### Reajustes na refinaria: 113 (53 altas · 60 baixas)
+Semanas em que o preço da refinaria da região (sem tributos federais, mediana de 3 semanas) variou 2% ou mais; semanas seguidas no mesmo sentido contam como um reajuste. Para o Brasil, soma dos reajustes das cinco regiões. Ficam de fora os reajustes perto de uma mudança de tributo federal (tabela `config.mudanca_tributo`).
+
+### Alta / Baixa: chegou ao posto em 2 semanas: 44% / 22%
+Repasse observado ÷ repasse esperado, duas semanas depois do reajuste:
+- esperado = variação na refinaria × parcela fóssil do litro (68% na gasolina E32);
+- observado = preço médio do posto duas semanas depois − o da semana anterior ao reajuste.
+
+Para o Brasil e as regiões, soma do observado de todos os estados ÷ soma do esperado. 100% = o reajuste chegou inteiro.
+
+### Assimetria: 1,9×
+Alta em 2 semanas ÷ baixa em 2 semanas: 44% ÷ 22%.
+
+### Quanto do reajuste chegou ao posto, semana a semana
+A mesma conta para 0 a 4 semanas depois do reajuste, uma linha para as altas e outra para as baixas. Gasolina, Brasil: altas 10%, 38%, 44%, 81%, 73%; baixas 4%, 19%, 22%, 8%, 7%.
+
+### Em cada região
+O repasse em 2 semanas de cada região (os estados dela juntos) e, com um estado escolhido, o dele ao lado. Gasolina: Sudeste 79% / 71%, Sul 76% / 53%, Centro-Oeste 61% / 22%, Norte 36% / −4%, Nordeste 34% / 30%.
 
 ## Método e conferência
 
