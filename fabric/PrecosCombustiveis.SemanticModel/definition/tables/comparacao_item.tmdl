@@ -121,47 +121,27 @@ table comparacao_item
 		displayFolder: Repasse
 		lineageTag: 4dfae807-1c97-57f1-a1c5-797b4d6b3671
 
-	measure 'Refinaria Explicaria' = ```
-			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
-			VAR e = IF ( u = "BR", "Brasil", u & " (estado)" )
+	measure 'Alta 2 Semanas na Região' = ```
+			VAR r = SELECTEDVALUE ( regiao_comparacao[regiao] )
+			VAR e = IF ( r = "Brasil", "Brasil", "Região " & r )
 			RETURN
-			    CALCULATE (
-			        AVERAGE ( repasse_curva[repasse_esperado] ),
-			        REMOVEFILTERS ( dim_uf ),
-			        repasse_curva[h] = 2,
-			        KEEPFILTERS ( repasse_curva[semana_evento] >= DATE ( 2025, 1, 1 ) ),
-			        ISBLANK ( repasse_curva[municipio] ),
-			        FILTER ( ALL ( repasse_curva[escopo] ), e = "Brasil" || repasse_curva[escopo] = e )
-			    )
+			    CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), REMOVEFILTERS ( dim_uf ),
+			        repasse_resumo[escopo] = e, repasse_resumo[direcao] = "alta", repasse_resumo[h] = 2 )
 			```
-		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		formatString: 0%
 		displayFolder: Repasse
-		lineageTag: a40db633-5785-5444-9928-c735e8d73ee8
+		lineageTag: e8f79880-29b2-5a1f-9ea8-c06077709f6a
 
-	measure 'Chegou ao Posto em 2 Semanas' = ```
-			VAR u = SELECTEDVALUE ( dim_uf[uf], "BR" )
-			VAR e = IF ( u = "BR", "Brasil", u & " (estado)" )
+	measure 'Baixa 2 Semanas na Região' = ```
+			VAR r = SELECTEDVALUE ( regiao_comparacao[regiao] )
+			VAR e = IF ( r = "Brasil", "Brasil", "Região " & r )
 			RETURN
-			    CALCULATE (
-			        AVERAGE ( repasse_curva[variacao_bomba] ),
-			        REMOVEFILTERS ( dim_uf ),
-			        repasse_curva[h] = 2,
-			        KEEPFILTERS ( repasse_curva[semana_evento] >= DATE ( 2025, 1, 1 ) ),
-			        ISBLANK ( repasse_curva[municipio] ),
-			        FILTER ( ALL ( repasse_curva[escopo] ), e = "Brasil" || repasse_curva[escopo] = e )
-			    )
+			    CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), REMOVEFILTERS ( dim_uf ),
+			        repasse_resumo[escopo] = e, repasse_resumo[direcao] = "baixa", repasse_resumo[h] = 2 )
 			```
-		formatString: "+""R$"" 0.00;-""R$"" 0.00;""R$"" 0.00"
+		formatString: 0%
 		displayFolder: Repasse
-		lineageTag: 4526a5ab-62af-5f84-a599-4e0d8da3b4af
-
-	measure 'Cor Chegou ao Posto' = ```
-			VAR d = [Refinaria Explicaria]
-			RETURN
-			    IF ( NOT ISBLANK ( d ), IF ( d > 0, "#E5534B", "#3FB950" ) )
-			```
-		displayFolder: Cores
-		lineageTag: 8d407e9e-35a7-58d3-9047-c890b4417559
+		lineageTag: 556d9928-bfd5-5441-81d3-bda66cb3647b
 
 	column item
 		dataType: string

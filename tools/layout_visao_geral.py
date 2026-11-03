@@ -51,4 +51,4 @@ def repasse_cartao_x(i: int) -> int:
 CURVA = {"x": 28, "y": 230, "w": 1224, "h": 234,
          "titulo": "Quanto do reajuste chegou ao posto, semana a semana · % do que a refinaria explicaria"}
 EVENTOS = {"x": 28, "y": 476, "w": 1224, "h": 220,
-           "titulo": "Reajuste a reajuste desde 2025 · R$/litro · o que a refinaria explicaria x o que chegou ao posto em 2 semanas"}
+           "titulo": "Em cada região · % do reajuste que chegou ao posto em 2 semanas"}

@@ -186,8 +186,12 @@ BEGIN
     INTO #curva_escopo
     FROM gold.repasse_curva
     UNION ALL
-    -- o Brasil junta os estados: cada par estado x reajuste da região dele conta uma vez
+    -- o Brasil e cada região juntam os seus estados: cada par estado x reajuste conta uma vez
     SELECT produto, 'Brasil', direcao, h, semana_evento, variacao_bomba, repasse_esperado, repasse
+    FROM gold.repasse_curva
+    WHERE municipio IS NULL
+    UNION ALL
+    SELECT produto, CONCAT('Região ', regiao), direcao, h, semana_evento, variacao_bomba, repasse_esperado, repasse
     FROM gold.repasse_curva
     WHERE municipio IS NULL;
 

@@ -523,34 +523,33 @@ class Pagina:
                       "sortDefinition": {"sort": [{"field": campo("repasse_resumo.h"), "direction": "Ascending"}]}},
             "objects": objetos}, [("repasse_resumo.h", [0, 1, 2, 3, 4])])
 
-    def eventos_repasse(self, x, y, w, h):
-        """Cada reajuste: o que a refinaria explicaria (cinza) e o que chegou ao posto (vermelho/verde)."""
-        medidas = [("Refinaria Explicaria", "refinaria explicaria"), ("Chegou ao Posto em 2 Semanas", "chegou ao posto")]
+    def regioes_repasse(self, x, y, w, h):
+        """Para cada região e o Brasil: quanto chegou ao posto em 2 semanas nas altas (vermelho) e nas baixas (verde)."""
+        medidas = [("Alta 2 Semanas na Região", "quando a refinaria sobe"),
+                   ("Baixa 2 Semanas na Região", "quando a refinaria cai")]
+        pontos = [{"properties": {"fill": cor(c)}, "selector": {"metadata": projecao(m)["queryRef"]}}
+                  for m, c in zip([m[0] for m in medidas], [COR["alta"], COR["baixa"]], strict=True)]
         objetos = {
-            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "labelColor": cor(COR["suave"]),
+            "categoryAxis": [{"properties": {"show": lit(True), "fontSize": lit(9.5), "labelColor": cor(COR["texto"]),
                                              "fontFamily": lit(FONTE), "showAxisTitle": lit(False),
                                              "axisType": lit("Categorical"), "gridlineShow": lit(False),
-                                             "innerPadding": lit(25.0)}}],
+                                             "innerPadding": lit(30.0)}}],
             "valueAxis": [{"properties": {"show": lit(False), "showAxisTitle": lit(False), "gridlineShow": lit(False)}}],
             "legend": [{"properties": {"show": lit(True), "position": lit("TopRight"), "showTitle": lit(False),
-                                       "fontSize": lit(8.5), "labelColor": cor(COR["suave"]), "fontFamily": lit(FONTE)}}],
-            "labels": [{"properties": {"show": lit(True), "fontSize": lit(7.5), "color": cor(COR["texto"]),
-                                       "fontFamily": lit(FONTE), "labelPosition": lit("OutsideEnd")}}],
+                                       "fontSize": lit(9.0), "labelColor": cor(COR["suave"]), "fontFamily": lit(FONTE)}}],
+            "labels": [{"properties": {"show": lit(True), "fontSize": lit(8.5), "color": cor(COR["texto"]),
+                                       "fontFamily": lit(FONTE_FORTE), "labelPosition": lit("OutsideEnd")}}],
             "y1AxisReferenceLine": [{"properties": {"show": lit(True), "value": lit(0.0), "lineColor": cor(COR["suave"]),
                                                     "transparency": lit(40.0), "style": lit("solid")},
                                      "selector": {"id": "1"}}],
-            "dataPoint": [{"properties": {"fill": cor("#3A4660")},
-                           "selector": {"metadata": projecao("Refinaria Explicaria")["queryRef"]}},
-                          {"properties": {"fill": cor_da_medida("Cor Chegou ao Posto")},
-                           "selector": {"data": [{"dataViewWildcard": {"matchingOption": 1}}],
-                                        "metadata": projecao("Chegou ao Posto em 2 Semanas")["queryRef"]}}],
+            "dataPoint": pontos,
         }
         return self._add(x, y, w, h, {
             "visualType": "clusteredColumnChart",
-            "query": {"queryState": {"Category": {"projections": [projecao("repasse_curva.semana_evento", ativo=True)]},
+            "query": {"queryState": {"Category": {"projections": [projecao("regiao_comparacao.regiao", ativo=True)]},
                                      "Y": {"projections": campos(medidas)}},
-                      "sortDefinition": {"sort": [{"field": campo("repasse_curva.semana_evento"),
-                                                   "direction": "Ascending"}]}},
+                      "sortDefinition": {"sort": [{"field": campo("Alta 2 Semanas na Região"),
+                                                   "direction": "Descending"}]}},
             "objects": objetos})
 
     def interacao(self, origem, destino, tipo="DataFilter"):
@@ -657,10 +656,10 @@ def repasse() -> Pagina:
     c = L.CURVA
     p.rotulo(c["titulo"], c["x"] + 8, c["y"] + 6, 900, 28, 11, COR["texto"], forte=True)
     p.curva_repasse(c["x"] + 12, c["y"] + 36, c["w"] - 24, c["h"] - 44)
-    # reajuste a reajuste
+    # em cada região: o "sobe de foguete, desce de pena" aparece em todas?
     e = L.EVENTOS
     p.rotulo(e["titulo"], e["x"] + 8, e["y"] + 6, 1100, 28, 11, COR["texto"], forte=True)
-    p.eventos_repasse(e["x"] + 12, e["y"] + 40, e["w"] - 24, e["h"] - 48)
+    p.regioes_repasse(e["x"] + 12, e["y"] + 36, e["w"] - 24, e["h"] - 44)
     return p
 
 

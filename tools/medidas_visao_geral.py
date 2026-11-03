@@ -461,6 +461,14 @@ def _no_evento(coluna: str) -> str:
             '        FILTER ( ALL ( repasse_curva[escopo] ), e = "Brasil" || repasse_curva[escopo] = e )\n    )')
 
 
+def _na_regiao(direcao: str) -> str:
+    """Repasse em 2 semanas na região do eixo (ou no Brasil), junto os estados dela."""
+    return ("VAR r = SELECTEDVALUE ( regiao_comparacao[regiao] )\n"
+            'VAR e = IF ( r = "Brasil", "Brasil", "Região " & r )\nRETURN\n'
+            "    CALCULATE ( MAX ( repasse_resumo[repasse_ponderado] ), REMOVEFILTERS ( dim_uf ),\n"
+            f'        repasse_resumo[escopo] = e, repasse_resumo[direcao] = "{direcao}", repasse_resumo[h] = 2 )')
+
+
 def medidas_repasse() -> list[tuple]:
     return [
         ("Reajustes no Escopo", "Repasse", "#,0", _reajustes()),
@@ -477,8 +485,6 @@ def medidas_repasse() -> list[tuple]:
          '& " vezes mais" )'),
         ("Curva Alta", "Repasse", "0%", _resumo("alta")),
         ("Curva Baixa", "Repasse", "0%", _resumo("baixa")),
-        ("Refinaria Explicaria", "Repasse", VARIACAO_REAIS, _no_evento("repasse_esperado")),
-        ("Chegou ao Posto em 2 Semanas", "Repasse", VARIACAO_REAIS, _no_evento("variacao_bomba")),
-        ("Cor Chegou ao Posto", "Cores", None,
-         f'VAR d = [Refinaria Explicaria]\nRETURN\n    IF ( NOT ISBLANK ( d ), IF ( d > 0, "{CORES["alta"]}", "{CORES["baixa"]}" ) )'),
+        ("Alta 2 Semanas na Região", "Repasse", "0%", _na_regiao("alta")),
+        ("Baixa 2 Semanas na Região", "Repasse", "0%", _na_regiao("baixa")),
     ]
